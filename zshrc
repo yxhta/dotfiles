@@ -48,7 +48,6 @@ set IGNOREEOF
 export PATH="$HOME/.bin:$PATH"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-export ZSH=$HOME/.dotfiles
 # export PATH=~/.composer/vendor/bin:$PATH
 
 # Language must be en_US
