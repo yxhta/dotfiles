@@ -1,7 +1,6 @@
 # Add homebrew binaries
 export PATH="/usr/local/bin:$PATH"
 
-export PATH="$HOME/.bin:$PATH"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 # export PATH=~/.composer/vendor/bin:$PATH
