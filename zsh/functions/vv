@@ -1,0 +1,7 @@
+# vv - search file and open with vim
+
+function vv() {
+  files=$(git ls-files) &&
+  selected_files=$(echo "$files" | fzf -m --preview 'head -100 {}') &&
+  nvim $selected_files
+}
