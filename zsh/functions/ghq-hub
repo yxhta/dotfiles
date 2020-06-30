@@ -1,0 +1,7 @@
+# ghq-hub - browse remote repository using ghq and fzf
+
+function ghq-hub() {
+  repo_path=$(ghq list --full-path | fzf)
+  repo_name=${repo_path##*github.com/}
+  hub browse $repo_name
+}
