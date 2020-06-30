@@ -1,0 +1,21 @@
+" Bundles.vim
+
+" Plug 'elixir-lang/vim-elixir'
+" Plug 'fatih/vim-go'
+Plug 'janko-m/vim-test'
+" Plug 'pbrisbin/vim-mkdir'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-surround'
+Plug 'vim-scripts/tComment'
+" Plug 'jparise/vim-graphql'
+Plug 'scrooloose/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'editorconfig/editorconfig-vim'
+
+set tags^=./.git/tags
+" vim:ft=vim

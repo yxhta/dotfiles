@@ -1,0 +1,9 @@
+" Prettier - auto formatting
+
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+
+let g:prettier#quickfix_enabled = 0
+
+let g:prettier#config#config_precedence = 'prefer-file'
+
+" vim:ft=vim
