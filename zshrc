@@ -45,11 +45,6 @@ _load_settings "$HOME/.zsh/configs"
 #================================================================
 set IGNOREEOF
 
-export PATH="$HOME/.bin:$PATH"
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-# export PATH=~/.composer/vendor/bin:$PATH
-
 # Language must be en_US
 export LANGUAGE=en_US.UTF-8
 export LANG="${LANGUAGE}"
