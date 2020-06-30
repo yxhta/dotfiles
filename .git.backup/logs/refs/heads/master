@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 008ef3a010666480c0558f50327e6aa691ef1d8a Yohta Ito <yxhta@yxhta-h510.lan> 1593270980 +0900	clone: from https://github.com/Yxhta/dotfiles.git
+008ef3a010666480c0558f50327e6aa691ef1d8a ddb24f3e7272875c260a753690d6eb7b9414138a Yohta Ito <yohta.ito@orithankyou.co.jp> 1593534807 +0900	commit: alacritty/Delete deprecated configs
+ddb24f3e7272875c260a753690d6eb7b9414138a 0c019869a9e21a70a968355655ea946668dfde4a Yohta Ito <yohta.ito@orithankyou.co.jp> 1593534818 +0900	rebase -i (finish): refs/heads/master onto 008ef3a010666480c0558f50327e6aa691ef1d8a
+0c019869a9e21a70a968355655ea946668dfde4a 366dcf66b5e9e4df5f396f98aa0cdd43e187b5d2 Yohta Ito <yohta.ito@orithankyou.co.jp> 1593534848 +0900	commit: vim: for linux
+366dcf66b5e9e4df5f396f98aa0cdd43e187b5d2 a6fe094cae15fcb892ddfd61b0c10cb258508e21 Yohta Ito <yohta.ito@orithankyou.co.jp> 1593534859 +0900	commit: zsh: Added cargo PATH
+a6fe094cae15fcb892ddfd61b0c10cb258508e21 2014c8d7404e1b4c44b4055f2573083135383302 Yohta Ito <yohta.ito@orithankyou.co.jp> 1593534889 +0900	commit: zsh: Delete asdf.bash completion

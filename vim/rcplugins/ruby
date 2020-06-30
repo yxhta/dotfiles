@@ -1,0 +1,11 @@
+" Ruby
+
+Plug 'vim-ruby/vim-ruby'
+
+" RoR
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rake'
+Plug 'slim-template/vim-slim'
+Plug 'tpope/vim-bundler'
+
+" vim:ft=vim

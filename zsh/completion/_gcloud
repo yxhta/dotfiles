@@ -1,0 +1,4 @@
+#compdef gcloud
+
+source '/Users/ito/google-cloud-sdk/path.zsh.inc'
+source '/Users/ito/google-cloud-sdk/completion.zsh.inc'
