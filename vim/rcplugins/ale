@@ -1,0 +1,31 @@
+" ALE - asynchronous linting engine
+
+Plug 'w0rp/ale', { 'for': ['ruby', 'php'] }
+
+" let g:has_async = v:version >= 800 || has('nvim')
+
+" Ale
+if (has('ale'))
+  let g:ale_linters = {
+        \ 'ruby': ['rubocop']
+        \ 'php': ['phpcs']
+        \ }
+
+  " Linting on all changes felt too aggressive. The below settings calls lint on
+  " certain events, either when I stop interacting or when entering / leaving
+  " insert mode
+  set updatetime=1000
+  " let g:ale_lint_on_text_changed = 0
+
+  " Setting for PHP
+  " let g:ale_php_phpcs_executable = '/Users/REDACTED/.composer/vendor/bin/phpcs'
+  " let g:ale_php_phpcs_standard = 'PSR2'
+  " let g:ale_php_phpcs_use_global = 1
+
+  autocmd CursorHold * call ale#Queue(0)
+  autocmd CursorHoldI * call ale#Queue(0)
+  autocmd InsertEnter * call ale#Queue(0)
+  autocmd InsertLeave * call ale#Queue(0)
+endif
+
+" vim:ft=vim

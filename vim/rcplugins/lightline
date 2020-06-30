@@ -1,0 +1,18 @@
+" StatusLine
+
+Plug 'itchyny/lightline.vim'
+
+" let g:spaceline_line_symbol = 0
+" Show coc.nvim status
+" let g:lightline = {
+"   \'active': {
+"     \'right': [
+"       \['coc']
+"     \]
+"   \},
+"   \'component_function': {
+"     \'coc': 'coc#status'
+"   \}
+" \}
+
+" vim:ft=vim
