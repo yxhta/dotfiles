@@ -16,3 +16,4 @@ log/*.log
 rerun.txt
 tags
 tmp/**/*
+.tool-versions
