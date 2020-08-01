@@ -73,7 +73,7 @@ zplug 'zsh-users/zsh-history-substring-search'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'zsh-users/zsh-completions'
 zplug 'mafredri/zsh-async', from:github
-zplug 'sindresorhus/pure', use:pure.zsh, from:github, as:theme
+# zplug 'sindresorhus/pure', use:pure.zsh, from:github, as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
@@ -95,3 +95,8 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+
+#================================================================
+#                    Shell Prompt
+#================================================================
+eval "$(starship init zsh)"
