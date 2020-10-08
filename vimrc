@@ -193,6 +193,7 @@ if (has('termguicolors'))
 endif
 " set background=light
 colorscheme iceberg
+hi Normal guibg=NONE ctermbg=NONE
 hi LineNr ctermbg=NONE guibg=NONE
 
 " Mute beep sound
