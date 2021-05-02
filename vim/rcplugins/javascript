@@ -6,17 +6,20 @@
 
 " Plug 'yuezk/vim-js'
 " Plug 'HerringtonDarkholme/yats.vim'
-Plug 'mxw/vim-jsx'
-let g:jsx_ext_required = 0
+" Plug 'mxw/vim-jsx'
+" let g:jsx_ext_required = 0
 " Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascriptreact', 'javascript.jsx'] }
-Plug 'chemzqm/vim-jsx-improve', { 'for': ['javascriptreact', 'javascript.jsx'] }
+Plug 'maxmellon/vim-jsx-pretty'
+" Plug 'chemzqm/vim-jsx-improve', { 'for': ['javascriptreact', 'javascript.jsx'] }
 
 "============================================================================
 " TypeScript
 "============================================================================
 
-Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact', 'typescript.tsx'] }
-Plug 'peitalin/vim-jsx-typescript', { 'for': ['typescriptreact', 'typescript.tsx'] }
+" Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact', 'typescript.tsx'] }
+Plug 'leafgarland/typescript-vim'
+" Plug 'peitalin/vim-jsx-typescript', { 'for': ['typescriptreact', 'typescript.tsx'] }
+" Plug 'peitalin/vim-jsx-typescript'
 " Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 " vim:ft=vim
