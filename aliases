@@ -10,6 +10,7 @@ alias ldk="lazydocker"
 alias n='nvim'
 alias vi='nvim'
 alias daily='$EDITOR ~/daily.md'
+alias memo='$EDITOR ~/code/memo.md'
 
 # Bundler
 alias b="bundle"
