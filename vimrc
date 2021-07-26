@@ -14,7 +14,7 @@ runtime! functions.vim
 " let g:python2_host_prog = '/usr/local/bin/python'
 let g:python3_host_prog = '/usr/bin/python3'
 
-autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+" autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
 
 " Leader
 let mapleader = " "
