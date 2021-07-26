@@ -2,5 +2,8 @@
 
 function gcd() {
   repo_path=$(ghq list --full-path | fzf)
-  cd $repo_path
+
+  if test ${#repo_path} -ne 0 ; then
+    cd $repo_path
+  fi
 }
