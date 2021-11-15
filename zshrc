@@ -55,7 +55,12 @@ export LC_CTYPE="${LANGUAGE}"
 setopt no_beep
 
 # asdf
-. $HOME/.asdf/asdf.sh
+# for mac
+. /usr/local/opt/asdf/libexec/asdf.sh
+# for linux
+#. $HOME/.asdf/asdf.sh
+#fpath=(${ASDF_DIR}/completions $fpath)
+#autoload -Uz compinit && compinit
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
