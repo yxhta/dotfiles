@@ -1,9 +1,10 @@
 " Prettier - auto formatting
 
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'javascript.jsx', 'typescript', 'typescript.tsx', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 
 let g:prettier#quickfix_enabled = 0
-
 let g:prettier#config#config_precedence = 'prefer-file'
 
 " vim:ft=vim
