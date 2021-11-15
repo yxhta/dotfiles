@@ -1,3 +1,6 @@
+# Add XDG_CONFIG_HOME
+export XDG_CONFIG_HOME=~/.config
+
 # Add homebrew binaries
 export PATH="/usr/local/bin:$PATH"
 
