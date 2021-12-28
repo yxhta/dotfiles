@@ -194,7 +194,7 @@ if (has('termguicolors'))
   set termguicolors
 endif
 " set background=light
-colorscheme iceberg
+colorscheme kanagawa
 hi Normal guibg=NONE ctermbg=NONE
 hi LineNr ctermbg=NONE guibg=NONE
 

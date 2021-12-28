@@ -1,6 +1,7 @@
 " Colorscheme
 
 Plug 'cocopon/iceberg.vim'
+Plug 'rebelot/kanagawa.nvim'
 " Plug 'w0ng/vim-hybrid'
 " Plug 'mhartington/oceanic-next'
 " Plug 'whatyouhide/vim-gotham'
