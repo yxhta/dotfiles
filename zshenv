@@ -17,3 +17,6 @@ export PATH="$HOME/bin:$PATH"
 
 # Add Cargo PATH
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# Add Flutter PATH
+export PATH="`pwd`/flutter/bin:$PATH"
