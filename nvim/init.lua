@@ -16,7 +16,7 @@
 -- play with foldtext function to customize it
 -- check out sidebar-nvim/sidebar.nvim
 
-require("impatient")
+-- require("impatient")
 
 -- Plugins
 require("plugins")

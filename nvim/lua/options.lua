@@ -1,7 +1,7 @@
 
 -- Settings {{{
-vim.g.python3_host_prog        = '/Users/laurenzi/venvs/base/bin/python'
-vim.g.python_host_prog         = '/Users/laurenzi/venvs/base27/bin/python'
+vim.g.python3_host_prog        = '/usr/local/bin/python3'
+vim.g.python_host_prog         = '/usr/local/bin/python'
 -- vim.g.netrw_browsex_viewer  = 'open'
 
 vim.g.do_filetype_lua = 1
