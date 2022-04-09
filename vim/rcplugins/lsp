@@ -1,46 +1,6 @@
-" " LSP
-"
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
-"
-" let g:lsp_diagnostics_enabled = 0
-" " debug
-" " let g:lsp_log_verbose = 1
-" " let g:lsp_log_file = expand('~/vim-lsp.log')
-" " let g:asyncomplete_log_file = expand('~/asyncomplete.log')
-"
-"
-" " Ruby
-" if executable('solargraph')
-"   " gem install solargraph
-"   au User lsp_setup call lsp#register_server({
-"         \ 'name': 'solargraph',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-"         \ 'initialization_options': {"diagnostics": "true"},
-"         \ 'whitelist': ['ruby'],
-"         \ })
-" endif
-"
-" " Javascript
-" if executable('typescript-language-server')
-"   au User lsp_setup call lsp#register_server({
-"         \ 'name': 'javascript support using typescript-language-server',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
-"         \ 'whitelist': ['javascript', 'javascript.jsx'],
-"         \ })
-" endif
-"
-" " Typescript
-" if executable('typescript-language-server')
-"   au User lsp_setup call lsp#register_server({
-"         \ 'name': 'typescript-language-server',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-"         \ 'whitelist': ['typescript', 'typescript.tsx', 'typescriptreact'],
-"         \ })
-" endif
-"
-" " vim:ft=vim
+" LSP
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
+
+" vim:ft=vim
