@@ -1,6 +1,6 @@
 " ALE - asynchronous linting engine
 
-Plug 'w0rp/ale', { 'for': ['ruby', 'php'] }
+" Plug 'w0rp/ale', { 'for': ['ruby', 'php'] }
 
 " let g:has_async = v:version >= 800 || has('nvim')
 
