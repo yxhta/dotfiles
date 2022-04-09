@@ -312,8 +312,8 @@ return require("packer").startup(function(use)
     -- Colors, Icons, StatusLine, BufferLine --
     -------------------------------------------
 
-    use({ "/Users/laurenzi/usr/src/kanagawa.nvim", branch = "master" })
-    -- use({ "rebelot/kanagawa.nvim", branch = "master" })
+    -- use({ "/Users/laurenzi/usr/src/kanagawa.nvim", branch = "master" })
+    use({ "rebelot/kanagawa.nvim", branch = "master" })
 
     use({
         "kyazdani42/nvim-web-devicons",
@@ -333,13 +333,13 @@ return require("packer").startup(function(use)
     use("shaunsingh/nord.nvim")
     -- use "projekt0n/github-nvim-theme"
     -- use 'gruvbox-community/gruvbox'
-    use({
-        "/Users/laurenzi/usr/src/heirline.nvim",
-        event = { "VimEnter" },
-        config = function()
-            require("plugins.heirline")
-        end,
-    })
+    -- use({
+    --     "/Users/laurenzi/usr/src/heirline.nvim",
+    --     event = { "VimEnter" },
+    --     config = function()
+    --         require("plugins.heirline")
+    --     end,
+    -- })
 
     use({
         "akinsho/nvim-bufferline.lua",
@@ -500,9 +500,9 @@ return require("packer").startup(function(use)
         "numToStr/FTerm.nvim",
         config = function()
             vim.api.nvim_set_keymap("n", "<leader>tt", "<cmd>lua require'FTerm'.toggle()<CR>", { noremap = true })
-            vim.api.nvim_add_user_command("FTermRun", function(cmd)
-                require("FTerm").run(vim.fn.expandcmd(cmd.args))
-            end, { nargs = "*", complete = "shellcmd" })
+            -- vim.api.nvim_add_user_command("FTermRun", function(cmd)
+            --     require("FTerm").run(vim.fn.expandcmd(cmd.args))
+            -- end, { nargs = "*", complete = "shellcmd" })
             vim.api.nvim_set_keymap("n", "<leader>tr", ":FTermRun ", { noremap = true })
         end,
     })
