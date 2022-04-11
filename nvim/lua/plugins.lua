@@ -439,11 +439,7 @@ return require("packer").startup(function(use)
     event = "BufEnter",
   })
 
-  use { 'feline-nvim/feline.nvim',
-    config = function()
-      require("plugins.feline")
-    end
-  }
+  use { 'feline-nvim/feline.nvim' }
 
   -------------------
   -- Editing Tools --

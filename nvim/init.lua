@@ -32,6 +32,7 @@ require("colors").overrides()
 
 vim.cmd("set clipboard+=unnamedplus")
 
+require('feline').setup()
 -- function _G.filebuftypes_au(filebuftypes)
 --     local bt = vim.bo.buftype
 --     local ft = vim.bo.filetype
