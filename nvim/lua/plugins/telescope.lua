@@ -5,47 +5,11 @@ local themes = require("telescope.themes")
 local trouble = require("trouble.providers.telescope")
 local transform_mod = require('telescope.actions.mt').transform_mod
 
--- local custom_actions = {}
-
-local function multiopen(prompt_bufnr, open_cmd)
-    local picker = action_state.get_current_picker(prompt_bufnr)
-    local num_selections = #picker:get_multi_selection()
-    if num_selections > 1 then
-        for _, entry in ipairs(picker:get_multi_selection()) do
-            vim.cmd(string.format("%s %s", open_cmd, entry.value))
-        end
-    else
-        vim.cmd(string.format("%s %s", open_cmd, action_state.get_selected_entry().value))
-    end
-    vim.cmd("stopinsert")
-    vim.o.winhighlight = ''
-end
-
-local custom_actions = transform_mod({
-    multi_selection_open_vsplit = function(prompt_bufnr) multiopen(prompt_bufnr, ":vsplit") end,
-    multi_selection_open_split = function(prompt_bufnr) multiopen(prompt_bufnr, ":split") end,
-    multi_selection_open_tab =  function(prompt_bufnr) multiopen(prompt_bufnr, ":tabe") end,
-    multi_selection_open = function(prompt_bufnr) multiopen(prompt_bufnr, ":edit") end,
-})
-
--- function custom_actions.multi_selection_open_vsplit(prompt_bufnr)
---     multiopen(prompt_bufnr, ":vsplit")
--- end
--- function custom_actions.multi_selection_open_split(prompt_bufnr)
---     multiopen(prompt_bufnr, ":split")
--- end
--- function custom_actions.multi_selection_open_tab(prompt_bufnr)
---     multiopen(prompt_bufnr, ":tabe")
--- end
--- function custom_actions.multi_selection_open(prompt_bufnr)
---     multiopen(prompt_bufnr, ":edit")
--- end
-
 require("telescope").setup({
     defaults = {
         -- dynamic_preview_title = true,
         -- borderchars = { "▔", "▕", "▁", "▏", "🭽", "🭾", "🭿", "🭼" },
-        layout_strategy = "flex",
+        -- layout_strategy = "flex",
         layout_config = {
             vertical = {
                 preview_height = 0.5,
@@ -110,51 +74,12 @@ require("telescope").setup({
         },
     },
     pickers = {
-        oldfiles = {
-            mappings = {
-                i = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-                n = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-            },
-        },
         find_files = {
             follow = true,
-            mappings = {
-                i = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-                n = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-            },
+            theme = "dropdown",
         },
         buffers = {
             sort_mru = true,
-            mappings = {
-                i = {
-                    ["<C-r>"] = actions.delete_buffer,
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-                n = {
-                    ["<C-r>"] = actions.delete_buffer,
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-            },
         },
         lsp_code_actions = themes.get_cursor(),
         lsp_range_code_actions = themes.get_cursor(),
@@ -181,25 +106,12 @@ require("telescope").setup({
         file_browser = {
             hidden = true,
             depth = 2,
-            mappings = {
-                i = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-                n = {
-                    ["<C-v>"] = custom_actions.multi_selection_open_vsplit,
-                    ["<C-s>"] = custom_actions.multi_selection_open_split,
-                    ["<C-t>"] = custom_actions.multi_selection_open_tab,
-                },
-            },
         },
     },
 })
 
 local copts = { noremap = true }
 vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
--- vim.api.nvim_set_keymap("n", "<leader>fF", ":Telescope find_files cwd=", {noremap=true})
 vim.api.nvim_set_keymap(
     "n",
     "<leader>f.",

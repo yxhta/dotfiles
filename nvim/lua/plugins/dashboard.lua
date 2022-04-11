@@ -48,7 +48,7 @@ dashboard.section.buttons.val = {
     dashboard.button("<leader>ff", "  Find File", ":Telescope find_files<CR>"),
     dashboard.button("<leader>fh", "  Recents", ":Telescope oldfiles<CR>"),
     -- dashboard.button("<leader>fr", "  Favourite",         ":Telescope frecency<CR>"),
-    -- dashboard.button("<leader>fg", "  Find Word",          ":Telescope live_grep<CR>"),
+    dashboard.button("<leader>fg", "  Find Word",          ":Telescope live_grep<CR>"),
     dashboard.button("<leader>en", "  New File", ":enew<CR>"),
     -- dashboard.button("<leader>fm", "  Bookmark",          ":Telescope marks<CR>"),
     -- dashboard.button("l",          "  Load Last Session", ":SessionLoad<CR>"),
@@ -82,24 +82,3 @@ dashboard.section.footer.opts = {
 -- ]]
 
 alpha.setup(dashboard.config)
-
--- " =================     ===============     ===============   ========  ========
--- " \\ . . . . . . .\\   //. . . . . . .\\   //. . . . . . .\\  \\. . .\\// . . //
--- " ||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\/ . . .||
--- " || . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||
--- " ||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||
--- " || . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\ . . . . ||
--- " ||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\_ . .|. .||
--- " || . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\ `-_/| . ||
--- " ||_-' ||  .|/    || ||    \|.  || `-_|| ||_-' ||  .|/    || ||   | \  / |-_.||
--- " ||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \  / |  `||
--- " ||    `'         || ||         `'    || ||    `'         || ||   | \  / |   ||
--- " ||            .===' `===.         .==='.`===.         .===' /==. |  \/  |   ||
--- " ||         .=='   \_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \/  |   ||
--- " ||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \/  |   ||
--- " ||   .=='    _-'          '-__\._-'         '-_./__-'         `' |. /|  |   ||
--- " ||.=='    _-'                                                     `' |  /==.||
--- " =='    _-'                        N E O V I M                         \/   `==
--- " \   _-'                                                                `-_   /
--- " }
--- "  `''                                                                      ``'
