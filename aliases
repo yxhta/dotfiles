@@ -28,3 +28,4 @@ alias dkc="docker-compose"
 
 # Other
 alias reload!="exec $SHELL -l"
+alias ctags="`brew --prefix`/bin/ctags"
