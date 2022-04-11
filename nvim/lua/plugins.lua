@@ -37,6 +37,8 @@ return require("packer").startup(function(use)
 
     use({ "dstein64/vim-startuptime" })
 
+    use("nathom/filetype.nvim")
+
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
     --------------------------------------------
@@ -47,6 +49,8 @@ return require("packer").startup(function(use)
             require("lsp.lsp-config")
         end,
     })
+
+    use ({ 'williamboman/nvim-lsp-installer' })
 
     use({
         "jose-elias-alvarez/null-ls.nvim",
@@ -293,20 +297,20 @@ return require("packer").startup(function(use)
         end,
     })
 
-    use({
-        "nvim-telescope/telescope-frecency.nvim",
-        after = { "telescope.nvim", "sqlite.lua" },
-        config = function()
-            require("telescope").load_extension("frecency")
-        end,
-    })
+    -- use({
+    --     "nvim-telescope/telescope-frecency.nvim",
+    --     after = { "telescope.nvim", "sqlite.lua" },
+    --     config = function()
+    --         require("telescope").load_extension("frecency")
+    --     end,
+    -- })
 
-    use({
-        "tami5/sqlite.lua",
-        config = function()
-            vim.g.sqlite_clib_path = "/opt/local/lib/libsqlite3.dylib"
-        end,
-    })
+    -- use({
+    --     "tami5/sqlite.lua",
+    --     config = function()
+    --         vim.g.sqlite_clib_path = "/opt/local/lib/libsqlite3.dylib"
+    --     end,
+    -- })
 
     -------------------------------------------
     -- Colors, Icons, StatusLine, BufferLine --
@@ -401,24 +405,24 @@ return require("packer").startup(function(use)
         end,
     })
 
-    use({
-        "rcarriga/vim-ultest",
-        requires = { "vim-test/vim-test" },
-        run = ":UpdateRemotePlugins",
-        config = function()
-            require("plugins.ultest")
-        end,
-    })
+    -- use({
+    --     "rcarriga/vim-ultest",
+    --     requires = { "vim-test/vim-test" },
+    --     run = ":UpdateRemotePlugins",
+    --     config = function()
+    --         require("plugins.ultest")
+    --     end,
+    -- })
 
-    use({
-        "mfussenegger/nvim-dap-python",
-        after = "nvim-dap",
-        ft = "python",
-        config = function()
-            require("dap-python").setup("~/venvs/debugpy/bin/python")
-            require("dap-python").test_runner = "pytest"
-        end,
-    })
+    -- use({
+    --     "mfussenegger/nvim-dap-python",
+    --     after = "nvim-dap",
+    --     ft = "python",
+    --     config = function()
+    --         require("dap-python").setup("~/venvs/debugpy/bin/python")
+    --         require("dap-python").test_runner = "pytest"
+    --     end,
+    -- })
 
     use({
         "theHamsta/nvim-dap-virtual-text",
