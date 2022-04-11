@@ -16,7 +16,7 @@
 -- play with foldtext function to customize it
 -- check out sidebar-nvim/sidebar.nvim
 
--- require("impatient")
+require("impatient")
 
 -- Plugins
 require("plugins")
@@ -29,6 +29,8 @@ require("kanagawa").setup({
 })
 vim.cmd("colorscheme kanagawa")
 require("colors").overrides()
+
+vim.cmd("set clipboard+=unnamedplus")
 
 -- function _G.filebuftypes_au(filebuftypes)
 --     local bt = vim.bo.buftype
@@ -46,14 +48,17 @@ require("colors").overrides()
 -- ]])
 
 -- general configurations
-require("options")
+-- require("options")
 
 -- Diagnostics
-require("diagnostics")
+-- require("diagnostics")
 
 -- Functions, Commands, Autocommands
-vim.cmd("source ~/.config/nvim/viml/commands.vim")
-vim.cmd("source ~/.config/nvim/viml/autocommands.vim")
+-- vim.cmd("source ~/.config/nvim/viml/commands.vim")
+-- vim.cmd("source ~/.config/nvim/viml/autocommands.vim")
 
 -- Mappings
-vim.cmd("source ~/.config/nvim/viml/mappings.vim")
+-- vim.cmd("source ~/.config/nvim/viml/mappings.vim")
+
+-- init.vim
+vim.cmd("source ~/.config/nvim/viml/init.vim")
