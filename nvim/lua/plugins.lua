@@ -439,7 +439,10 @@ return require("packer").startup(function(use)
     event = "BufEnter",
   })
 
-  use { 'feline-nvim/feline.nvim' }
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
 
   -------------------
   -- Editing Tools --
