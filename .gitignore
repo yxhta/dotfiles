@@ -3,3 +3,4 @@ vim/.netrwhist
 vim/autoload/
 vim/bundle/
 vim/undo/
+nvim/plugin/packer_compiled.lua
