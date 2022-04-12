@@ -94,7 +94,7 @@ set number
 set numberwidth=4
 
 " Switch between the last two files
-" nnoremap <Leader><Leader> <C-^>
+nnoremap <Leader><Leader> <C-^>
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
