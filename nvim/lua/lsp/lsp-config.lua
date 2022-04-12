@@ -87,58 +87,18 @@ local on_attach = function(client, bufnr)
   buf_set_keymap("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
   buf_set_keymap("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+  -- Formatting on save
+  -- original -> autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
+  if client.resolved_capabilities.document_formatting then
+    vim.cmd([[
+            augroup LspFormatting
+                autocmd! * <buffer>
+                autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()
+            augroup END
+            ]])
+  end
 end
-
---------------
--- LSP Installer --
---------------
-local lsp_installer = require("nvim-lsp-installer")
-
--- lsp_installer.settings({
---   ui = {
---     icons = {
---       server_installed = "✓",
---       server_pending = "➜",
---       server_uninstalled = "✗"
---     }
---   },
---   sumneko_lua = {
---     cmd = {
---       "/usr/local/bin/lua-language-server",
---     },
---     settings = {
---       Lua = {
---         runtime = {
---           -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
---           version = "LuaJIT",
---           -- Setup your lua path
---           -- path = runtime_path,
---           path = vim.split(package.path, ';'),
---         },
---         diagnostics = {
---           enable = true,
---           -- Get the language server to recognize the `vim` global
---           globals = { "vim" },
---         },
---         workspace = {
---           -- Make the server aware of Neovim runtime files
---           library = vim.api.nvim_get_runtime_file("", true),
---         },
---         -- Do not send telemetry data containing a randomized but unique identifier
---         telemetry = {
---           enable = false,
---         },
---       },
---     },
---   }
--- })
-
-lsp_installer.on_server_ready(function(server)
-  local opts = {}
-  opts.on_attach = on_attach
-
-  server:setup(opts)
-end)
 
 for server, config in pairs(configs) do
   config.capabilities = capabilities
@@ -146,6 +106,16 @@ for server, config in pairs(configs) do
   lspconfig[server].setup(config)
 end
 
+--------------
+-- LSP Installer --
+--------------
+local lsp_installer = require("nvim-lsp-installer")
+lsp_installer.on_server_ready(function(server)
+  local opts = {}
+  opts.on_attach = on_attach
+
+  server:setup(opts)
+end)
 --------------
 -- Commands --
 --------------
