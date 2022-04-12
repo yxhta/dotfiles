@@ -112,6 +112,7 @@ require("telescope").setup({
 
 local copts = { noremap = true }
 vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
+vim.api.nvim_set_keymap("n", "<leader>o", "<cmd>Telescope find_files<CR>", copts)
 vim.api.nvim_set_keymap(
     "n",
     "<leader>f.",
@@ -120,11 +121,12 @@ vim.api.nvim_set_keymap(
 )
 vim.api.nvim_set_keymap("n", "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fq", "<cmd>Telescope quickfix<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope oldfiles<CR>", copts)
+vim.api.nvim_set_keymap("n", "<leader>h", "<cmd>Telescope oldfiles<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope frecency<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>", copts)
+vim.api.nvim_set_keymap("n", "<leader>b", "<cmd>Telescope buffers<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader><space>", "<cmd>Telescope commands<CR>", copts)
+-- vim.api.nvim_set_keymap("n", "<leader><space>", "<cmd>Telescope commands<CR>", copts)
+vim.api.nvim_set_keymap("n", "<leader>fc", "<cmd>Telescope commands<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>ft", "<cmd>Telescope treesitter<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fj", "<cmd>Telescope jumplist<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>T", "<cmd>Telescope<CR>", copts)
