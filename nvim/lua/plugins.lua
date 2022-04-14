@@ -265,6 +265,8 @@ return require("packer").startup(function(use)
 
   use({ "rebelot/kanagawa.nvim", branch = "master" })
 
+  use "EdenEast/nightfox.nvim"
+
   use({
     "kyazdani42/nvim-web-devicons",
     config = function()
