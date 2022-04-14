@@ -10,8 +10,8 @@ require("plugins")
 -- Colorscheme
 vim.opt.laststatus = 3
 require("kanagawa").setup({
-    dimInactive = true,
-    globalStatus = true
+  dimInactive = true,
+  globalStatus = true
 })
 vim.cmd("colorscheme kanagawa")
 require("colors").overrides()
