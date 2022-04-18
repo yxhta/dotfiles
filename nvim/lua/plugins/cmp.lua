@@ -19,8 +19,10 @@ cmp.setup({
     --     local command_line = vim.fn.bufname("%") ~= '[Command Line]'
     --     return prompt and command_line
     -- end,
-    documentation = {
-        border = require'lsp.lsp-config'.borders
+    window = {
+        documentation = {
+            border = require 'lsp.lsp-config'.borders
+        },
     },
 
     mapping = {
