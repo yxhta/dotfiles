@@ -21,17 +21,10 @@ vim.cmd("set clipboard+=unnamedplus")
 require('lualine').setup()
 
 -- general configurations
--- require("options")
-
--- Diagnostics
--- require("diagnostics")
+require("options")
 
 -- Functions, Commands, Autocommands
--- vim.cmd("source ~/.config/nvim/viml/commands.vim")
--- vim.cmd("source ~/.config/nvim/viml/autocommands.vim")
+vim.cmd("source ~/.config/nvim/viml/autocommands.vim")
 
 -- Mappings
--- vim.cmd("source ~/.config/nvim/viml/mappings.vim")
-
--- init.vim
-vim.cmd("source ~/.config/nvim/viml/init.vim")
+vim.cmd("source ~/.config/nvim/viml/mappings.vim")
