@@ -21,3 +21,4 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # Add Flutter PATH
 export PATH="$HOME/development/flutter/bin:$PATH"
 export PATH="$PATH":"$HOME/.pub-cache/bin:$PATH"
+# export PATH="$PATH":"$HOME/.pub-cache/bin"
