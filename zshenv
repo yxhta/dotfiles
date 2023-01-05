@@ -28,3 +28,6 @@ export PATH="$PATH":"$(brew --prefix)/opt/make/libexec/gnubin:$PATH"
 export PATH="$PATH":"$(brew --prefix)/opt/llvm/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+# wezterm
+export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
