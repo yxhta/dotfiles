@@ -56,9 +56,7 @@ setopt no_beep
 
 # asdf
 # for mac
-# . /usr/local/opt/asdf/libexec/asdf.sh
-export ASDF_DIR=/usr/local/Cellar/asdf/0.10.2/libexec
-. /usr/local/Cellar/asdf/0.10.2/libexec/lib/asdf.sh
+. /usr/local/opt/asdf/libexec/asdf.sh
 # for linux
 #. $HOME/.asdf/asdf.sh
 #fpath=(${ASDF_DIR}/completions $fpath)
@@ -118,8 +116,12 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
+# Load plugins
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
+
+# Load starship theme
+zinit light starship/starship
 
 ### End of Zinit's installer chunk
 
