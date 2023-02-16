@@ -1,5 +1,6 @@
 local lspconfig = require("lspconfig")
 local configs = require("lsp.servers")
+local navic = require("nvim-navic")
 
 local borders = {
     { "🭽", "FloatBorder" },
@@ -105,6 +106,11 @@ local on_attach = function(client, bufnr)
     --           augroup END
     --           ]])
     -- end
+
+    -- Setup nvim-navic
+    if client.server_capabilities.documentSymbolProvider then
+        navic.attach(client, bufnr)
+    end
 end
 
 for server, config in pairs(configs) do
