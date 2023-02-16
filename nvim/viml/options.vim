@@ -8,7 +8,8 @@ set runtimepath+=$XDG_VIM_HOME/after
 set runtimepath+=$HOME/.fzf
 
 " let g:python2_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog = '/usr/local/bin/python3'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
