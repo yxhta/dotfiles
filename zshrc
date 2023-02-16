@@ -135,7 +135,8 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Set python executable path
-export CLOUDSDK_PYTHON="$HOME/.asdf/shims/python"
+# export CLOUDSDK_PYTHON="$HOME/.asdf/shims/python"
+export CLOUDSDK_PYTHON="/usr/local/bin/python3"
 
 #================================================================
 #                    Shell Prompt
