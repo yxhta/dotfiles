@@ -8,8 +8,8 @@ local trouble = require("trouble.providers.telescope")
 
 require("telescope").setup({
     defaults = {
-        -- dynamic_preview_title = true,
-        -- layout_strategy = "flex",
+        dynamic_preview_title = true,
+        layout_strategy = "flex",
         -- layout_config = {
         --     vertical = {
         --         preview_height = 0.5,
@@ -25,9 +25,9 @@ require("telescope").setup({
         --     preview_cutoff = 0,
         -- },
         file_ignore_patterns = { "node_modules", ".git" },
-        -- path_display = {
-        --     truncate = 1,
-        -- },
+        path_display = {
+            truncate = 1,
+        },
         set_env = {
             ["COLORTERM"] = "truecolor",
         }, -- default = nil,
@@ -111,7 +111,7 @@ require("telescope").setup({
 })
 
 local copts = { noremap = true }
-vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
+vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
 vim.api.nvim_set_keymap(
     "n",
     "<leader>f.",
@@ -132,8 +132,3 @@ vim.api.nvim_set_keymap("n", "<leader>T", "<cmd>Telescope<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>z", "<cmd>Telescope spell_suggest<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fm", "<cmd>Telescope marks<CR>", copts)
 vim.api.nvim_set_keymap("n", '<leader>t"', "<cmd>Telescope registers<CR>", copts)
-
--- vim.cmd([[ command! -nargs=1 -complete=dir FindFiles Telescope find_files cwd=<args>]])
--- vim.api.nvim_set_keymap("n", "<leader>fF", ":FindFiles ", copts)
--- nnoremap <leader>tr :Telescope lsp_references<CR>
--- nnoremap <leader>ts :Telescope lsp_document_symbols<CR>
