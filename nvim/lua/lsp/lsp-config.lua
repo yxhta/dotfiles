@@ -44,7 +44,7 @@ local borders = {
 ------------------
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 capabilities.textDocument.codeAction = {
     dynamicRegistration = true,
@@ -87,18 +87,24 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
     buf_set_keymap("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    -- buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting_sync()<CR>", opts)
+    -- buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
+
+    -- Disable server formatting
+    -- client.server_capabilities.document_formatting = false
 
     -- Formatting on save
+    -- vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
     -- original -> autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-    if client.resolved_capabilities.document_formatting then
-        vim.cmd([[
-              augroup LspFormatting
-                  " autocmd! * <buffer>
-                  " autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-                  autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync()
-              augroup END
-              ]])
-    end
+    -- if client.server_capabilities.document_formatting then
+    --     vim.cmd([[
+    --           augroup LspFormatting
+    --               " autocmd! * <buffer>
+    --               " autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
+    --               autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync()
+    --           augroup END
+    --           ]])
+    -- end
 end
 
 for server, config in pairs(configs) do
