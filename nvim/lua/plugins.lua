@@ -235,18 +235,18 @@ return require("packer").startup(function(use)
     use({
         "nvim-telescope/telescope-file-browser.nvim",
         requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-        -- config = function()
-        --     require("plugins.telescope").load_extension("file_browser")
-        -- end,
+        config = function()
+            require("telescope").load_extension("file_browser")
+        end,
     })
 
     use({
         "nvim-telescope/telescope-fzf-native.nvim",
         after = "telescope.nvim",
         run = "make",
-        -- config = function()
-        --     require("plugins.telescope").load_extension("fzf")
-        -- end,
+        config = function()
+            require("telescope").load_extension("fzf")
+        end,
     })
 
     -------------------------------------------
