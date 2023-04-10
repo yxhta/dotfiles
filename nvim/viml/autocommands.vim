@@ -10,7 +10,9 @@ augroup AutoCommands
   "   \ endif
 
   " Set syntax highlighting for specific file types
-  " autocmd!
+  autocmd!
+  autocmd BufRead,BufNewFile *.xml.golden set filetype=xml
+  autocmd BufRead,BufNewFile *.json.golden set filetype=json
   " autocmd BufRead,BufNewFile *.md set filetype=markdown
   " autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
   " autocmd BufRead,BufNewFile aliases.local,zshrc.local,*/zsh/configs/* set filetype=sh
