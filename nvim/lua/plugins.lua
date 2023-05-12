@@ -42,7 +42,7 @@ return require("packer").startup(function(use)
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
     --------------------------------------------
-    -- use { 'github/copilot.vim' }
+    use { 'github/copilot.vim' }
 
     use({
         "neovim/nvim-lspconfig",
@@ -207,12 +207,6 @@ return require("packer").startup(function(use)
     -- File, Fuzzy Finders --
     -------------------------
 
-    -- use({
-    --     "kyazdani42/nvim-tree.lua",
-    --     config = function()
-    --         require("plugins.nvim-tree")
-    --     end,
-    -- })
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
@@ -417,7 +411,8 @@ return require("packer").startup(function(use)
         cmd = { "UnicodeName", "UnicodeTable", "UnicodeSearch" },
     })
 
-    use({ "goolord/alpha-nvim",
+    use({
+        "goolord/alpha-nvim",
         config = function()
             require("plugins.dashboard")
         end
