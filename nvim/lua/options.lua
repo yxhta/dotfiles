@@ -82,4 +82,7 @@ function _G.CustomFoldText()
 end
 
 vim.opt.foldtext = 'v:lua.CustomFoldText()'
--- }}}
+
+-- Accept suggested completion with <C-j> from GitHub Copilot
+vim.g.copilot_no_tab_map = true
+vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
