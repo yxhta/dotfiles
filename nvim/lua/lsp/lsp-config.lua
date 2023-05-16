@@ -1,49 +1,70 @@
 local lspconfig = require("lspconfig")
-local configs = require("lsp.servers")
+-- local configs = require("lsp.servers")
 local navic = require("nvim-navic")
+local mason = require("mason")
+local mason_lspconfig = require("mason-lspconfig")
 
 local borders = {
     { "🭽", "FloatBorder" },
-    { "▔", "FloatBorder" },
+    { "▔",  "FloatBorder" },
     { "🭾", "FloatBorder" },
-    { "▕", "FloatBorder" },
+    { "▕",  "FloatBorder" },
     { "🭿", "FloatBorder" },
-    { "▁", "FloatBorder" },
+    { "▁",  "FloatBorder" },
     { "🭼", "FloatBorder" },
-    { "▏", "FloatBorder" },
+    { "▏",  "FloatBorder" },
 }
 
 -----------------------
--- Handlers override --
+-- Handlers --
 -----------------------
+local handlers = {
+    function(server_name) -- default handler
+        require("lspconfig")[server_name].setup {}
+    end,
 
--- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
---     silent = true,
---     max_height = "10",
---     border = borders,
--- })
---
--- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
---     border = borders,
--- })
---
--- vim.lsp.util.close_preview_autocmd = function(events, winnr)
---     events = vim.tbl_filter(function(v)
---         return v ~= "CursorMovedI" and v ~= "BufLeave"
---     end, events)
---     vim.api.nvim_command(
---         "autocmd "
---             .. table.concat(events, ",")
---             .. " <buffer> ++once lua pcall(vim.api.nvim_win_close, "
---             .. winnr
---             .. ", true)"
---     )
--- end
+    ["rust_analyzer"] = function()
+        require("rust-tools").setup {}
+    end,
+    ["lua_ls"] = function()
+        lspconfig.lua_ls.setup {
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { "vim" }
+                    }
+                }
+            }
+        }
+    end,
+}
+
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+    silent = true,
+    max_height = "10",
+    border = borders,
+})
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+    border = borders,
+})
+
+vim.lsp.util.close_preview_autocmd = function(events, winnr)
+    events = vim.tbl_filter(function(v)
+        return v ~= "CursorMovedI" and v ~= "BufLeave"
+    end, events)
+    vim.api.nvim_command(
+        "autocmd "
+        .. table.concat(events, ",")
+        .. " <buffer> ++once lua pcall(vim.api.nvim_win_close, "
+        .. winnr
+        .. ", true)"
+    )
+end
 
 ------------------
 -- Capabilities --
 ------------------
-
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
@@ -59,14 +80,27 @@ capabilities.textDocument.codeAction = {
         },
     },
 }
-
 -- capabilities.textDocument.completion.completionItem.workDoneProgress = true
 -- capabilities.window.workDoneProgress = true
+
+------------------
+-- Formatting --
+------------------
+local lsp_formatting = function(bufnr)
+    vim.lsp.buf.format({
+        filter = function(client)
+            return client.name ~= "tsserver"
+        end,
+        bufnr = bufnr,
+    })
+end
+
+-- formatting on save
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 ---------------
 -- On Attach --
 ---------------
-
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
@@ -89,21 +123,18 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
     buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
 
-    -- Disable server formatting
-    -- client.server_capabilities.document_formatting = false
-
-    -- Formatting on save
-    -- vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
-    -- original -> autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-    -- if client.server_capabilities.document_formatting then
-    --     vim.cmd([[
-    --           augroup LspFormatting
-    --               " autocmd! * <buffer>
-    --               " autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-    --               autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync()
-    --           augroup END
-    --           ]])
-    -- end
+    -- Formatting
+    if client.supports_method("textDocument/formatting") then
+        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+        vim.api.nvim_clear_autocmds({ buffer = bufnr })
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            group = augroup,
+            buffer = bufnr,
+            callback = function()
+                lsp_formatting(bufnr)
+            end,
+        })
+    end
 
     -- Setup nvim-navic
     if client.server_capabilities.documentSymbolProvider then
@@ -111,26 +142,20 @@ local on_attach = function(client, bufnr)
     end
 end
 
-for server, config in pairs(configs) do
-    config.capabilities = capabilities
-    config.on_attach = on_attach
-    lspconfig[server].setup(config)
-end
+-- for server, config in pairs(configs) do
+--     config.capabilities = capabilities
+--     config.on_attach = on_attach
+--     lspconfig[server].setup(config)
+-- end
 
 --------------
--- LSP Installer --
+-- Mason --
 --------------
-local lsp_installer = require("nvim-lsp-installer")
-lsp_installer.on_server_ready(function(server)
-    local opts = {}
-    opts.on_attach = on_attach
-
-    server:setup(opts)
-end)
-
---------------
--- Commands --
---------------
+mason.setup()
+mason_lspconfig.setup({
+    ensure_installed = { "lua_ls", "tsserver" },
+    handlers = handlers,
+})
 
 M = {}
 M.on_attach = on_attach
