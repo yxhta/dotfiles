@@ -44,14 +44,13 @@ return require("packer").startup(function(use)
     --------------------------------------------
     use { 'github/copilot.vim' }
 
-    use({
-        "neovim/nvim-lspconfig",
-        config = function()
-            require("lsp.lsp-config")
-        end,
-    })
+    use({ "neovim/nvim-lspconfig" })
 
-    use({ 'williamboman/nvim-lsp-installer' })
+    use({
+        "williamboman/mason.nvim",
+        run = ":MasonUpdate", -- :MasonUpdate updates registry contents
+    })
+    use({ "williamboman/mason-lspconfig.nvim" })
 
     use({
         "jose-elias-alvarez/null-ls.nvim",
