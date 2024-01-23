@@ -32,8 +32,8 @@
 [pretty]
   colored = format:%Cred%h%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset
 [user]
-  name = "Yohta Ito"
-  email = yohta.ito@orithankyou.co.jp
+  name = "Yota Ito"
+  email = i@yxhta.com
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
@@ -41,5 +41,3 @@
   required = true
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
-[includeIf "gitdir:~/dotfiles/"]
-	path = .gitconfig_private
