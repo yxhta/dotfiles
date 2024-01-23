@@ -147,3 +147,11 @@ eval "$(starship init zsh)"
 #                    dirnev
 #================================================================
 eval "$(direnv hook zsh)"
+
+#================================================================
+#                    rbenv
+#================================================================
+eval "$(rbenv init - zsh)"
+
+export DISABLE_SPRING=true
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
