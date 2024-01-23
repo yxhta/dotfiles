@@ -62,6 +62,7 @@ return require("packer").startup(function(use)
 
     use({
         "j-hui/fidget.nvim",
+        tag = 'legacy',
         config = function()
             require("fidget").setup({})
         end,
@@ -111,6 +112,17 @@ return require("packer").startup(function(use)
             "quangnguyen30192/cmp-nvim-ultisnips",
         },
     })
+
+    use {
+        'akinsho/flutter-tools.nvim',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'stevearc/dressing.nvim', -- optional for vim.ui.select
+        },
+        config = function()
+            require("flutter-tools").setup {}
+        end
+    }
 
     use({
         "SirVer/ultisnips",
@@ -197,9 +209,10 @@ return require("packer").startup(function(use)
     use({
         "lukas-reineke/indent-blankline.nvim",
         config = function()
-            require("plugins.indent-blankline")
+            -- require("plugins.indent-blankline")
+            require("ibl").setup()
         end,
-        event = "BufEnter",
+        event = "BufReadPost",
     })
 
     -------------------------
@@ -218,7 +231,7 @@ return require("packer").startup(function(use)
 
     use({
         "nvim-telescope/telescope.nvim",
-        tag = '0.1.1',
+        tag = '0.1.4',
         requires = { { 'nvim-lua/plenary.nvim' } },
         config = function()
             require("plugins.telescope")
@@ -371,6 +384,8 @@ return require("packer").startup(function(use)
     use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
 
     use({ "tpope/vim-fugitive" })
+
+    use({ "tpope/vim-rhubarb" })
 
     use({
         "majutsushi/tagbar",
