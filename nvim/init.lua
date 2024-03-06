@@ -2,7 +2,7 @@
 -- Try dap plugins
 
 -- Startup
-require("impatient")
+-- require("impatient")
 
 -- Disable netrw at the very start of your init.lua for nvim-tree
 vim.g.loaded_netrw = 1
