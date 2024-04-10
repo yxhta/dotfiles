@@ -30,6 +30,7 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
         event = { "BufRead", "BufNewFile" },
+        lazy = false,
         cmd = "Mason",
         dependencies = {
             "williamboman/mason.nvim",
@@ -52,6 +53,7 @@ require("lazy").setup({
     {
         "jose-elias-alvarez/null-ls.nvim",
         event = { "BufRead", "BufNewFile" },
+        lazy = false,
         config = function()
             require("lsp.null-ls")
         end,
@@ -130,6 +132,8 @@ require("lazy").setup({
 
     {
         "folke/trouble.nvim",
+        cmd = { "Trouble", "TroubleToggle" },
+        keys = "<leader>x",
         config = function()
             require("plugins.trouble")
         end,
@@ -204,6 +208,8 @@ require("lazy").setup({
 
     {
         'nvim-tree/nvim-tree.lua',
+        version = "*",
+        lazy = false,
         dependencies = {
             'nvim-tree/nvim-web-devicons', -- optional, for file icons
         },
@@ -217,8 +223,10 @@ require("lazy").setup({
     {
         "nvim-telescope/telescope.nvim",
         cmd = "Telescope",
-        keys = { "<leader>ff", "<leader>fl", "<leader>fq", "<leader>fh", "<leader>fb", "<leader>fg", "<leader>fc", "<leader>ft" },
+        -- keys = { "<leader>f", "<leader><space>", "<leader>fq", "<leader>fh", "<leader>fb", "<leader>fg", "<leader>fc", "<leader>ft" },
+        keys = { "<leader>f", "<leader><space>" },
         enabled = true,
+        -- lazy = false,
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
             { "nvim-telescope/telescope-fzf-native.nvim" },
@@ -252,13 +260,6 @@ require("lazy").setup({
     { "rebelot/kanagawa.nvim", branch = "master" },
 
     { "EdenEast/nightfox.nvim" },
-
-    -- {
-    --     "kyazdani42/nvim-web-devicons",
-    --     config = function()
-    --         require("nvim-web-devicons").setup()
-    --     end,
-    -- },
 
     {
         "catppuccin/nvim",

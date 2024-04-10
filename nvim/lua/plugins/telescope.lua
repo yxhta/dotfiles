@@ -111,13 +111,9 @@ require("telescope").setup({
 })
 
 local copts = { noremap = true }
-vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
-vim.api.nvim_set_keymap(
-    "n",
-    "<leader>f.",
-    "<cmd>lua require'telescope'.extensions.file_browser.file_browser()<CR>",
-    copts
-)
+-- vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Telescope: Find files" })
+vim.api.nvim_set_keymap("n", "<leader>f.", "<cmd>lua require'telescope'.extensions.file_browser.file_browser()<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fq", "<cmd>Telescope quickfix<CR>", copts)
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope oldfiles<CR>", copts)
