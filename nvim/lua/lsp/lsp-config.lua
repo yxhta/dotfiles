@@ -6,13 +6,13 @@ local mason_lspconfig = require("mason-lspconfig")
 
 local borders = {
     { "🭽", "FloatBorder" },
-    { "▔",  "FloatBorder" },
+    { "▔", "FloatBorder" },
     { "🭾", "FloatBorder" },
-    { "▕",  "FloatBorder" },
+    { "▕", "FloatBorder" },
     { "🭿", "FloatBorder" },
-    { "▁",  "FloatBorder" },
+    { "▁", "FloatBorder" },
     { "🭼", "FloatBorder" },
-    { "▏",  "FloatBorder" },
+    { "▏", "FloatBorder" },
 }
 
 -----------------------
@@ -37,6 +37,22 @@ local handlers = {
             }
         }
     end,
+    -- ["gopls"] = function()
+    --     lspconfig.gopls.setup {
+    --         -- cmd = { "gopls", "serve" },
+    --         -- cmd = { "gopls", "--remote=auto" },
+    --         -- cmd = { "gopls", "serve", "-rpc.trace", "--debug=localhost:6060" },
+    --         -- root_patterns = { "go.mod", ".git" },
+    --         -- settings = {
+    --         --     gopls = {
+    --         --         analyses = {
+    --         --             unusedparams = true,
+    --         --         },
+    --         --         staticcheck = true,
+    --         --     },
+    --         -- },
+    --     }
+    -- end,
 }
 
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
@@ -87,7 +103,7 @@ capabilities.textDocument.codeAction = {
 local lsp_formatting = function(bufnr)
     vim.lsp.buf.format({
         filter = function(client)
-            return client.name ~= "tsserver"-- or client.name ~= "eslint"
+            return client.name ~= "tsserver" -- or client.name ~= "eslint"
         end,
         bufnr = bufnr,
     })

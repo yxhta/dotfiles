@@ -1,6 +1,6 @@
 
 -- Settings {{{
-vim.g.python3_host_prog        = '/usr/local/bin/python3'
+vim.g.python3_host_prog        = '/usr/bin/python3'
 vim.g.python_host_prog         = '/usr/local/bin/python'
 -- vim.g.netrw_browsex_viewer  = 'open'
 
