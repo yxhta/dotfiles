@@ -51,7 +51,7 @@ require("lazy").setup({
     -- { "williamboman/mason-lspconfig.nvim" },
 
     {
-        "jose-elias-alvarez/null-ls.nvim",
+        "nvimtools/none-ls.nvim",
         event = { "BufRead", "BufNewFile" },
         lazy = false,
         config = function()
@@ -121,12 +121,12 @@ require("lazy").setup({
         "SirVer/ultisnips",
         dependencies = "honza/vim-snippets",
         config = function()
-            vim.opt.rtp:append({ vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets" })
-            vim.g.UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
-            vim.g.UltiSnipsJumpForwardTrigger = "<Plug>(ultisnips_jump_forward)"
-            vim.g.UltiSnipsJumpBackwardTrigger = "<Plug>(ultisnips_jump_backward)"
-            vim.g.UltiSnipsListSnippets = "<c-x><c-s>"
-            vim.g.UltiSnipsRemoveSelectModeMappings = 0
+            -- vim.opt.rtp:append({ vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets" })
+            -- vim.g.UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
+            -- vim.g.UltiSnipsJumpForwardTrigger = "<Plug>(ultisnips_jump_forward)"
+            -- vim.g.UltiSnipsJumpBackwardTrigger = "<Plug>(ultisnips_jump_backward)"
+            -- vim.g.UltiSnipsListSnippets = "<c-x><c-s>"
+            -- vim.g.UltiSnipsRemoveSelectModeMappings = 0
         end,
     },
 
@@ -194,13 +194,12 @@ require("lazy").setup({
         end,
     },
 
-    {
-        "lukas-reineke/indent-blankline.nvim",
-        config = function()
-            require("ibl").setup()
-        end,
-        event = "BufReadPost",
-    },
+    -- {
+    --     "lukas-reineke/indent-blankline.nvim",
+    --     config = function()
+    --         require("ibl").setup()
+    --     end,
+    --     -- event = "BufReadPost",
 
     -------------------------
     -- File, Fuzzy Finders --
