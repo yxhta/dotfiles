@@ -41,21 +41,16 @@ require("lazy").setup({
             require("mason-lspconfig").setup()
             -- require("lsp.server_setup")
             require("lspconfig.ui.windows").default_options.border = vim.g.FloatBorders
+            require("lsp.lsp-config")
         end,
     },
-
-    -- {
-    --     "williamboman/mason.nvim",
-    --     -- run = ":MasonUpdate", -- :MasonUpdate updates registry contents
-    -- },
-    -- { "williamboman/mason-lspconfig.nvim" },
 
     {
         "nvimtools/none-ls.nvim",
         event = { "BufRead", "BufNewFile" },
         lazy = false,
         config = function()
-            require("lsp.null-ls")
+            require("lsp.none-ls")
         end,
     },
 
