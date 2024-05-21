@@ -1,12 +1,13 @@
--- TODO:
--- Try dap plugins
-
 -- Startup
 -- require("impatient")
+vim.loader.enable()
 
 -- Disable netrw at the very start of your init.lua for nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- Key mappings
+require("keymaps")
 
 -- Plugins
 require("plugins")
@@ -28,7 +29,4 @@ require('lualine').setup()
 require("options")
 
 -- Functions, Commands, Autocommands
-vim.cmd("source ~/.config/nvim/viml/autocommands.vim")
-
--- Key mappings
-vim.cmd("source ~/.config/nvim/viml/mappings.vim")
+require("autocommands")
