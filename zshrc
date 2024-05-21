@@ -56,7 +56,7 @@ setopt no_beep
 
 # asdf
 # for mac
-. /usr/local/opt/asdf/libexec/asdf.sh
+# . /usr/local/opt/asdf/libexec/asdf.sh
 # for linux
 #. $HOME/.asdf/asdf.sh
 #fpath=(${ASDF_DIR}/completions $fpath)
@@ -135,7 +135,6 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Set python executable path
-# export CLOUDSDK_PYTHON="$HOME/.asdf/shims/python"
 export CLOUDSDK_PYTHON="/usr/local/bin/python3"
 
 #================================================================
@@ -152,6 +151,10 @@ eval "$(direnv hook zsh)"
 #                    rbenv
 #================================================================
 eval "$(rbenv init - zsh)"
-
 export DISABLE_SPRING=true
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+#================================================================
+#                    mise
+#================================================================
+eval "$(~/.local/bin/mise activate zsh)"
