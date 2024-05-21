@@ -2,9 +2,11 @@ local vim = vim
 local g = vim.g
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
+local copts = { noremap = true }
 
 g.mapleader = " "
 
+-- LSP
 keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
 keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
 keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
@@ -22,3 +24,37 @@ keymap("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
 keymap("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
 keymap("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
 keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
+
+-- NvimTree
+keymap("n", "<leader>n", "<cmd>NvimTreeToggle<CR>", copts)
+keymap("n", "<leader>nf", "<cmd>NvimTreeFindFile<CR>", copts)
+
+-- Telescope
+local builtin = require('telescope.builtin')
+keymap('n', '<leader>ff', builtin.find_files, { desc = "Telescope: Find files" })
+vim.api.nvim_set_keymap("n", "<leader>f.", "<cmd>lua require'telescope'.extensions.file_browser.file_browser()<CR>",
+    copts)
+keymap("n", "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<CR>", copts)
+keymap("n", "<leader>fq", "<cmd>Telescope quickfix<CR>", copts)
+keymap("n", "<leader>fh", "<cmd>Telescope oldfiles<CR>", copts)
+keymap("n", "<leader>fr", "<cmd>Telescope frecency<CR>", copts)
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>", copts)
+keymap("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", copts)
+keymap("n", "<leader>fc", "<cmd>Telescope commands<CR>", copts)
+keymap("n", "<leader>fc", builtin.commands, copts)
+keymap("n", "<leader>ft", "<cmd>Telescope treesitter<CR>", copts)
+keymap("n", "<leader>fj", "<cmd>Telescope jumplist<CR>", copts)
+keymap("n", "<leader>T", "<cmd>Telescope<CR>", copts)
+keymap("n", "<leader>z", "<cmd>Telescope spell_suggest<CR>", copts)
+keymap("n", "<leader>fm", "<cmd>Telescope marks<CR>", copts)
+keymap("n", '<leader>t"', "<cmd>Telescope registers<CR>", copts)
+
+-- Trouble
+keymap('n', '<leader>xx', '<cmd>TroubleToggle<CR>', copts)
+keymap('n', '<leader>xD', '<cmd>TroubleToggle workspace_diagnostics<CR>', copts)
+keymap('n', '<leader>xd', '<cmd>TroubleToggle document_diagnostics<CR>', copts)
+keymap('n', '<leader>xc', '<cmd>TroubleToggle quickfix<CR>', copts)
+keymap('n', '<leader>xl', '<cmd>TroubleToggle loclist<CR>', copts)
+keymap('n', '<leader>xr', '<cmd>TroubleToggle lsp_references<CR>', copts)
+keymap('n', '<leader>xn', '<cmd>lua pcall(require("trouble").next, {skip_groups = true, jump = true})<CR>', copts)
+keymap('n', '<leader>xp', '<cmd>lua pcall(require("trouble").previous, {skip_groups = true, jump = true})<CR>', copts)

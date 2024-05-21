@@ -1,29 +1,12 @@
 local actions = require("telescope.actions")
--- local action_state = require("telescope.actions.state")
-local builtin = require('telescope.builtin')
--- local previewers = require("telescope.previewers")
 local themes = require("telescope.themes")
-local trouble = require("trouble.providers.telescope")
--- local transform_mod = require('telescope.actions.mt').transform_mod
+local troubletele = require("trouble.providers.telescope")
+local trouble = require("trouble")
 
 require("telescope").setup({
     defaults = {
         dynamic_preview_title = true,
         layout_strategy = "flex",
-        -- layout_config = {
-        --     vertical = {
-        --         preview_height = 0.5,
-        --     },
-        --     flex = {
-        --         flip_columns = 160,
-        --     },
-        --     horizontal = {
-        --         preview_width = 0.5,
-        --     },
-        --     height = 0.85,
-        --     width = 0.85,
-        --     preview_cutoff = 0,
-        -- },
         file_ignore_patterns = { "node_modules", ".git" },
         path_display = {
             truncate = 1,
@@ -31,9 +14,6 @@ require("telescope").setup({
         set_env = {
             ["COLORTERM"] = "truecolor",
         }, -- default = nil,
-        -- file_previewer = previewers.cat.new,
-        -- grep_previewer = previewers.vim_buffer_vimgrep.new,
-        -- qflist_previewer = previewers.qflist.new,
         history = {
             mappings = {
                 i = {
@@ -50,10 +30,10 @@ require("telescope").setup({
                 ["<S-Tab>"] = actions.move_selection_next,
                 ["<C-z>"] = actions.toggle_selection,
                 ["<C-s>"] = actions.select_horizontal,
-                ["<C-x>"] = trouble.smart_open_with_trouble,
+                ["<C-x>"] = troubletele.smart_open_with_trouble,
                 ["<M-l>"] = function(prompt_bufnr)
                     actions.smart_send_to_loclist(prompt_bufnr)
-                    require("trouble").open("loclist")
+                    trouble.open("loclist")
                 end,
                 ["<M-a>"] = actions.toggle_all,
                 ["<C-Down>"] = actions.cycle_history_next,
@@ -62,11 +42,11 @@ require("telescope").setup({
             n = {
                 ["<C-z>"] = actions.toggle_selection,
                 ["<C-s>"] = actions.select_horizontal,
-                ["<C-x>"] = trouble.smart_open_with_trouble,
+                ["<C-x>"] = troubletele.smart_open_with_trouble,
                 ["<M-a>"] = actions.toggle_all,
                 ["<M-l>"] = function(prompt_bufnr)
                     actions.smart_send_to_loclist(prompt_bufnr)
-                    require("trouble").open("loclist")
+                    trouble.open("loclist")
                 end,
                 ["<C-Down>"] = actions.cycle_history_next,
                 ["<C-Up>"] = actions.cycle_history_prev,
@@ -109,22 +89,3 @@ require("telescope").setup({
         },
     },
 })
-
-local copts = { noremap = true }
--- vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", copts)
-vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Telescope: Find files" })
-vim.api.nvim_set_keymap("n", "<leader>f.", "<cmd>lua require'telescope'.extensions.file_browser.file_browser()<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fq", "<cmd>Telescope quickfix<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope oldfiles<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope frecency<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fc", "<cmd>Telescope commands<CR>", copts)
-vim.keymap.set("n", "<leader>fc", builtin.commands, copts)
-vim.api.nvim_set_keymap("n", "<leader>ft", "<cmd>Telescope treesitter<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fj", "<cmd>Telescope jumplist<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>T", "<cmd>Telescope<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>z", "<cmd>Telescope spell_suggest<CR>", copts)
-vim.api.nvim_set_keymap("n", "<leader>fm", "<cmd>Telescope marks<CR>", copts)
-vim.api.nvim_set_keymap("n", '<leader>t"', "<cmd>Telescope registers<CR>", copts)

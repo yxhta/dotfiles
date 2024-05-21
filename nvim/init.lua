@@ -6,11 +6,11 @@ vim.loader.enable()
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Key mappings
-require("keymaps")
-
 -- Plugins
 require("plugins")
+
+-- Key mappings
+require("keymaps")
 
 -- Colorscheme
 vim.opt.laststatus = 3
