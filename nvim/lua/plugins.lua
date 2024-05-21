@@ -47,7 +47,7 @@ require("lazy").setup({
 
     {
         "nvimtools/none-ls.nvim",
-        event = { "BufRead", "BufNewFile" },
+        -- event = { "BufRead", "BufNewFile" },
         lazy = false,
         config = function()
             require("lsp.none-ls")
@@ -134,14 +134,14 @@ require("lazy").setup({
         end,
     },
 
-    -- {
-    --     "liuchengxu/vista.vim",
-    --     cmd = "Vista",
-    --     keys = "<leader>vv",
-    --     config = function()
-    --         require("plugins.vista")
-    --     end,
-    -- },
+    {
+        "liuchengxu/vista.vim",
+        cmd = "Vista",
+        keys = "<leader>vv",
+        config = function()
+            require("plugins.vista")
+        end,
+    },
 
     {
         "danymat/neogen",
@@ -189,12 +189,13 @@ require("lazy").setup({
         end,
     },
 
-    -- {
-    --     "lukas-reineke/indent-blankline.nvim",
-    --     config = function()
-    --         require("ibl").setup()
-    --     end,
-    --     -- event = "BufReadPost",
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        config = function()
+            require("ibl").setup()
+        end,
+        event = "BufReadPost",
+    },
 
     -------------------------
     -- File, Fuzzy Finders --
@@ -210,17 +211,14 @@ require("lazy").setup({
         cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
         keys = { "<leader>n", "<leader>nf" },
         config = function()
-            require("plugins.nvim-tree")
+            require("nvim-tree").setup({})
         end,
     },
 
     {
         "nvim-telescope/telescope.nvim",
         cmd = "Telescope",
-        -- keys = { "<leader>f", "<leader><space>", "<leader>fq", "<leader>fh", "<leader>fb", "<leader>fg", "<leader>fc", "<leader>ft" },
-        keys = { "<leader>f", "<leader><space>" },
-        enabled = true,
-        -- lazy = false,
+        lazy = false,
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
             { "nvim-telescope/telescope-fzf-native.nvim" },
@@ -276,7 +274,7 @@ require("lazy").setup({
         "lewis6991/gitsigns.nvim",
         event = "BufReadPre",
         config = function()
-            require("plugins.gitsigns")
+            require("gitsigns").setup()
         end,
     },
 
