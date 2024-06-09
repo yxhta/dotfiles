@@ -1,6 +1,6 @@
 local actions = require("telescope.actions")
 local themes = require("telescope.themes")
-local troubletele = require("trouble.providers.telescope")
+local troubletele = require("trouble.sources.telescope")
 local trouble = require("trouble")
 
 require("telescope").setup({
@@ -30,7 +30,7 @@ require("telescope").setup({
                 ["<S-Tab>"] = actions.move_selection_next,
                 ["<C-z>"] = actions.toggle_selection,
                 ["<C-s>"] = actions.select_horizontal,
-                ["<C-x>"] = troubletele.smart_open_with_trouble,
+                ["<C-x>"] = troubletele.open,
                 ["<M-l>"] = function(prompt_bufnr)
                     actions.smart_send_to_loclist(prompt_bufnr)
                     trouble.open("loclist")
@@ -42,7 +42,7 @@ require("telescope").setup({
             n = {
                 ["<C-z>"] = actions.toggle_selection,
                 ["<C-s>"] = actions.select_horizontal,
-                ["<C-x>"] = troubletele.smart_open_with_trouble,
+                ["<C-x>"] = troubletele.open,
                 ["<M-a>"] = actions.toggle_all,
                 ["<M-l>"] = function(prompt_bufnr)
                     actions.smart_send_to_loclist(prompt_bufnr)

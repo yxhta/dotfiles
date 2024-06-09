@@ -16,8 +16,6 @@ require("lazy").setup({
 
     { "nvim-lua/popup.nvim" },
 
-    { "lewis6991/impatient.nvim" },
-
     { "dstein64/vim-startuptime", cmd = "StartupTime" },
 
     { "nathom/filetype.nvim" },
