@@ -11,6 +11,7 @@ alias n='nvim'
 alias vi='nvim'
 alias daily='$EDITOR ~/daily.md'
 alias memo='$EDITOR ~/code/memo.md'
+alias make='gmake'
 
 # Bundler
 alias b="bundle"
@@ -25,6 +26,8 @@ alias path='echo $PATH | tr -s ":" "\n"'
 # Docker
 alias dk="docker"
 alias dkc="docker-compose"
+alias kb="kubectl"
 
 # Other
 alias reload!="exec $SHELL -l"
+alias ctags="`brew --prefix`/bin/ctags"
