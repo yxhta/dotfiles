@@ -43,3 +43,5 @@
   insteadOf = https://github.com/
 [includeIf "gitdir:~/dotfiles/"]
 	path = .gitconfig_private
+[includeIf "gitdir:~/ghq/github.com/yxhta/"]
+	path = .gitconfig_private
