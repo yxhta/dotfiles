@@ -25,7 +25,7 @@ alias path='echo $PATH | tr -s ":" "\n"'
 
 # Docker
 alias dk="docker"
-alias dkc="docker-compose"
+alias dkc="docker compose"
 alias kb="kubectl"
 
 # Other
