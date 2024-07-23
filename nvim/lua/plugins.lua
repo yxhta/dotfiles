@@ -179,6 +179,7 @@ require("lazy").setup({
             "nvim-treesitter/playground",
             "nvim-treesitter/nvim-treesitter-refactor",
             "nvim-treesitter/nvim-treesitter-textobjects",
+            "nvim-treesitter/nvim-treesitter-context",
             -- "nvim-treesitter/nvim-treesitter-textsubjects",
             "RRethy/nvim-treesitter-textsubjects",
         },
