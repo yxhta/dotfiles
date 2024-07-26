@@ -52,7 +52,6 @@ keymap("n", '<leader>t"', "<cmd>Telescope registers<CR>", copts)
 -- Trouble
 keymap('n', '<leader>xt', '<cmd>Trouble<CR>', copts)
 keymap("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>")
--- keymap("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>")
 keymap('n', '<leader>xD', '<cmd>Trouble workspace_diagnostics<CR>', copts)
 keymap('n', '<leader>xd', '<cmd>Trouble document_diagnostics<CR>', copts)
 keymap('n', '<leader>xc', '<cmd>Trouble quickfix<CR>', copts)
@@ -60,3 +59,20 @@ keymap('n', '<leader>xl', '<cmd>Trouble loclist<CR>', copts)
 keymap('n', '<leader>xr', '<cmd>Trouble lsp_references<CR>', copts)
 keymap('n', '<leader>xn', '<cmd>lua pcall(require("trouble").next, {skip_groups = true, jump = true})<CR>', copts)
 keymap('n', '<leader>xp', '<cmd>lua pcall(require("trouble").previous, {skip_groups = true, jump = true})<CR>', copts)
+
+-- DAP
+-- dap
+keymap("n", "<F5>", ":lua require'dap'.continue()<CR>", { silent = true})
+keymap("n", "<F10>", ":lua require'dap'.step_over()<CR>", { silent = true})
+keymap("n", "<F11>", ":lua require'dap'.step_into()<CR>", { silent = true})
+keymap("n", "<F12>", ":lua require'dap'.step_out()<CR>", { silent = true})
+keymap("n", "<leader>b", ":lua require'dap'.toggle_breakpoint()<CR>", { silent = true})
+keymap("n", "<leader>bc", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", { silent = true})
+keymap("n", "<leader>l", ":lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>", { silent = true})
+
+-- dap-ui key map
+keymap("n", "<leader>d", ":lua require'dapui'.toggle()<CR>", { silent = true})
+keymap("n", "<leader><leader>df", ":lua require'dapui'.eval()<CR>", { silent = true})
+
+-- dap-go key map
+keymap("n", "<leader>td", ":lua require'dap-go'.debug_test()<CR>", { silent = true })

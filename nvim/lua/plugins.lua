@@ -149,6 +149,46 @@ require("lazy").setup({
         cmd = "Neogen",
     },
 
+    --------------------------------------------
+    -- DAP --
+    --------------------------------------------
+    {
+        "mfussenegger/nvim-dap",
+        config = function()
+            require("dap-config")
+        end,
+    },
+
+    {
+        "rcarriga/nvim-dap-ui",
+        lazy = true,
+        config = function()
+            require("dapui").setup({
+                controls = {
+                    enabled = true,
+                    element = "repl",
+                    icons = {
+                        pause = "",
+                        play = "",
+                        step_into = "",
+                        step_over = "",
+                        step_out = "",
+                        step_back = "",
+                        run_last = "",
+                        terminate = "",
+                    },
+                },
+            })
+        end,
+    },
+
+    {
+        "leoluz/nvim-dap-go",
+        config = function()
+            require("dap-go")
+        end,
+    },
+
     -- -------------------
     -- Syntax and Folds --
     ----------------------
@@ -217,6 +257,7 @@ require("lazy").setup({
     {
         "nvim-telescope/telescope.nvim",
         cmd = "Telescope",
+        enabled = true,
         lazy = false,
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
@@ -238,9 +279,16 @@ require("lazy").setup({
                     require("telescope").load_extension("file_browser")
                 end,
             },
+            "nvim-telescope/telescope-dap.nvim",
         },
         config = function()
             require("plugins.telescope")
+
+            require("telescope").load_extension("file_browser")
+            -- require("telescope").load_extension("dap")
+            -- require("telescope").load_extension("fzf")
+            require("telescope").load_extension("frecency")
+            -- require("telescope").load_extension("ui-select")
         end,
     },
 
