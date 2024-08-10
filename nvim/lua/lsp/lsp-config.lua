@@ -23,8 +23,17 @@ local handlers = {
     end,
 
     ["rust_analyzer"] = function()
-        require("rust-tools").setup {}
+        lspconfig.rust_analyzer.setup {
+            settings = {
+                ["rust-analyzer"] = {
+                    check = {
+                        command = "clippy",
+                    },
+                },
+            },
+        }
     end,
+
     ["lua_ls"] = function()
         lspconfig.lua_ls.setup {
             settings = {
@@ -36,6 +45,7 @@ local handlers = {
             }
         }
     end,
+
     -- ["gopls"] = function()
     --     lspconfig.gopls.setup {
     --         -- cmd = { "gopls", "serve" },
