@@ -1,6 +1,6 @@
 # Unix
-alias ll='exa -l'
-alias la='exa -al'
+alias ll='eza -l'
+alias la='eza -al'
 alias ln="ln -v"
 alias mkdir="mkdir -p"
 alias e="$EDITOR"
