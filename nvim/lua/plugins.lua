@@ -262,17 +262,17 @@ require("lazy").setup({
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
             { "nvim-telescope/telescope-fzf-native.nvim" },
-            {
-                "nvim-telescope/telescope-frecency.nvim",
-                config = function()
-                    vim.keymap.set(
-                        "n",
-                        "<leader>fr",
-                        require("telescope").extensions.frecency.frecency,
-                        { desc = "Telescope: Frecency" }
-                    )
-                end,
-            },
+            -- {
+            --     "nvim-telescope/telescope-frecency.nvim",
+            --     config = function()
+            --         vim.keymap.set(
+            --             "n",
+            --             "<leader>fr",
+            --             require("telescope").extensions.frecency.frecency,
+            --             { desc = "Telescope: Frecency" }
+            --         )
+            --     end,
+            -- },
             {
                 "nvim-telescope/telescope-file-browser.nvim",
                 config = function()
@@ -287,7 +287,7 @@ require("lazy").setup({
             require("telescope").load_extension("file_browser")
             -- require("telescope").load_extension("dap")
             -- require("telescope").load_extension("fzf")
-            require("telescope").load_extension("frecency")
+            -- require("telescope").load_extension("frecency")
             -- require("telescope").load_extension("ui-select")
         end,
     },
