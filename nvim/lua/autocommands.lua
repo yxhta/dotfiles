@@ -50,11 +50,11 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --   command = "set filetype=vim"
 -- })
 --
--- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
---   group = autoCommandsGroup,
---   pattern = "*.tsx",
---   command = "set filetype=typescript.tsx"
--- })
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup,
+  pattern = "*.tsx",
+  command = "set filetype=typescript.tsx"
+})
 --
 -- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --   group = autoCommandsGroup,
