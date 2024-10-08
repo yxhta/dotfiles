@@ -32,7 +32,7 @@
 [pretty]
   colored = format:%Cred%h%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset
 [user]
-  name = "Yohta Ito"
+  name = "REDACTED_NAME"
   email = redacted@example.com
 [filter "lfs"]
   clean = git-lfs clean -- %f
