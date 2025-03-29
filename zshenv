@@ -30,5 +30,10 @@ path=(
 )
 export PATH
 
-export LDFLAGS="-L/usr/local/opt/llvm/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
+# export LDFLAGS="-L/usr/local/opt/llvm/lib"
+# export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+# export LDFLAGS="-L$(brew --prefix openssl)/lib"
+# export CPPFLAGS="-I$(brew --prefix openssl)/include"
+# export PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig"
+. "$HOME/.cargo/env"

@@ -23,7 +23,7 @@ require("lazy").setup({
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
     --------------------------------------------
-    { 'github/copilot.vim' },
+    { 'github/copilot.vim',       lazy = false },
 
     {
         "neovim/nvim-lspconfig",
@@ -296,7 +296,7 @@ require("lazy").setup({
     -- Colors, Icons, StatusLine, BufferLine --
     -------------------------------------------
 
-    { "rebelot/kanagawa.nvim", branch = "master" },
+    { "rebelot/kanagawa.nvim" },
 
     { "EdenEast/nightfox.nvim" },
 

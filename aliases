@@ -11,7 +11,8 @@ alias n='nvim'
 alias vi='nvim'
 alias daily='$EDITOR ~/daily.md'
 alias memo='$EDITOR ~/code/memo.md'
-alias make='gmake'
+# alias make='gmake'
+alias pn='pnpm'
 
 # Bundler
 alias b="bundle"
@@ -30,4 +31,3 @@ alias kb="kubectl"
 
 # Other
 alias reload!="exec $SHELL -l"
-alias ctags="`brew --prefix`/bin/ctags"
