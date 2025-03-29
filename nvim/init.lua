@@ -13,12 +13,12 @@ require("plugins")
 require("keymaps")
 
 -- Colorscheme
-vim.opt.laststatus = 3
-require("kanagawa").setup({
-    dimInactive = true,
-    globalStatus = true
-})
-vim.cmd("colorscheme nightfox")
+-- vim.opt.laststatus = 3
+-- require("kanagawa").setup({
+--     dimInactive = true,
+--     globalStatus = true
+-- })
+vim.cmd("colorscheme kanagawa-wave")
 require("colors").overrides()
 
 vim.cmd("set clipboard+=unnamedplus")
@@ -29,4 +29,4 @@ require('lualine').setup()
 require("options")
 
 -- Functions, Commands, Autocommands
-require("autocommands")
+-- require("autocommands")
