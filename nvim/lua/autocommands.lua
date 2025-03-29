@@ -2,17 +2,17 @@
 local augroup = vim.api.nvim_create_augroup("AutoCommands", { clear = true })
 
 -- Set syntax highlighting for specific file types
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup,
-  pattern = "*.xml.golden",
-  command = "set filetype=xml"
-})
+-- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+--   group = augroup,
+--   pattern = "*.xml.golden",
+--   command = "set filetype=xml"
+-- })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup,
-  pattern = "*.json.golden",
-  command = "set filetype=json"
-})
+-- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+--   group = augroup,
+--   pattern = "*.json.golden",
+--   command = "set filetype=json"
+-- })
 
 -- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --   group = autoCommandsGroup,
@@ -50,11 +50,11 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --   command = "set filetype=vim"
 -- })
 --
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup,
-  pattern = "*.tsx",
-  command = "set filetype=typescript.tsx"
-})
+-- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+--   group = augroup,
+--   pattern = "*.tsx",
+--   command = "set filetype=typescript.tsx"
+-- })
 --
 -- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --   group = autoCommandsGroup,

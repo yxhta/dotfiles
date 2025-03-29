@@ -23,7 +23,7 @@ require("lazy").setup({
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
     --------------------------------------------
-    { 'github/copilot.vim',       lazy = false },
+    { 'github/copilot.vim' },
 
     {
         "neovim/nvim-lspconfig",
@@ -89,10 +89,10 @@ require("lazy").setup({
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-nvim-lsp-signature-help",
             "hrsh7th/cmp-nvim-lsp-document-symbol",
-            "kdheepak/cmp-latex-symbols",
-            "dmitmel/cmp-cmdline-history",
-            "andersevenrud/cmp-tmux",
-            "quangnguyen30192/cmp-nvim-ultisnips",
+            -- "kdheepak/cmp-latex-symbols",
+            -- "dmitmel/cmp-cmdline-history",
+            -- "andersevenrud/cmp-tmux",
+            -- "quangnguyen30192/cmp-nvim-ultisnips",
         },
         config = function()
             require("plugins.cmp")
@@ -108,19 +108,6 @@ require("lazy").setup({
         config = function()
             require("flutter-tools").setup {}
         end
-    },
-
-    {
-        "SirVer/ultisnips",
-        dependencies = "honza/vim-snippets",
-        config = function()
-            -- vim.opt.rtp:append({ vim.fn.stdpath("data") .. "/site/pack/packer/start/vim-snippets" })
-            -- vim.g.UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
-            -- vim.g.UltiSnipsJumpForwardTrigger = "<Plug>(ultisnips_jump_forward)"
-            -- vim.g.UltiSnipsJumpBackwardTrigger = "<Plug>(ultisnips_jump_backward)"
-            -- vim.g.UltiSnipsListSnippets = "<c-x><c-s>"
-            -- vim.g.UltiSnipsRemoveSelectModeMappings = 0
-        end,
     },
 
     {
