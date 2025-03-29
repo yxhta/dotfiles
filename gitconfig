@@ -45,3 +45,5 @@
 	path = .gitconfig_private
 [includeIf "gitdir:~/ghq/github.com/yxhta/"]
 	path = .gitconfig_private
+[url "https://REDACTED@github.com/"]
+	insteadOf = https://github.com
