@@ -1,5 +1,5 @@
 # give us access to ^Q
-stty -ixon
+# stty -ixon
 
 # vi mode
 bindkey -v
@@ -13,5 +13,5 @@ bindkey "^R" history-incremental-search-backward
 bindkey "^P" history-search-backward
 bindkey "^Y" accept-and-hold
 bindkey "^N" insert-last-word
-bindkey "^Q" push-line-or-edit
+# bindkey "^Q" push-line-or-edit
 bindkey -s "^T" "^[Isudo ^[A" # "t" for "toughguy"

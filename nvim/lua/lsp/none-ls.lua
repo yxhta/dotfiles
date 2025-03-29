@@ -1,7 +1,17 @@
 local null_ls = require("null-ls")
 
+local function has_biome_config()
+    local biome_config_files = { ".biomerc", "biome.config.js", "biome.config.json", "biome.jsonc" }
+    for _, file in ipairs(biome_config_files) do
+        if vim.fn.filereadable(vim.fn.getcwd() .. "/" .. file) == 1 then
+            return true
+        end
+    end
+    return false
+end
+
 local sources = {
-    null_ls.builtins.formatting.prettier,
+    has_biome_config() and null_ls.builtins.formatting.biome or null_ls.builtins.formatting.prettier,
     -- null_ls.builtins.diagnostics.eslint,
     null_ls.builtins.formatting.goimports,
     null_ls.builtins.formatting.gofmt,
