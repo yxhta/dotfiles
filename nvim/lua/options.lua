@@ -1,10 +1,6 @@
-
 -- Settings {{{
--- vim.g.python3_host_prog        = '/usr/bin/python3'
-vim.g.python3_host_prog        = '/Users/REDACTED/.rye/shims/python3'
--- vim.g.python_host_prog         = '/usr/local/bin/python'
-vim.g.python_host_prog        = '/Users/REDACTED/.rye/shims/python'
--- vim.g.netrw_browsex_viewer  = 'open'
+vim.g.python3_host_prog        = vim.fn.exepath('python3')
+vim.g.python_host_prog        = vim.fn.exepath('python')
 
 vim.g.do_filetype_lua = 1
 vim.g.did_load_filetypes = 0
