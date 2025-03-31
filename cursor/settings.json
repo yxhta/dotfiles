@@ -1,22 +1,45 @@
 {
-    "go.toolsManagement.autoUpdate": true,
-    "window.zoomLevel": 1,
-    "editor.inlineSuggest.enabled": true,
-    "[dart]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnType": true,
-        "editor.rulers": [
-            80
-        ],
-        "editor.selectionHighlight": false,
-        "editor.suggest.snippetsPreventQuickSuggestions": false,
-        "editor.suggestSelection": "first",
-        "editor.tabCompletion": "onlySnippets",
-        "editor.wordBasedSuggestions": "off"
-    },
-    "vim.enableNeovim": true,
-    "vim.neovimPath": "/usr/local/bin/nvim",
-    "vim.neovimUseConfigFile": true,
-    "vim.neovimConfigPath": "~/.config/nvim/init.lua",
-    "vim.useSystemClipboard": true,
+  // Editor core settings
+  "editor.inlineSuggest.enabled": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+
+  // Window settings
+  "window.zoomLevel": 1,
+
+  // Workbench settings
+  "workbench.colorTheme": "Kanagawa",
+
+  // Git settings
+  "git.openRepositoryInParentFolders": "never",
+
+  // Go settings
+  "go.toolsManagement.autoUpdate": true,
+
+  // TypeScript settings
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+
+  // Dart settings
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+
+  // Vim settings
+  "vim.enableNeovim": true,
+  "vim.neovimPath": "/usr/local/bin/nvim",
+  "vim.neovimUseConfigFile": true,
+  "vim.neovimConfigPath": "~/.config/nvim/init.lua",
+  "vim.useSystemClipboard": true
 }
