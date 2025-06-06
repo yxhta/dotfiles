@@ -1,33 +1,67 @@
-# Unix
+# ============================================================================
+# Aliases Configuration
+# ============================================================================
+
+# ============================================================================
+# File System Operations
+# ============================================================================
+
+# Enhanced ls commands (using eza if available)
 alias ll='eza -l'
 alias la='eza -al'
-alias ln="ln -v"
-alias mkdir="mkdir -p"
+alias ln='ln -v'
+alias mkdir='mkdir -p'
+
+# ============================================================================
+# Editors
+# ============================================================================
+
+# Editor shortcuts
 alias e="$EDITOR"
 alias v="$VISUAL"
-alias lg="lazygit"
-alias ldk="lazydocker"
 alias n='nvim'
 alias vi='nvim'
+
+# Quick access to common files
 alias daily='$EDITOR ~/daily.md'
 alias memo='$EDITOR ~/code/memo.md'
-# alias make='gmake'
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+
+# Git shortcuts
+alias lg='lazygit'
+
+# Docker and Kubernetes
+alias ldk='lazydocker'
+alias dk='docker'
+alias dkc='docker compose'
+alias kb='kubectl'
+
+# Package managers
 alias pn='pnpm'
 
+# Build tools (commented out - uncomment if needed)
+# alias make='gmake'
+
+# ============================================================================
+# Ruby/Rails Development
+# ============================================================================
+
 # Bundler
-alias b="bundle"
+alias b='bundle'
 
-# Rails
-alias migrate="rake db:migrate db:rollback && rake db:migrate db:test:prepare"
-alias s="rspec"
+# Rails shortcuts
+alias migrate='rake db:migrate db:rollback && rake db:migrate db:test:prepare'
+alias s='rspec'
 
-# Pretty print the path
+# ============================================================================
+# System Utilities
+# ============================================================================
+
+# Pretty print PATH
 alias path='echo $PATH | tr -s ":" "\n"'
 
-# Docker
-alias dk="docker"
-alias dkc="docker compose"
-alias kb="kubectl"
-
-# Other
-alias reload!="exec $SHELL -l"
+# Shell management
+alias reload!='exec $SHELL -l'

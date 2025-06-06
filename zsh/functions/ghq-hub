@@ -1,7 +1,52 @@
-# ghq-hub - browse remote repository using ghq and fzf
+#!/usr/bin/env zsh
+# ============================================================================
+# GitHub Repository Browser Function
+# ============================================================================
+# Browse a GitHub repository in the web browser using ghq and fzf
+# Dependencies: ghq, fzf, hub (or gh)
+# Usage: ghq-hub
 
-function ghq-hub() {
-  repo_path=$(ghq list --full-path | fzf)
-  repo_name=${repo_path##*github.com/}
-  hub browse $repo_name
+ghq-hub() {
+  # Check if required tools are available
+  if ! command -v ghq &> /dev/null; then
+    echo "Error: ghq is not installed" >&2
+    return 1
+  fi
+  
+  if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed" >&2
+    return 1
+  fi
+
+  # Check for hub or gh
+  local browser_cmd
+  if command -v hub &> /dev/null; then
+    browser_cmd="hub browse"
+  elif command -v gh &> /dev/null; then
+    browser_cmd="gh repo view --web"
+  else
+    echo "Error: Neither hub nor gh is installed" >&2
+    return 1
+  fi
+
+  # Get repository path using fzf
+  local repo_path
+  repo_path=$(ghq list --full-path | fzf --prompt="Select repository to browse: " --height=40% --reverse)
+
+  if [[ -n "$repo_path" ]]; then
+    # Extract repository name from the full path
+    local repo_name="${repo_path##*github.com/}"
+    
+    if [[ -n "$repo_name" && "$repo_name" != "$repo_path" ]]; then
+      # Use hub or gh to browse the repository
+      if [[ "$browser_cmd" == "hub browse" ]]; then
+        hub browse "$repo_name"
+      else
+        gh repo view "$repo_name" --web
+      fi
+    else
+      echo "Error: Selected repository is not a GitHub repository" >&2
+      return 1
+    fi
+  fi
 }

@@ -1,5 +1,12 @@
-# No arguments: `git status`
-# With arguments: acts like `git`
+#!/usr/bin/env zsh
+# ============================================================================
+# Git Wrapper Function
+# ============================================================================
+# Provides a convenient shorthand for git commands
+# Usage:
+#   g          # Runs 'git status'
+#   g <args>   # Runs 'git <args>'
+
 g() {
   if [[ $# -gt 0 ]]; then
     git "$@"
