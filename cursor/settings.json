@@ -36,5 +36,18 @@
   "vim.neovimPath": "/opt/homebrew/bin/nvim",
   "vim.neovimUseConfigFile": true,
   "vim.neovimConfigPath": "~/.config/nvim/init.lua",
-  "vim.useSystemClipboard": true
+  "vim.useSystemClipboard": true,
+  "vsicons.dontShowNewVersionMessage": true,
+  "redhat.telemetry.enabled": false,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "makefile.configureOnOpen": false,
+  "cursorStats.enableAlerts": false,
+  "githubPullRequests.pullBranch": "never",
+  "remote.autoForwardPortsSource": "hybrid",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "datadog.connection.oauth.setup.organizationId": "367ab142-1f83-11ee-bb57-da7ad0900009",
+  "workbench.editor.enablePreview": false
 }
