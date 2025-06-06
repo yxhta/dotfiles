@@ -1,25 +1,69 @@
-# Add XDG_CONFIG_HOME
-export XDG_CONFIG_HOME=~/.config
+# ============================================================================
+# ZSH Environment Configuration
+# ============================================================================
+# This file is sourced for all shell instances (login, non-login, interactive, non-interactive)
 
-# Add GOPATH
+# ============================================================================
+# XDG Base Directory Specification
+# ============================================================================
+
+export XDG_CONFIG_HOME=~/.config
+export XDG_DATA_HOME=~/.local/share
+export XDG_CACHE_HOME=~/.cache
+export XDG_STATE_HOME=~/.local/state
+
+# ============================================================================
+# Development Environment
+# ============================================================================
+
+# Go development
 export GOPATH=$HOME/go
 
-# Set PATH
+# Rust development
+export CARGO_HOME=$HOME/.cargo
+
+# ============================================================================
+# PATH Configuration
+# ============================================================================
+
+# Ensure unique PATH entries
 typeset -U path
+
+# Build PATH with development tools in priority order
 path=(
-  $HOME/.asdf/bin
-  $GOPATH/bin
-  $HOME/.cargo/bin
-  $HOME/.pub-cache/bin
-  $HOME/development/flutter/bin
-  /usr/local/bin
-  /usr/local/opt/make/libexec/gnubin
-  /usr/local/opt/llvm/bin
-  /Applications/WezTerm.app/Contents/MacOS
+  # Personal scripts
   $HOME/bin
+  
+  # Development version managers
+  $HOME/.asdf/bin
+  
+  # Language-specific tools
+  $GOPATH/bin                                    # Go binaries
+  $CARGO_HOME/bin                               # Rust/Cargo binaries
+  $HOME/.pub-cache/bin                          # Dart/Flutter pub cache
+  
+  # Flutter SDK
+  $HOME/development/flutter/bin
+  
+  # System tools
+  /usr/local/bin
+  /usr/local/opt/make/libexec/gnubin           # GNU make
+  /usr/local/opt/llvm/bin                      # LLVM tools
+  
+  # Applications
+  /Applications/WezTerm.app/Contents/MacOS      # WezTerm terminal
+  
+  # Existing PATH
   $path
 )
+
 export PATH
 
-# Load Cargo environment
-. "$HOME/.cargo/env"
+# ============================================================================
+# Tool Initialization
+# ============================================================================
+
+# Load Cargo environment if available
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi

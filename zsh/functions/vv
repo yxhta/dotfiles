@@ -1,7 +1,49 @@
-# vv - search file and open with vim
+#!/usr/bin/env zsh
+# ============================================================================
+# Fuzzy File Finder and Editor Function
+# ============================================================================
+# Search through git-tracked files and open selected ones in Neovim
+# Dependencies: git, fzf, nvim
+# Usage: vv
 
-function vv() {
-  files=$(git ls-files) &&
-  selected_files=$(echo "$files" | fzf -m --preview 'head -100 {}') &&
-  nvim $selected_files
+vv() {
+  # Check if we're in a git repository
+  if ! git rev-parse --git-dir &> /dev/null; then
+    echo "Error: Not in a git repository" >&2
+    return 1
+  fi
+
+  # Check if required tools are available
+  if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed" >&2
+    return 1
+  fi
+  
+  if ! command -v nvim &> /dev/null; then
+    echo "Error: nvim is not installed" >&2
+    return 1
+  fi
+
+  # Get git-tracked files and allow multi-selection with preview
+  local files selected_files
+  files=$(git ls-files)
+  
+  if [[ -z "$files" ]]; then
+    echo "No git-tracked files found" >&2
+    return 1
+  fi
+
+  selected_files=$(echo "$files" | fzf \
+    --multi \
+    --prompt="Select files to edit: " \
+    --height=60% \
+    --reverse \
+    --preview='head -100 {}' \
+    --preview-window=right:50%:wrap \
+    --bind='ctrl-a:select-all,ctrl-d:deselect-all')
+
+  # Open selected files in Neovim
+  if [[ -n "$selected_files" ]]; then
+    nvim $selected_files
+  fi
 }

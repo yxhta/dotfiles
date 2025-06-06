@@ -1,5 +1,17 @@
-# Make directory and change into it.
+#!/usr/bin/env zsh
+# ============================================================================
+# Make Directory and Change Function
+# ============================================================================
+# Create a directory and immediately change into it
+# Usage: mcd <directory_name>
 
-function mcd() {
-  mkdir -p "$1" && cd "$1";
+mcd() {
+  # Check if directory name is provided
+  if [[ $# -eq 0 ]]; then
+    echo "Usage: mcd <directory_name>" >&2
+    return 1
+  fi
+
+  # Create directory with parent directories if needed, then change to it
+  mkdir -p "$1" && cd "$1"
 }
