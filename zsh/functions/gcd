@@ -1,9 +1,29 @@
-# ghq-cd - change directory using ghq and fzf
+#!/usr/bin/env zsh
+# ============================================================================
+# Repository Navigation Function
+# ============================================================================
+# Change directory to a repository managed by ghq using fzf for selection
+# Dependencies: ghq, fzf
+# Usage: gcd
 
-function gcd() {
-  repo_path=$(ghq list --full-path | fzf)
+gcd() {
+  # Check if required tools are available
+  if ! command -v ghq &> /dev/null; then
+    echo "Error: ghq is not installed" >&2
+    return 1
+  fi
+  
+  if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed" >&2
+    return 1
+  fi
 
-  if test ${#repo_path} -ne 0 ; then
-    cd $repo_path
+  # Get repository path using fzf
+  local repo_path
+  repo_path=$(ghq list --full-path | fzf --prompt="Select repository: " --height=40% --reverse)
+
+  # Change to selected directory if a selection was made
+  if [[ -n "$repo_path" ]]; then
+    cd "$repo_path" || return 1
   fi
 }

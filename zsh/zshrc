@@ -1,6 +1,11 @@
-#================================================================
-#                    Basic Configuration
-#================================================================
+# ============================================================================
+# ZSH Configuration
+# ============================================================================
+
+# ============================================================================
+# Configuration Loading
+# ============================================================================
+
 # Load custom executable functions
 for function in ~/.zsh/functions/*; do
   source $function
@@ -10,12 +15,14 @@ done
 _load_settings() {
   _dir="$1"
   if [ -d "$_dir" ]; then
+    # Load pre configuration files
     if [ -d "$_dir/pre" ]; then
       for config in "$_dir"/pre/**/*~*.zwc(N-.); do
         . $config
       done
     fi
 
+    # Load main configuration files
     for config in "$_dir"/**/*(N-.); do
       case "$config" in
         "$_dir"/(pre|post)/*|*.zwc)
@@ -27,6 +34,7 @@ _load_settings() {
       esac
     done
 
+    # Load post configuration files
     if [ -d "$_dir/post" ]; then
       for config in "$_dir"/post/**/*~*.zwc(N-.); do
         . $config
@@ -34,98 +42,138 @@ _load_settings() {
     fi
   fi
 }
+
+# Load all zsh configurations
 _load_settings "$HOME/.zsh/configs"
 
 # Load aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
 
-#================================================================
-#                    Environment Settings
-#================================================================
+# ============================================================================
+# Environment Settings
+# ============================================================================
+
 # Prevent accidental logout with Ctrl+D
 set IGNOREEOF
 
-# Set language to English
+# Set language environment
 export LANGUAGE=en_US.UTF-8
 export LANG="${LANGUAGE}"
 export LC_ALL="${LANGUAGE}"
 export LC_CTYPE="${LANGUAGE}"
 
-# Disable beep sound
-setopt no_beep
+# Shell options
+setopt no_beep                # Disable beep sound
+setopt auto_cd                # Auto change to directory without typing cd
+setopt multios                # Enable multiple redirections
+setopt correct                # Enable command correction
 
-#================================================================
-#                    Plugin Manager (Zinit)
-#================================================================
+# ============================================================================
+# Plugin Manager (Zinit)
+# ============================================================================
+
+# Initialize Zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+
+# Install Zinit if not present
+if [[ ! -d $ZINIT_HOME ]]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Load Zinit
 source "${ZINIT_HOME}/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Load plugins
-zinit ice lucid wait'0'
-zinit light joshskidmore/zsh-fzf-history-search
+# ============================================================================
+# Zinit Plugins
+# ============================================================================
 
-# Load essential annexes
+# Essential annexes for additional functionality
 zinit light-mode for \
     zdharma-continuum/zinit-annex-as-monitor \
     zdharma-continuum/zinit-annex-bin-gem-node \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
-# Load syntax highlighting and autosuggestions
+# Core plugins
+zinit ice lucid wait'0'
+zinit light joshskidmore/zsh-fzf-history-search
+
+# Syntax highlighting (load after other plugins)
 zinit light zsh-users/zsh-syntax-highlighting
+
+# Autosuggestions
 zinit light zsh-users/zsh-autosuggestions
 
-# Load starship theme
+# Prompt theme
 zinit light starship/starship
 
-#================================================================
-#                    Fuzzy Finder (fzf)
-#================================================================
+# ============================================================================
+# Fuzzy Finder (fzf)
+# ============================================================================
+
+# Load fzf key bindings and completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# FZF configuration
 export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS="--extended --ansi --multi --height 40% --reverse --border"
+export FZF_DEFAULT_OPTS="\
+  --extended \
+  --ansi \
+  --multi \
+  --height 40% \
+  --reverse \
+  --border \
+  --bind 'ctrl-y:execute-silent(echo {} | pbcopy)'"
 
-#================================================================
-#                    Google Cloud Platform
-#================================================================
-if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then 
+# ============================================================================
+# Google Cloud Platform
+# ============================================================================
+
+# GCP SDK path and completion
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then
   . "$HOME/google-cloud-sdk/path.zsh.inc"
 fi
 
-if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then 
+if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
   . "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
+# Set Python interpreter for GCP SDK
 export CLOUDSDK_PYTHON="/usr/local/bin/python3"
 
-#================================================================
-#                    Shell Prompt
-#================================================================
+# ============================================================================
+# Shell Prompt
+# ============================================================================
+
+# Initialize Starship prompt
 eval "$(starship init zsh)"
 
-#================================================================
-#                    Development Tools
-#================================================================
-# mise - Version Manager
+# ============================================================================
+# Development Tools
+# ============================================================================
+
+# Version managers
 eval "$(~/.local/bin/mise activate zsh)"
 
-# rye - Python Package Manager
-source "$HOME/.rye/env"
+# Python tools
+if [ -f "$HOME/.rye/env" ]; then
+  source "$HOME/.rye/env"
+fi
 
-# uv - Python Package Installer
-autoload -Uz compinit && compinit
-eval "$(uv generate-shell-completion zsh)"
+# UV completion
+if command -v uv &> /dev/null; then
+  autoload -Uz compinit && compinit
+  eval "$(uv generate-shell-completion zsh)"
+fi
 
-# pnpm
+# pnpm package manager
 export PNPM_HOME="/Users/REDACTED/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
