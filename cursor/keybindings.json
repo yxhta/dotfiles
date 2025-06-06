@@ -19,5 +19,9 @@
         "key": "shift+k",
         "command": "editor.action.showHover",
         "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+        "key": "cmd+i",
+        "command": "composerMode.agent"
     }
 ]
