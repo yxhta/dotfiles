@@ -85,3 +85,10 @@ vim.opt.foldtext = 'v:lua.CustomFoldText()'
 -- Accept suggested completion with <C-j> from GitHub Copilot
 vim.g.copilot_no_tab_map = true
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+
+-- Auto-read files when they are changed externally
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  pattern = '*',
+  command = 'checktime',
+})
