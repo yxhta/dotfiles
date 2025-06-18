@@ -27,7 +27,7 @@ Type guidelines:
 - ci: CI configuration changes
 - chore: maintenance tasks
 
-Output format: Just the commit message (e.g., 'feat: add new feature')" --model sonnet --max-turns 3
+Output format: Just the commit message (e.g., 'feat: add new feature')" --model sonnet --max-turns 1
 }
 
 # Interactive commit with confirmation
@@ -40,7 +40,25 @@ function claude_commit_interactive() {
     fi
     
     echo "Analyzing staged changes..."
-    local commit_msg=$(echo "$diff_output" | claude -p "Analyze this git diff and generate a Conventional Commits compliant commit message. Output only the commit message, no additional text." --model sonnet --max-turns 3)
+    local commit_msg=$(echo "$diff_output" | claude -p "Analyze this git diff and generate a Conventional Commits compliant commit message.
+    Requirements:
+    - Format: <type>[optional scope]: <description>
+    - Select appropriate type: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+    - Keep description under 50 characters, imperative mood
+    - Add scope if changes are focused on specific component
+
+    Type guidelines:
+    - feat: new features or functionality
+    - fix: bug fixes
+    - docs: documentation changes only
+    - style: formatting, no code changes
+    - refactor: code changes that neither fix bugs nor add features
+    - perf: performance improvements
+    - test: test-related changes
+    - build: build system or dependencies
+    - ci: CI configuration changes
+    - chore: maintenance tasks
+    Output only the commit message, no additional text." --model sonnet --max-turns 1)
     
     echo "\nProposed commit message:"
     echo "  $commit_msg"
