@@ -45,6 +45,9 @@ alias pn='pnpm'
 # Build tools (commented out - uncomment if needed)
 # alias make='gmake'
 
+# Claude Code
+alias cl='claude'
+
 # ============================================================================
 # Ruby/Rails Development
 # ============================================================================
