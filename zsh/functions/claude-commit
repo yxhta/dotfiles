@@ -64,10 +64,12 @@ function claude_commit_interactive() {
     echo "  $commit_msg"
     echo
     
-    read -q "REPLY?Commit with this message? (y/n): "
-    echo
+    # Use read with default value 'y' so Enter key accepts
+    echo -n "Commit with this message? [Y/n]: "
+    read REPLY
     
-    if [[ $REPLY == "y" ]]; then
+    # Default to 'y' if user just pressed Enter
+    if [[ -z "$REPLY" || "$REPLY" =~ ^[Yy]$ ]]; then
         git commit -m "$commit_msg"
         echo "✅ Commit completed successfully"
     else
