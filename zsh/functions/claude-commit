@@ -58,7 +58,7 @@ function claude_commit_interactive() {
     - build: build system or dependencies
     - ci: CI configuration changes
     - chore: maintenance tasks
-    Output only the commit message, no additional text." --model sonnet --max-turns 1)
+    Output only the commit message, no additional text." --model sonnet --max-turns 2)
     
     echo "\nProposed commit message:"
     echo "  $commit_msg"
