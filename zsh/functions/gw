@@ -1,0 +1,77 @@
+#!/usr/bin/env zsh
+
+# Git worktree helper functions
+
+# Add a new worktree with branch
+# Usage: gwa <path> <branch-name>
+# Example: gwa ../awarefybackend-awf-5938 feat/awf-5938
+gwa() {
+  if [[ $# -lt 2 ]]; then
+    echo "Usage: gwa <path> <branch-name>"
+    echo "Example: gwa ../project-issue-123 feat/issue-123"
+    return 1
+  fi
+  
+  local path=$1
+  local branch=$2
+  
+  # Check if branch already exists
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    echo "Branch '$branch' already exists. Using existing branch."
+    git worktree add "$path" "$branch"
+  else
+    echo "Creating new branch '$branch' in worktree '$path'"
+    git worktree add "$path" -b "$branch"
+  fi
+}
+
+# List all worktrees
+# Usage: gwl
+gwl() {
+  git worktree list
+}
+
+# Remove a worktree
+# Usage: gwr <path>
+gwr() {
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: gwr <path>"
+    return 1
+  fi
+  
+  git worktree remove "$1"
+}
+
+# Prune worktree information
+# Usage: gwp
+gwp() {
+  git worktree prune
+}
+
+# Quick add worktree with auto-generated path and branch name
+# Usage: gwq <issue-number>
+# Example: gwq 5938 -> creates ../awarefybackend-awf-5938 with branch feat/awf-5938
+gwq() {
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: gwq <issue-number>"
+    echo "Example: gwq 5938"
+    return 1
+  fi
+  
+  local issue=$1
+  local repo_name=$(basename $(git rev-parse --show-toplevel))
+  local path="../${repo_name}-awf-${issue}"
+  local branch="feat/awf-${issue}"
+  
+  gwa "$path" "$branch"
+}
+
+# Change directory to a worktree
+# Usage: gwcd
+# Shows a menu of worktrees to select from
+gwcd() {
+  local worktree=$(git worktree list | fzf --height=10 --reverse | awk '{print $1}')
+  if [[ -n $worktree ]]; then
+    cd "$worktree"
+  fi
+}
