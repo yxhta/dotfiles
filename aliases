@@ -33,6 +33,14 @@ alias memo='$EDITOR ~/code/memo.md'
 # Git shortcuts
 alias lg='lazygit'
 
+# Git worktree shortcuts (source from functions/gw)
+# gwa <path> <branch>  - Add worktree with branch
+# gwl                  - List worktrees
+# gwr <path>          - Remove worktree
+# gwp                  - Prune worktree info
+# gwq <issue>         - Quick add (e.g., gwq 5938)
+# gwcd                - Change to worktree (with fzf)
+
 # Docker and Kubernetes
 alias ldk='lazydocker'
 alias dk='docker'
