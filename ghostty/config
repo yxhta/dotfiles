@@ -45,6 +45,7 @@
 mouse-hide-while-typing
 
 # Font
+font-family = "Osaka−等幅"
 font-feature = -dlig
 font-thicken = true
 font-thicken-strength = 1
