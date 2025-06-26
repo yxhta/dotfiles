@@ -1,0 +1,89 @@
+[
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "ctrl-w z": "workspace::ToggleZoom",
+      "ctrl-w t": "terminal_panel::ToggleFocus",
+      "ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+      "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+      "ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+      "ctrl-j": ["workspace::ActivatePaneInDirection", "Down"],
+      "cmd-shift-k": "editor::DeleteLine",
+      "g ]": "editor::GoToDiagnostic",
+      "g [": "editor::GoToPrevDiagnostic",
+      "g shift-r": "editor::FindAllReferences",
+      "shift-k": "editor::Hover",
+      "g a": "editor::ToggleCodeActions",
+      "g r n": "editor::Rename",
+      "j": [
+        "vim::Down",
+        {
+          "displayLines": true,
+        },
+      ],
+      "k": [
+        "vim::Up",
+        {
+          "displayLines": true,
+        },
+      ],
+      ", g b": "editor::ToggleGitBlame",
+      "-": "pane::RevealInProjectPanel",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !VimCount",
+    "bindings": {
+      "0": [
+        "vim::StartOfLine",
+        {
+          "displayLines": true,
+        },
+      ],
+      "$": [
+        "vim::EndOfLine",
+        {
+          "displayLines": true,
+        },
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "g c c": "editor::ToggleComments",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "g c": "editor::ToggleComments",
+    },
+  },
+  // Cursor-style editor navigation keybindings
+  {
+    "context": "Workspace",
+    "bindings": {
+      "shift-cmd-l": "pane::ActivateNextItem",
+      "shift-cmd-h": "pane::ActivatePrevItem",
+      "cmd-i": "assistant::Toggle"
+    }
+  },
+  // Terminal bindings from Cursor config
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-b z": "workspace::ToggleZoom",
+      "shift-enter": ["terminal::SendKeystroke", "\\\\\\r\\n"]
+    }
+  },
+  {
+    "context": "Dock",
+    "bindings": {
+      "ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+      "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+      "ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+      "ctrl-j": ["workspace::ActivatePaneInDirection", "Down"],
+    },
+  },
+]
