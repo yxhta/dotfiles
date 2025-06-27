@@ -18,7 +18,7 @@ require("lazy").setup({
 
     { "dstein64/vim-startuptime", cmd = "StartupTime" },
 
-    { "nathom/filetype.nvim" },
+    -- { "nathom/filetype.nvim" }, -- Disabled: conflicts with SQL filetype detection
 
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
