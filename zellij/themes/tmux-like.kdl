@@ -1,0 +1,17 @@
+// Zellij theme matching tmux statusline configuration
+// Using legacy format for compatibility
+themes {
+    tmux-like {
+        fg "#aeafb0"
+        bg "#192330"
+        black "#073642"
+        red "#ff5555"
+        green "#50fa7b"
+        yellow "#f1fa8c"
+        blue "#6272a4"
+        magenta "#ff79c6"
+        cyan "#8be9fd"
+        white "#aeafb0"
+        orange "#ffb86c"
+    }
+}

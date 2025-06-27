@@ -1,0 +1,195 @@
+// Zellij configuration migrated from tmux
+// This configuration replicates the tmux keybindings and behavior
+
+// General settings
+default_terminal "xterm-256color"
+mouse_mode true
+scroll_buffer_size 10000
+pane_frames true
+copy_on_select false
+scrollback_editor "nvim"
+
+// UI settings
+ui {
+    pane_frames {
+        rounded_corners true
+        hide_session_name false
+    }
+}
+
+// Theme configuration (using default theme for now)
+// theme "tmux-like"
+// theme_dir "/Users/a24-033/ghq/github.com/yxhta/dotfiles/zellij/themes"
+
+// Plugin aliases
+plugins {
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+}
+
+// Keybindings - replicating tmux behavior
+keybinds clear-defaults=true {
+    normal {
+        // Mode switching - using Ctrl s as the main modifier (like tmux prefix)
+        bind "Ctrl s" { SwitchToMode "tmux"; }
+        
+        // Direct pane navigation without prefix
+        bind "Alt h" { MoveFocusOrTab "Left"; }
+        bind "Alt j" { MoveFocusOrTab "Down"; }
+        bind "Alt k" { MoveFocusOrTab "Up"; }
+        bind "Alt l" { MoveFocusOrTab "Right"; }
+        
+        // Direct pane creation
+        bind "Alt -" { NewPane "Down"; }
+        bind "Alt \\" { NewPane "Right"; }
+        
+        // Tab navigation
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+        
+        // Scrolling
+        bind "PageUp" { PageScrollUp; }
+        bind "PageDown" { PageScrollDown; }
+        bind "Ctrl u" { HalfPageScrollUp; }
+        bind "Ctrl d" { HalfPageScrollDown; }
+    }
+    
+    // Tmux mode - activated by Ctrl s (mimics tmux prefix behavior)
+    tmux {
+        // Split panes (like tmux)
+        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+        bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
+        
+        // Pane navigation (vim-like)
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        
+        // Pane resizing (uppercase vim keys)
+        bind "H" { SwitchToMode "Resize"; }
+        bind "J" { SwitchToMode "Resize"; }
+        bind "K" { SwitchToMode "Resize"; }
+        bind "L" { SwitchToMode "Resize"; }
+        
+        // Window/Tab navigation
+        bind "Ctrl k" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "Ctrl j" { GoToNextTab; SwitchToMode "Normal"; }
+        
+        // Pane management
+        bind "b" { ToggleFloatingPanes; SwitchToMode "Normal"; } // Similar to break-pane
+        bind "q" { CloseFocus; SwitchToMode "Normal"; } // Kill pane
+        bind "x" { CloseFocus; SwitchToMode "Normal"; } // Kill pane (alternative)
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; } // Zoom pane
+        
+        // Tab management
+        bind "c" { NewTab; SwitchToMode "Normal"; } // New tab/window
+        bind "n" { GoToNextTab; SwitchToMode "Normal"; } // Next tab
+        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; } // Previous tab
+        bind "&" { CloseTab; SwitchToMode "Normal"; } // Kill tab/window
+        
+        // Copy mode
+        bind "[" { SwitchToMode "Scroll"; }
+        bind "Space" { SwitchToMode "Scroll"; }
+        
+        // Reload config (no direct equivalent in zellij)
+        bind "r" { 
+            Run "zellij" "action" "new-pane" "--" "echo" "Config reloaded! (Note: Zellij requires restart for config changes)"; 
+            SwitchToMode "Normal"; 
+        }
+        
+        // Detach
+        bind "d" { Detach; }
+        
+        // Lazygit popup
+        bind "g" { 
+            Run "zellij" "run" "-f" "-c" "--" "lazygit"; 
+            SwitchToMode "Normal"; 
+        }
+        
+        // Send prefix (Ctrl s again)
+        bind "Ctrl s" { Write 19; SwitchToMode "Normal"; } // ASCII 19 is Ctrl-S
+        
+        // Switch back to normal mode
+        bind "Esc" { SwitchToMode "Normal"; }
+        bind "Enter" { SwitchToMode "Normal"; }
+    }
+    
+    // Resize mode
+    resize {
+        bind "h" "Left" { Resize "Left"; }
+        bind "j" "Down" { Resize "Down"; }
+        bind "k" "Up" { Resize "Up"; }
+        bind "l" "Right" { Resize "Right"; }
+        bind "H" { Resize "Increase Left"; }
+        bind "J" { Resize "Increase Down"; }
+        bind "K" { Resize "Increase Up"; }
+        bind "L" { Resize "Increase Right"; }
+        bind "=" { Resize "Increase"; }
+        bind "-" { Resize "Decrease"; }
+        bind "Esc" { SwitchToMode "Normal"; }
+        bind "Enter" { SwitchToMode "Normal"; }
+    }
+    
+    // Scroll mode (copy mode equivalent)
+    scroll {
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "q" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "Esc" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "j" "Down" { ScrollDown; }
+        bind "k" "Up" { ScrollUp; }
+        bind "Ctrl d" { PageScrollDown; }
+        bind "Ctrl u" { PageScrollUp; }
+        bind "d" { HalfPageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
+        bind "g" { ScrollToTop; }
+        bind "G" { ScrollToBottom; }
+        bind "/" { SwitchToMode "Search"; }
+        bind "v" { SwitchToMode "Normal"; } // Exit scroll mode to select text with mouse
+    }
+    
+    // Search mode
+    search {
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "Esc" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+        bind "c" { SearchToggleOption "CaseSensitivity"; }
+        bind "w" { SearchToggleOption "Wrap"; }
+        bind "o" { SearchToggleOption "WholeWord"; }
+        bind "Enter" { SwitchToMode "Scroll"; }
+    }
+    
+    // Session mode
+    session {
+        bind "Ctrl s" { SwitchToMode "Normal"; }
+        bind "d" { Detach; }
+        bind "Esc" { SwitchToMode "Normal"; }
+    }
+    
+    // Shared bindings across all modes
+    shared_except "locked" {
+        bind "Alt q" { Quit; }
+        bind "Alt d" { Detach; }
+    }
+}
+
+// macOS specific settings
+copy_command "pbcopy"
+
+// Layout settings
+default_layout "default"
+layout_dir "/Users/a24-033/ghq/github.com/yxhta/dotfiles/zellij/layouts"
+
+// Session settings
+session_serialization true
+pane_viewport_serialization false

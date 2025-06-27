@@ -1,0 +1,25 @@
+// Default layout mimicking tmux with status bar at top
+layout {
+    // Tab bar at the top (like tmux status bar)
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    
+    // Main pane area
+    pane
+    
+    // Status bar at the bottom
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}
+
+// Session name configuration
+session_name "main"
+
+// Tab configuration
+tabs {
+    tab name="shell" focus=true
+    tab name="editor"
+    tab name="server"
+}
