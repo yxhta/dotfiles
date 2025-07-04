@@ -350,6 +350,8 @@ require("lazy").setup({
 
     { "moll/vim-bbye",     cmd = "Bdelete" },
 
+    { "sindrets/diffview.nvim" },
+
     -- { "lambdalisue/suda.vim", cmd = { "SudaRead, SudaWrite" } },
 
     {
