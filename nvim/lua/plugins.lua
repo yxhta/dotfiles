@@ -18,7 +18,6 @@ require("lazy").setup({
 
     { "dstein64/vim-startuptime", cmd = "StartupTime" },
 
-    { "nathom/filetype.nvim" },
 
     --------------------------------------------
     -- LSP, Diagnostics, Snippets, Completion --
