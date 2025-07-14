@@ -54,7 +54,7 @@ alias pn='pnpm'
 # alias make='gmake'
 
 # Claude Code
-alias cl='claude'
+alias cc='claude'
 
 # ============================================================================
 # Ruby/Rails Development
