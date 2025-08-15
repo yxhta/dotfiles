@@ -1,0 +1,40 @@
+[
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "g [": "editor::GoToPreviousDiagnostic",
+      "g shift-r": "editor::FindAllReferences",
+      "shift-k": "editor::Hover",
+      // "g a": "editor::ToggleCodeActions",
+      "g r n": "editor::Rename",
+      "j": ["vim::Down", { "display_lines": true }],
+      "k": ["vim::Up", { "display_lines": true }],
+      // ", g b": "editor::ToggleGitBlame",
+      "-": "pane::RevealInProjectPanel",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !VimCount",
+    "bindings": {
+      "0": ["vim::StartOfLine", { "display_lines": true }],
+      "$": ["vim::EndOfLine", { "display_lines": true }],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "g c c": "editor::ToggleComments",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "g c": "editor::ToggleComments",
+    },
+  },
+  {
+    "bindings": {
+      "cmd-shift-l": "editor::CopyRelativePath",
+    },
+  },
+]
