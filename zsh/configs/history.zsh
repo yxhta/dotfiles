@@ -4,8 +4,8 @@
 
 # History file location and size
 export HISTFILE=~/.zhistory
-export HISTSIZE=4096
-export SAVEHIST=4096
+export HISTSIZE=50000
+export SAVEHIST=50000
 
 # History options
 setopt hist_ignore_all_dups    # Remove older duplicate entries from history
