@@ -186,7 +186,7 @@ esac
 # pnpm end
 
 # Claude Code
-alias claude="$HOME/.claude/local/claude"
+alias claude="~/.claude/local/claude"
 
 # Kiro Shell Integration
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
