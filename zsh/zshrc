@@ -161,11 +161,6 @@ eval "$(starship init zsh)"
 eval "$(~/.local/bin/mise activate zsh)"
 
 # Python tools
-if [ -f "$HOME/.rye/env" ]; then
-  source "$HOME/.rye/env"
-fi
-
-# UV completion
 if command -v uv &> /dev/null; then
   autoload -Uz compinit && compinit
   eval "$(uv generate-shell-completion zsh)"
@@ -190,3 +185,6 @@ alias claude="~/.claude/local/claude"
 
 # Kiro Shell Integration
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# Maestro CLI
+# export PATH=$PATH:$HOME/.maestro/bin
