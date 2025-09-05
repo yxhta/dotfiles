@@ -22,6 +22,9 @@ export GOPATH=$HOME/go
 # Rust development
 export CARGO_HOME=$HOME/.cargo
 
+# Android development
+export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+
 # ============================================================================
 # PATH Configuration
 # ============================================================================
@@ -44,6 +47,11 @@ path=(
   
   # Flutter SDK
   $HOME/development/flutter/bin
+  # export PATH="$PATH:$ANDROID_SDK_ROOT/platform-tools"
+  $ANDROID_SDK_ROOT/platform-tools
+
+  # Claude Code
+  $HOME/.claude/local
   
   # System tools
   /usr/local/bin
