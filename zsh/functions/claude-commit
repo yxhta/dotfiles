@@ -8,25 +8,36 @@ function claude_commit_interactive() {
     fi
     
     echo "Analyzing staged changes..."
-    local commit_msg=$(echo "$diff_output" | claude -p "Analyze this git diff and generate a Conventional Commits compliant commit message.
-    Requirements:
-    - Format: <type>[optional scope]: <description>
-    - Select appropriate type: feat, fix, docs, style, refactor, perf, test, build, ci, chore
-    - Keep description under 50 characters, imperative mood
-    - Add scope if changes are focused on specific component
+    local commit_msg=$(echo "$diff_output" | claude -p "You are a git commit message generator. Analyze the provided git diff and generate a single-line Conventional Commits compliant commit message.
 
-    Type guidelines:
-    - feat: new features or functionality
-    - fix: bug fixes
-    - docs: documentation changes only
-    - style: formatting, no code changes
-    - refactor: code changes that neither fix bugs nor add features
-    - perf: performance improvements
-    - test: test-related changes
-    - build: build system or dependencies
-    - ci: CI configuration changes
-    - chore: maintenance tasks
-    Output only the commit message, no additional text." --model sonnet --max-turns 6)
+CRITICAL REQUIREMENTS:
+1. Output ONLY the commit message text - no explanations, no markdown, no quotes, no additional commentary
+2. Format: <type>[optional scope]: <description>
+3. The entire output must be a valid git commit message that can be used directly with 'git commit -m'
+
+TYPE SELECTION (choose ONE):
+- feat: new features or functionality
+- fix: bug fixes
+- docs: documentation changes only
+- style: formatting, whitespace, no code logic changes
+- refactor: code restructuring without changing behavior
+- perf: performance improvements
+- test: adding or modifying tests
+- build: build system, dependencies (package.json, Cargo.toml, etc)
+- ci: CI/CD configuration (GitHub Actions, CircleCI, etc)
+- chore: maintenance tasks, tooling, configs
+
+FORMATTING RULES:
+- Description: imperative mood (\"add\" not \"added\"), lowercase, no period at end
+- Length: keep total message under 72 characters
+- Scope: add if changes focus on specific component (e.g., \"api\", \"ui\", \"auth\")
+- Examples:
+  * feat(auth): add JWT token validation
+  * fix: resolve memory leak in worker threads
+  * docs: update installation guide
+  * refactor(parser): simplify token handling logic
+
+IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script." --model sonnet --max-turns 6)
     
     echo "\nProposed commit message:"
     echo "  $commit_msg"
