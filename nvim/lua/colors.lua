@@ -88,12 +88,19 @@ end
 -- tokyonight()
 -- gruvbox()
 function M.overrides()
+    local severity = vim.diagnostic.severity
 
-    vim.fn.sign_define('DiagnosticSignError', { text = "" , texthl= 'DiagnosticSignError'})
-    vim.fn.sign_define('DiagnosticSignWarn', { text = "", texthl= 'DiagnosticSignWarn'})
-    vim.fn.sign_define('DiagnosticSignInfo', { text = "", texthl= 'DiagnosticSignInfo'})
-    vim.fn.sign_define('DiagnosticSignHint', { text = "" , texthl= 'DiagnosticSignHint'})
-
+    vim.diagnostic.config({
+        -- Prefer vim.diagnostic.config over sign_define per :h diagnostic.txt (Nvim 0.11+).
+        signs = {
+            text = {
+                [severity.ERROR] = "",
+                [severity.WARN] = "",
+                [severity.INFO] = "",
+                [severity.HINT] = "",
+            },
+        },
+    })
 end
 
 return M
