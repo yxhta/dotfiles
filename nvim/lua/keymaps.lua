@@ -3,6 +3,7 @@ local g = vim.g
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
 local copts = { noremap = true }
+local clipboard_utils = require('utils.clipboard')
 
 g.mapleader = " "
 
@@ -34,7 +35,7 @@ local builtin = require('telescope.builtin')
 keymap('n', '<leader>ff', builtin.find_files, { desc = "Telescope: Find files" })
 vim.api.nvim_set_keymap("n", "<leader>f.", "<cmd>lua require'telescope'.extensions.file_browser.file_browser()<CR>",
     copts)
-keymap("n", "<leader>fl", "<cmd>Telescope current_buffer_fuzzy_find<CR>", copts)
+keymap("n", "<leader>fl", clipboard_utils.copy_git_relative_path, { desc = "Copy git-relative path" })
 keymap("n", "<leader>fq", "<cmd>Telescope quickfix<CR>", copts)
 keymap("n", "<leader>fh", "<cmd>Telescope oldfiles<CR>", copts)
 keymap("n", "<leader>fr", "<cmd>Telescope frecency<CR>", copts)
