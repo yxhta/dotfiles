@@ -158,7 +158,7 @@ eval "$(starship init zsh)"
 # ============================================================================
 
 # Version managers
-eval "$(~/.local/bin/mise activate zsh)"
+eval "$(mise activate zsh)"
 
 # Python tools
 if command -v uv &> /dev/null; then
@@ -186,5 +186,5 @@ alias claude="~/.claude/local/claude"
 # Kiro Shell Integration
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
-# Maestro CLI
-# export PATH=$PATH:$HOME/.maestro/bin
+# Added by Antigravity
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
