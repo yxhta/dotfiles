@@ -6,11 +6,29 @@ local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
+local function has_ultisnips_func(name)
+    return vim.fn.exists("*" .. name) == 1
+end
+
+local function try_ultisnips_jump(direction)
+    local fn_name = direction == "forward" and "UltiSnips#CanJumpForwards" or "UltiSnips#CanJumpBackwards"
+    if has_ultisnips_func(fn_name) and vim.fn[fn_name]() == 1 then
+        local plug = direction == "forward" and "<Plug>(ultisnips_jump_forward)" or "<Plug>(ultisnips_jump_backward)"
+        vim.api.nvim_feedkeys(t(plug), "m", true)
+        return true
+    end
+    return false
+end
+
 local cmp = require("cmp")
 cmp.setup({
     snippet = {
         expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body)
+            if has_ultisnips_func("UltiSnips#Anon") then
+                vim.fn["UltiSnips#Anon"](args.body)
+            elseif vim.snippet and vim.snippet.expand then
+                vim.snippet.expand(args.body)
+            end
         end,
     },
     -- preselect = cmp.PreselectMode.None,
@@ -37,15 +55,15 @@ cmp.setup({
             i = function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-                elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                    vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), "m", true)
+                elseif try_ultisnips_jump("forward") then
+                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
             end,
             s = function(fallback)
-                if vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                    vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), "m", true)
+                if try_ultisnips_jump("forward") then
+                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
@@ -62,15 +80,15 @@ cmp.setup({
             i = function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-                elseif vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                    return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), "m", true)
+                elseif try_ultisnips_jump("backward") then
+                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
             end,
             s = function(fallback)
-                if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                    return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), "m", true)
+                if try_ultisnips_jump("backward") then
+                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
