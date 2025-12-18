@@ -37,7 +37,7 @@ FORMATTING RULES:
   * docs: update installation guide
   * refactor(parser): simplify token handling logic
 
-IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script." --model haiku --max-turns 3 --strict-mcp-config)
+IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script." --model opus --max-turns 3 --strict-mcp-config)
     
     echo "\nProposed commit message:"
     echo "  $commit_msg"
