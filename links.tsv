@@ -1,0 +1,28 @@
+# src<TAB>dest
+#
+# - `src` is relative to this repo root (or absolute).
+# - `dest` supports `~` expansion.
+# - One mapping per line. Lines starting with `#` are ignored.
+#
+# Nix
+nix/nix.conf	~/.config/nix/nix.conf
+#
+# Zsh
+zsh	~/.zsh
+zsh/zshrc	~/.zshrc
+zsh/zshenv	~/.zshenv
+aliases	~/.aliases
+#
+# Neovim
+nvim	~/.config/nvim
+#
+# Tmux
+tmux	~/.config/tmux
+tmux/tmux.conf	~/.tmux.conf
+#
+# Git
+git/gitconfig	~/.gitconfig
+git/gitconfig_private	~/.gitconfig_private
+git/gitignore	~/.gitignore_global
+git/gitmessage	~/.gitmessage
+
