@@ -1,0 +1,306 @@
+#!/bin/sh
+set -eu
+
+# Avoid noisy "Broken pipe" errors when piping output to commands like `head`.
+trap 'exit 0' PIPE
+
+usage() {
+  cat <<'USAGE'
+dotlink: manage dotfiles symlinks from a manifest
+
+Usage:
+  dotlink status [--manifest PATH]
+  dotlink plan   [--manifest PATH]
+  dotlink apply  [--manifest PATH] [--backup] [--force]
+
+Notes:
+  - Default manifest: ./links.tsv (repo root)
+  - `apply` is idempotent: existing correct links are left as-is
+  - Conflicts (non-symlink destination, or symlink to different target) are not overwritten unless:
+      - --backup: move the existing destination aside (suffix: .bak.<timestamp>)
+      - --force: remove the existing destination and replace it
+USAGE
+}
+
+err() {
+  printf '%s\n' "$*" >&2
+}
+
+p() {
+  # Suppress EPIPE noise when output is piped (e.g. `dotlink status | head`).
+  # If stdout is closed, we just stop emitting further output.
+  printf "$@" 2>/dev/null || true
+}
+
+repo_root() {
+  script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+  root_guess=$(CDPATH= cd -- "$script_dir/.." && pwd)
+  if command -v git >/dev/null 2>&1 && git -C "$root_guess" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "$root_guess" rev-parse --show-toplevel
+  else
+    printf '%s\n' "$root_guess"
+  fi
+}
+
+expand_home() {
+  case "$1" in
+    "~")
+      printf '%s\n' "$HOME"
+      ;;
+    "~/"*)
+      # NOTE: macOS /bin/sh (bash 3.2) treats `~/` specially in ${var#pattern},
+      # so we escape `~` to reliably strip the literal "~/"
+      printf '%s\n' "$HOME/${1#\~\/}"
+      ;;
+    *)
+      printf '%s\n' "$1"
+      ;;
+  esac
+}
+
+abs_path() {
+  p=$1
+  if [ "${p#/}" != "$p" ]; then
+    printf '%s\n' "$p"
+    return 0
+  fi
+  dir=$(dirname -- "$p")
+  base=$(basename -- "$p")
+  (CDPATH= cd -- "$dir" 2>/dev/null && printf '%s/%s\n' "$(pwd)" "$base") || return 1
+}
+
+read_manifest() {
+  manifest=$1
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      ""|\#*)
+        continue
+        ;;
+    esac
+    # tab-separated: src<TAB>dest
+    IFS="$(printf '\t')" read -r src dest _rest <<EOF
+$line
+EOF
+    if [ -z "$src" ] || [ -z "$dest" ]; then
+      err "dotlink: invalid manifest line (expected tab-separated src<TAB>dest): $line"
+      return 2
+    fi
+    printf '%s\t%s\n' "$src" "$dest"
+  done <"$manifest"
+}
+
+normalize_link_target() {
+  dest=$1
+  target=$2
+
+  case "$target" in
+    /*)
+      abs_path "$target" || printf '%s\n' "$target"
+      ;;
+    *)
+      base_dir=$(dirname -- "$dest")
+      abs_path "$base_dir/$target" || printf '%s\n' "$base_dir/$target"
+      ;;
+  esac
+}
+
+status_one() {
+  src=$1
+  dest=$2
+
+  if [ ! -e "$src" ]; then
+    p 'SRC_MISSING\t%s\t%s\n' "$src" "$dest"
+    return 0
+  fi
+
+  if [ -L "$dest" ]; then
+    target=$(readlink "$dest" || true)
+    target_abs=$(normalize_link_target "$dest" "$target")
+    if [ "$target_abs" = "$src" ]; then
+      p 'OK\t%s\t%s\n' "$src" "$dest"
+    else
+      p 'DIFF\t%s\t%s\n' "$src" "$dest"
+    fi
+    return 0
+  fi
+
+  if [ -e "$dest" ]; then
+    p 'CONFLICT\t%s\t%s\n' "$src" "$dest"
+    return 0
+  fi
+
+  p 'MISSING\t%s\t%s\n' "$src" "$dest"
+}
+
+make_backup_name() {
+  dest=$1
+  ts=$(date +"%Y%m%d-%H%M%S")
+  printf '%s.bak.%s\n' "$dest" "$ts"
+}
+
+link_one() {
+  src=$1
+  dest=$2
+  backup=$3
+  force=$4
+
+  if [ ! -e "$src" ]; then
+    err "dotlink: source missing: $src"
+    return 1
+  fi
+
+  dest_dir=$(dirname -- "$dest")
+  mkdir -p -- "$dest_dir"
+
+  if [ -L "$dest" ]; then
+    target=$(readlink "$dest" || true)
+    target_abs=$(normalize_link_target "$dest" "$target")
+    if [ "$target_abs" = "$src" ]; then
+      return 0
+    fi
+    if [ "$force" = "1" ]; then
+      rm -f -- "$dest"
+    elif [ "$backup" = "1" ]; then
+      mv -- "$dest" "$(make_backup_name "$dest")"
+    else
+      err "dotlink: conflict (symlink differs): $dest"
+      return 2
+    fi
+  elif [ -e "$dest" ]; then
+    if [ "$force" = "1" ]; then
+      rm -rf -- "$dest"
+    elif [ "$backup" = "1" ]; then
+      mv -- "$dest" "$(make_backup_name "$dest")"
+    else
+      err "dotlink: conflict (destination exists): $dest"
+      return 2
+    fi
+  fi
+
+  ln -s -- "$src" "$dest"
+}
+
+cmd=${1:-}
+shift || true
+
+root=$(repo_root)
+manifest="$root/links.tsv"
+backup=0
+force=0
+tab=$(printf '\t')
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --manifest)
+      manifest=$2
+      shift 2
+      ;;
+    --backup)
+      backup=1
+      shift 1
+      ;;
+    --force)
+      force=1
+      shift 1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      err "dotlink: unknown argument: $1"
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+manifest=$(expand_home "$manifest")
+if [ ! -f "$manifest" ]; then
+  err "dotlink: manifest not found: $manifest"
+  exit 2
+fi
+
+case "$cmd" in
+  status|plan|apply)
+    :
+    ;;
+  ""|-h|--help)
+    usage
+    exit 0
+    ;;
+  *)
+    err "dotlink: unknown command: $cmd"
+    usage
+    exit 2
+    ;;
+esac
+
+tmp_manifest=$(mktemp "${TMPDIR:-/tmp}/dotlink.XXXXXX")
+trap 'rm -f -- "$tmp_manifest"' EXIT INT TERM HUP
+
+exit_code=0
+read_manifest "$manifest" >"$tmp_manifest"
+
+while IFS="$(printf '\t')" read -r src_rel dest_raw; do
+  src_raw=$src_rel
+  dest_raw=$(expand_home "$dest_raw")
+
+  case "$src_raw" in
+    "~"|"~/"*)
+      src_raw=$(expand_home "$src_raw")
+      ;;
+    /*)
+      :
+      ;;
+    *)
+      src_raw="$root/$src_raw"
+      ;;
+  esac
+
+  src=$(abs_path "$src_raw" || printf '%s' "$src_raw")
+  dest=$(abs_path "$dest_raw" || printf '%s' "$dest_raw")
+
+  if [ "$cmd" = "apply" ]; then
+    if ! link_one "$src" "$dest" "$backup" "$force"; then
+      exit_code=1
+    fi
+  else
+    line=$(status_one "$src" "$dest")
+    st=${line%%"$tab"*}
+    if [ "$cmd" = "plan" ]; then
+      case "$st" in
+        OK)
+          p 'SKIP\t%s\t%s\n' "$src" "$dest"
+          ;;
+        MISSING)
+          p 'LINK\t%s\t%s\n' "$src" "$dest"
+          ;;
+        SRC_MISSING)
+          p 'ERROR\t%s\t%s\n' "$src" "$dest"
+          exit_code=1
+          ;;
+        DIFF|CONFLICT)
+          p 'CONFLICT\t%s\t%s\n' "$src" "$dest"
+          exit_code=1
+          ;;
+        *)
+          p 'UNKNOWN\t%s\t%s\n' "$src" "$dest"
+          exit_code=1
+          ;;
+      esac
+    else
+      p '%s\n' "$line"
+      case "$st" in
+        OK|MISSING)
+          :
+          ;;
+        *)
+          exit_code=1
+          ;;
+      esac
+    fi
+  fi
+done <"$tmp_manifest"
+
+exit "$exit_code"
