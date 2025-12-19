@@ -82,7 +82,7 @@ require("telescope").setup({
             timeout = 100000,
         },
     },
-    extension = {
+    extensions = {
         file_browser = {
             hidden = true,
             depth = 2,

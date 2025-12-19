@@ -1,9 +1,6 @@
 -- Settings {{{
 vim.g.python3_host_prog        = vim.fn.exepath('python3')
-vim.g.python_host_prog        = vim.fn.exepath('python')
-
-vim.g.do_filetype_lua = 1
-vim.g.did_load_filetypes = 0
+vim.g.python_host_prog         = vim.fn.exepath('python')
 
 vim.o.termguicolors        = true               -- enable gui colors for terminal
 vim.g.vimsyn_embed         = 'lPr'
@@ -39,7 +36,7 @@ vim.o.hidden               = true               -- allow modified buffers to be 
 vim.o.wildignore           = '*.swp,*.bak,*.pyc,*.class'
 vim.o.wildmode             = 'longest,full'     -- set the behavior of the completion menu
 vim.o.wildmenu             = true               -- diplay command completion listing and choice menu
-vim.opt.wildoptions:append({'pum'})
+vim.opt.wildoptions:append({ 'pum' })
 vim.o.wildcharm            = 26                 -- trigger completion in macros
 vim.o.wildignorecase       = true               -- ignore case command completion menu
 -- vim.o.clipboard            = "unnamed"       -- send yanks to system clipboard (buggy with v-block)
@@ -51,21 +48,21 @@ vim.o.pumheight            = 15                 -- set menu max height
 
 vim.opt.fillchars:append({
     fold = ' ',
-    horiz =	'━',-- '▃',--'═', --'─',
-    horizup ='┻', --'╩',-- '┴',
-    horizdown =	'┳', --'╦', --'┬',
+    horiz = '━',-- '▃',--'═', --'─',
+    horizup = '┻', --'╩',-- '┴',
+    horizdown = '┳', --'╦', --'┬',
     vert = '┃',--'▐', --'║', --'┃',
     vertleft = '┨',--'╣', --'┤',
-    vertright =	'┣',--'╠', --'├',
-    verthoriz =	'╋', --'╬',--'┼','
+    vertright = '┣',--'╠', --'├',
+    verthoriz = '╋', --'╬',--'┼','
 })
 
-vim.opt.fillchars:append({foldopen = '▾', foldsep = '│', foldclose = '▸'})
+vim.opt.fillchars:append({ foldopen = '▾', foldsep = '│', foldclose = '▸' })
 
 vim.o.inccommand           = 'nosplit'     -- real time preview of substitution commands
-vim.o.showmode             = false          -- Do not show -- MODE -- in cmdline--
-vim.o.cmdheight            = 1          -- Height of the command line
-vim.o.updatetime           = 250       -- time required to update CursorHold hook
+vim.o.showmode             = false         -- Do not show -- MODE -- in cmdline--
+vim.o.cmdheight            = 1             -- Height of the command line
+vim.o.updatetime           = 250           -- time required to update CursorHold hook
 vim.opt.shortmess:append({ c = true })
 -- -- vim.o.printdevice       = "OLIVETTI_d_COPIA4500MF_plus__2_"
 vim.o.showbreak            = "↪ "
@@ -84,11 +81,7 @@ vim.opt.foldtext = 'v:lua.CustomFoldText()'
 
 -- Accept suggested completion with <C-j> from GitHub Copilot
 vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.keymap.set("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 
--- Auto-read files when they are changed externally
-vim.o.autoread = true
-vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
-  pattern = '*',
-  command = 'checktime',
-})
+-- Clipboard integration
+vim.opt.clipboard:append("unnamedplus")
