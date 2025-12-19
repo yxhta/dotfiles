@@ -11,7 +11,6 @@ nix/nix.conf	~/.config/nix/nix.conf
 zsh	~/.zsh
 zsh/zshrc	~/.zshrc
 zsh/zshenv	~/.zshenv
-aliases	~/.aliases
 #
 # Neovim
 nvim	~/.config/nvim
@@ -25,4 +24,3 @@ git/gitconfig	~/.gitconfig
 git/gitconfig_private	~/.gitconfig_private
 git/gitignore	~/.gitignore_global
 git/gitmessage	~/.gitmessage
-

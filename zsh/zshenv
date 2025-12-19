@@ -7,20 +7,31 @@
 # XDG Base Directory Specification
 # ============================================================================
 
-export XDG_CONFIG_HOME=~/.config
-export XDG_DATA_HOME=~/.local/share
-export XDG_CACHE_HOME=~/.cache
-export XDG_STATE_HOME=~/.local/state
+: "${XDG_CONFIG_HOME:=$HOME/.config}"
+: "${XDG_DATA_HOME:=$HOME/.local/share}"
+: "${XDG_CACHE_HOME:=$HOME/.cache}"
+: "${XDG_STATE_HOME:=$HOME/.local/state}"
+
+export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME XDG_STATE_HOME
+
+# ============================================================================
+# Locale
+# ============================================================================
+
+: "${LANG:=en_US.UTF-8}"
+: "${LC_CTYPE:=$LANG}"
+
+export LANG LC_CTYPE
 
 # ============================================================================
 # Development Environment
 # ============================================================================
 
 # Go development
-export GOPATH=$HOME/go
+export GOPATH="$HOME/go"
 
 # Rust development
-export CARGO_HOME=$HOME/.cargo
+export CARGO_HOME="$HOME/.cargo"
 
 # Android development
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
@@ -48,20 +59,16 @@ path=(
   $GOPATH/bin                                    # Go binaries
   $CARGO_HOME/bin                               # Rust/Cargo binaries
   $HOME/.pub-cache/bin                          # Dart/Flutter pub cache
-  
+
   # Flutter SDK
   $HOME/development/flutter/bin
   # export PATH="$PATH:$ANDROID_SDK_ROOT/platform-tools"
   $ANDROID_SDK_ROOT/platform-tools
 
-  # Claude Code
-  $HOME/.claude/local
-  
   # System tools
-  /usr/local/bin
   /usr/local/opt/make/libexec/gnubin           # GNU make
   /usr/local/opt/llvm/bin                      # LLVM tools
-  
+
   # Applications
   /Applications/WezTerm.app/Contents/MacOS      # WezTerm terminal
 
