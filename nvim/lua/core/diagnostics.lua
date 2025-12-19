@@ -1,5 +1,5 @@
 vim.diagnostic.config({
-    float = {source = 'always'},
+    float = { source = 'always' },
     virtual_text = false, -- , source = 'always'},
     underline = true,
     signs = true,

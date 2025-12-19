@@ -6,27 +6,14 @@ vim.loader.enable()
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Leader must be set before lazy.nvim loads
+vim.g.mapleader = " "
+
+-- Core settings
+require("core")
+
 -- Plugins
 require("plugins")
 
--- Key mappings
-require("keymaps")
-
--- Colorscheme
--- vim.opt.laststatus = 3
--- require("kanagawa").setup({
---     dimInactive = true,
---     globalStatus = true
--- })
-vim.cmd("colorscheme kanagawa-wave")
-require("colors").overrides()
-
-vim.cmd("set clipboard+=unnamedplus")
-
-require('lualine').setup()
-
--- General configurations
-require("options")
-
--- Functions, Commands, Autocommands
--- require("autocommands")
+-- Key mappings (after plugins to ensure plugin modules are available)
+require("core.keymaps")
