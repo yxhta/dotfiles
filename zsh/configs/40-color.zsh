@@ -1,6 +1,6 @@
-# ============================================================================
+# ==========================================================================
 # Color Configuration
-# ============================================================================
+# ==========================================================================
 
 # Load color constants and enable colored output
 autoload -U colors && colors
@@ -9,13 +9,16 @@ autoload -U colors && colors
 export CLICOLOR=1
 
 # LS_COLORS for GNU ls (if using GNU coreutils)
-if command -v dircolors &> /dev/null; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if command -v dircolors >/dev/null 2>&1; then
+  if [ -r "$HOME/.dircolors" ]; then
+    eval "$(dircolors -b "$HOME/.dircolors")"
+  else
+    eval "$(dircolors -b)"
+  fi
 fi
 
 # Enable colored output for grep family
-export GREP_COLOR='1;32'
-export GREP_OPTIONS='--color=auto'
+export GREP_COLORS='ms=01;32:mc=01;32:sl=01;32:cx=01;32:fn=35:ln=32:bn=32:se=36'
 
 # Less pager colors for man pages
 export LESS_TERMCAP_mb=$'\e[1;32m'      # begin bold

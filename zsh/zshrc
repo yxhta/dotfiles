@@ -2,42 +2,39 @@
 # ZSH Configuration
 # ============================================================================
 
-# ============================================================================
-# Configuration Loading
-# ============================================================================
-
 # Load custom executable functions
-for function in ~/.zsh/functions/*; do
-  source $function
+for fn in "$HOME/.zsh/functions/"*(N-.); do
+  source "$fn"
 done
 
 # Load configuration files in order: pre, main, post
 _load_settings() {
-  _dir="$1"
-  if [ -d "$_dir" ]; then
+  local dir="$1"
+  local config
+
+  if [ -d "$dir" ]; then
     # Load pre configuration files
-    if [ -d "$_dir/pre" ]; then
-      for config in "$_dir"/pre/**/*~*.zwc(N-.); do
-        . $config
+    if [ -d "$dir/pre" ]; then
+      for config in "$dir"/pre/**/*(N-.); do
+        source "$config"
       done
     fi
 
     # Load main configuration files
-    for config in "$_dir"/**/*(N-.); do
+    for config in "$dir"/**/*(N-.); do
       case "$config" in
-        "$_dir"/(pre|post)/*|*.zwc)
-          :
+        "$dir"/(pre|post)/*|*.zwc)
           ;;
         *)
-          . $config
+          source "$config"
           ;;
       esac
     done
 
     # Load post configuration files
-    if [ -d "$_dir/post" ]; then
-      for config in "$_dir"/post/**/*~*.zwc(N-.); do
-        . $config
+    if [ -d "$dir/post" ]; then
+      for config in "$dir"/post/**/*(N-.); do
+        source "$config"
       done
     fi
   fi
@@ -45,140 +42,3 @@ _load_settings() {
 
 # Load all zsh configurations
 _load_settings "$HOME/.zsh/configs"
-
-# Load aliases
-[[ -f ~/.aliases ]] && source ~/.aliases
-
-# ============================================================================
-# Environment Settings
-# ============================================================================
-
-# Nix (when installed)
-if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
-  . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
-elif [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-fi
-if command -v nix &> /dev/null; then
-  export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
-fi
-
-# Prevent accidental logout with Ctrl+D
-set IGNOREEOF
-
-# Set language environment
-export LANGUAGE=en_US.UTF-8
-export LANG="${LANGUAGE}"
-export LC_ALL="${LANGUAGE}"
-export LC_CTYPE="${LANGUAGE}"
-
-# Shell options
-setopt no_beep                # Disable beep sound
-setopt auto_cd                # Auto change to directory without typing cd
-setopt multios                # Enable multiple redirections
-setopt correct                # Enable command correction
-
-# ============================================================================
-# Plugin Manager (Zinit)
-# ============================================================================
-
-# Initialize Zinit
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-
-# Install Zinit if not present
-if [[ ! -d $ZINIT_HOME ]]; then
-  mkdir -p "$(dirname $ZINIT_HOME)"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-
-# Load Zinit
-source "${ZINIT_HOME}/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-# ============================================================================
-# Zinit Plugins
-# ============================================================================
-
-# Essential annexes for additional functionality
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
-
-# Core plugins
-zinit ice lucid wait'0'
-zinit light joshskidmore/zsh-fzf-history-search
-
-# Syntax highlighting (load after other plugins)
-zinit light zsh-users/zsh-syntax-highlighting
-
-# Autosuggestions
-zinit light zsh-users/zsh-autosuggestions
-
-# Prompt theme
-zinit light starship/starship
-
-# ============================================================================
-# Fuzzy Finder (fzf)
-# ============================================================================
-
-# Load fzf key bindings and completion
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# FZF configuration
-export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS="\
-  --extended \
-  --ansi \
-  --multi \
-  --height 40% \
-  --reverse \
-  --border \
-  --bind 'ctrl-y:execute-silent(echo {} | pbcopy)'"
-
-# ============================================================================
-# Google Cloud Platform
-# ============================================================================
-
-if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
-  . "$HOME/google-cloud-sdk/completion.zsh.inc"
-fi
-
-# Set Python interpreter for GCP SDK
-export CLOUDSDK_PYTHON="/usr/local/bin/python3"
-
-# ============================================================================
-# Shell Prompt
-# ============================================================================
-
-# Initialize Starship prompt
-eval "$(starship init zsh)"
-
-# ============================================================================
-# Development Tools
-# ============================================================================
-
-# Version managers
-eval "$(~/.local/bin/mise activate zsh)"
-
-# Python tools
-if command -v uv &> /dev/null; then
-  autoload -Uz compinit && compinit
-  eval "$(uv generate-shell-completion zsh)"
-fi
-
-# Claude Code
-alias claude="~/.claude/local/claude"
-
-# Kiro Shell Integration
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-
-# Zoxide
-eval "$(zoxide init zsh)"
-
-# Prefer zoxide's `zi` over zinit's alias.
-(( ${+aliases[zi]} )) && unalias zi

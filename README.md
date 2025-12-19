@@ -10,13 +10,14 @@ This repository contains configuration files for various development tools inclu
 
 ```
 .
+├── bin/        # Custom shell scripts
+├── docs/       # Documentation and guides
+├── git/        # Git configuration
 ├── nvim/       # Neovim configuration (Lua)
 ├── tmux/       # Tmux configuration
-├── zsh/        # Zsh shell configuration
-├── cursor/     # Cursor editor settings
-├── git/        # Git configuration
 ├── vim/        # Legacy Vim configuration
-└── bin/        # Custom shell scripts
+├── zsh/        # Zsh shell configuration
+└── links.tsv   # Symlink manifest for dotlink
 ```
 
 ## Installation
@@ -26,7 +27,9 @@ Clone this repository and create symbolic links to the configuration files:
 ```bash
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-# Create symlinks as needed
+# Create symlinks (recommended)
+./bin/dotlink plan
+./bin/dotlink apply --backup
 ```
 
 ## Key Features
