@@ -5,6 +5,7 @@ mouse-hide-while-typing
 
 # Font
 font-family = "Lilex"
+font-family = "HackGen"
 font-feature = -dlig
 alpha-blending = linear
 
