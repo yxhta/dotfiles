@@ -62,6 +62,9 @@ alias pn='pnpm'
 alias cc='claude'
 alias claude="$HOME/.claude/local/claude"
 
+# Codex
+alias cx='codex'
+
 # ==========================================================================
 # Ruby/Rails Development
 # ==========================================================================
