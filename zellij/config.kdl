@@ -1,0 +1,65 @@
+// vim: ft=kdl
+// ============================================================================
+// Zellij config (tmux-like keybindings, prefix = Ctrl-s)
+// ============================================================================
+
+keybinds clear-defaults=true {
+  normal {
+    bind "Ctrl s" { SwitchToMode "Tmux"; }
+  }
+
+  tmux {
+    // send prefix to the active pane
+    bind "Ctrl s" { Write 19; SwitchToMode "Normal"; }
+
+    // splits
+    bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+    bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
+
+    // pane navigation (vim-like)
+    bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+    bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+    bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+    bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+
+    // pane resizing (matches tmux -L/-D/-U/-R)
+    bind "H" { Resize "Decrease Left"; SwitchToMode "Normal"; }
+    bind "J" { Resize "Decrease Down"; SwitchToMode "Normal"; }
+    bind "K" { Resize "Decrease Up"; SwitchToMode "Normal"; }
+    bind "L" { Resize "Decrease Right"; SwitchToMode "Normal"; }
+
+    // break/kill pane
+    bind "b" { BreakPane; SwitchToMode "Normal"; }
+    bind "q" { CloseFocus; SwitchToMode "Normal"; }
+
+    // tabs (tmux windows)
+    bind "Ctrl k" { GoToPreviousTab; SwitchToMode "Normal"; }
+    bind "Ctrl j" { GoToNextTab; SwitchToMode "Normal"; }
+    bind "c" { NewTab; SwitchToMode "Normal"; }
+
+    // zoom (tmux: z)
+    bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+
+    // copy mode entry
+    bind "[" { SwitchToMode "Scroll"; }
+
+    // lazygit (approx: open in a new pane)
+    bind "g" { Run "lazygit"; SwitchToMode "Normal"; }
+  }
+
+  scroll {
+    bind "q" "Esc" { SwitchToMode "Normal"; }
+    bind "j" "Down" { ScrollDown; }
+    bind "k" "Up" { ScrollUp; }
+    bind "Ctrl f" "PageDown" { PageScrollDown; }
+    bind "Ctrl b" "PageUp" { PageScrollUp; }
+    bind "d" { HalfPageScrollDown; }
+    bind "u" { HalfPageScrollUp; }
+    // tmux-like copy flow (best-effort)
+    bind "v" { EditScrollback; }
+    bind "y" { Copy; SwitchToMode "Normal"; }
+  }
+}
+
+copy_command "pbcopy"
+copy_on_select false
