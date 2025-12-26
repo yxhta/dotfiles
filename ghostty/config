@@ -4,10 +4,9 @@ macos-option-as-alt = true
 mouse-hide-while-typing
 
 # Font
-# font-family = Osaka−等幅
-# font-family = Mono
-# font-feature = -dlig
-# alpha-blending = linear
+font-family = "Lilex"
+font-feature = -dlig
+alpha-blending = linear
 
 # keybind = ctrl+s>shift+five=new_split:right
 # keybind = ctrl+s>shift+apostrophe=new_split:down
