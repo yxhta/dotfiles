@@ -19,6 +19,9 @@ nvim	~/.config/nvim
 tmux	~/.config/tmux
 tmux/tmux.conf	~/.tmux.conf
 #
+# Ghostty
+ghostty	~/.config/ghostty
+#
 # Git
 git/gitconfig	~/.gitconfig
 git/gitconfig_private	~/.gitconfig_private
