@@ -1,34 +1,54 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Root contains tool-specific folders: `nvim/` (Lua Neovim config), `tmux/` (statusline + keybinds), `zsh/` (shell setup, aliases, functions), `git/` (global gitconfig), `cursor/` and `zed/` (editor settings), `bin/` (helper scripts), plus legacy `vim/`.
-- Shell config is loaded via `zsh/zshrc` → `zsh/configs/**`; functions live in `zsh/functions/`. Neovim bootstraps from `nvim/init.lua` and uses lazy.nvim with locks in `nvim/lazy-lock.json`.
+
+This is a macOS dotfiles repository organized by tool. Key locations:
+- `bin/`: executable shell scripts (`dotlink`, `tat`).
+- `git/`, `zsh/`, `tmux/`, `nvim/`, `vim/`: tool-specific configs.
+- `ghostty/`, `cursor/`, `zed/`, `zellij/`: app/editor configs.
+- `nix/`: Nix/home-manager setup.
+- Root manifests: `Brewfile`, `Brewfile.cask`, `links.tsv`.
+
+### Neovim (`nvim/`)
+- Lua config lives under `nvim/lua/`; core mappings are in `nvim/lua/keymaps.lua`.
+- LSP servers are configured in `nvim/lua/lsp/servers.lua`.
+- Plugin lockfile is `nvim/lazy-lock.json` (update only when plugins change).
+
+### Zsh (`zsh/`)
+- Core shell config is organized by file (e.g., `zsh/aliases.zsh`, `zsh/functions/`).
+- Keep functions as standalone files in `zsh/functions/` and source them from the main zsh config.
 
 ## Build, Test, and Development Commands
-- `reload!` — reload interactive shell after zsh changes (runs `exec $SHELL -l`).
-- `tat [name]` — attach/create tmux session using repo defaults.
-- `n` / `nvim` — launch Neovim with this config; run `:Lazy sync` after editing plugins.
-- `nvim --headless "+Lazy check" +qa` — verify Neovim plugin health (fast sanity check).
-- `tmux source-file ~/.tmux.conf` — reload tmux config without restarting sessions.
+
+There is no build step. Common workflows:
+- `./bin/dotlink plan`: preview symlink changes from `links.tsv`.
+- `./bin/dotlink apply --backup`: apply symlinks with backups.
+- `brew bundle --file Brewfile`: install Homebrew packages.
+- `brew bundle --file Brewfile.cask`: install GUI apps/VSCode extensions.
+- `nix run github:nix-community/home-manager -- switch --flake ./nix#mac`: apply Nix config.
 
 ## Coding Style & Naming Conventions
-- Shell scripts and zsh configs use two-space indent; prefer POSIX sh-compatible syntax in shared scripts under `bin/`.
-- Lua uses two-space indent; keep tables trailing-comma friendly, avoid tabs.
-- Naming: directories match tool name; helper scripts in `bin/` use short, verb-like names (e.g., `tat`). Keep filenames lowercase with hyphens where needed.
-- Lint/format: rely on editor formatters; keep lines reasonably short (<100 chars) and avoid unused requires/plugins.
+
+- Match existing formatting per tool (Lua in `nvim/`, shell in `bin/`, config files in tool dirs).
+- Shell scripts in `bin/` use `#!/bin/sh`, `set -eu`, and 2-space indentation.
+- Keep filenames descriptive and aligned with their tool directory (e.g., `zsh/aliases.zsh`).
 
 ## Testing Guidelines
-- No automated test suite; validate manually:
-  - Open a new login shell and watch for startup errors.
-  - Run `nvim --headless "+Lazy check" +qa` to confirm plugins resolve.
-  - Start tmux and ensure statusline/icons render; reload with `tmux source-file ~/.tmux.conf`.
-- When touching `bin/` scripts, test with `shellcheck` if available (`shellcheck path/to/script`).
+
+No automated test suite is present. Validate changes by:
+- Running `./bin/dotlink plan` and `./bin/dotlink apply --backup`.
+- Opening a new shell (`reload!`) or restarting the relevant tool (tmux, nvim).
 
 ## Commit & Pull Request Guidelines
-- Commit style follows short imperative messages with optional scope: `scope: action` (e.g., `nvim: update`, `chore(zsh): tidy aliases`).
-- Keep commits focused; include relevant touched tool in the scope.
-- PRs: add a brief summary of what changed, steps to validate (shell/Nvim/tmux notes), and mention any new dotfiles needing symlinks. Screenshots only if visual UI (statusline/theme) changes.
 
-## Agent-Specific Tips
-- Respect symlink workflows: place new config in the repo, not directly in `$HOME`, and note target link path in the PR description.
-- Prefer minimal dependencies; if adding a plugin or tool, note install steps (Homebrew, lazy.nvim) near the change.
+Commit messages follow short prefixes like `zsh: ...`, `ghostty: ...`, or `feat: ...`.
+Prefer the tool name as the prefix when changes are scoped to a single area.
+
+For pull requests:
+- Summarize the affected tools and files.
+- Call out any changes to `links.tsv` or package manifests.
+- Include verification notes (e.g., “ran dotlink plan/apply”).
+
+## Agent-Specific Notes
+
+If you are working via an automation agent, review `CLAUDE.md` for repo-specific commands and operational tips before making edits.
