@@ -8,8 +8,8 @@ if command -v starship >/dev/null 2>&1; then
 fi
 
 # Version managers
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
+if command -v $HOME/.local/bin/mise >/dev/null 2>&1; then
+  eval "$($HOME/.local/bin/mise activate zsh)" # added by https://mise.run/zsh
 fi
 
 # Python tools
