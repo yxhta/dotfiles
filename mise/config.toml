@@ -1,0 +1,5 @@
+[tools]
+go = "1.25"
+node = "22"
+"npm:@biomejs/biome" = "latest"
+"npm:@openai/codex" = "latest"
