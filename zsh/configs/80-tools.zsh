@@ -30,7 +30,7 @@ fi
 
 # Zoxide
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init zsh --cmd cd)"
   # Prefer zoxide's `zi` over any existing alias.
   (( ${+aliases[zi]} )) && unalias zi
 fi
