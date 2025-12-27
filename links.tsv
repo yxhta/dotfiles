@@ -11,6 +11,7 @@ nix/nix.conf	~/.config/nix/nix.conf
 zsh	~/.zsh
 zsh/zshrc	~/.zshrc
 zsh/zshenv	~/.zshenv
+zsh/sheldon/plugins.toml	~/.config/sheldon/plugins.toml
 #
 # Neovim
 nvim	~/.config/nvim
