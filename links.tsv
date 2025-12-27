@@ -31,3 +31,6 @@ git/gitconfig	~/.gitconfig
 git/gitconfig_private	~/.gitconfig_private
 git/gitignore	~/.gitignore_global
 git/gitmessage	~/.gitmessage
+#
+# Mise
+mise/config.toml	~/.config/mise/config.toml
