@@ -1,0 +1,18 @@
+shell = "zsh"
+
+[plugins]
+
+[plugins.fzf-history]
+github = "joshskidmore/zsh-fzf-history-search"
+
+[plugins.autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+
+[plugins.syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+
+[plugins.zsh-completions]
+github = "zchee/zsh-completions"
+
+[plugins.fzf]
+inline = "if [ -f \"$HOME/.fzf.zsh\" ]; then source \"$HOME/.fzf.zsh\"; fi"

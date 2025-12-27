@@ -31,6 +31,6 @@ fi
 # Zoxide
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
-  # Prefer zoxide's `zi` over zinit's alias.
+  # Prefer zoxide's `zi` over any existing alias.
   (( ${+aliases[zi]} )) && unalias zi
 fi
