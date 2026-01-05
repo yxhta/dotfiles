@@ -1,0 +1,77 @@
+# ------------------------------------
+# Global Settings
+# ------------------------------------
+
+# Add a newline after the prompt for better separation
+add_newline = true
+
+# Set timeout to prevent blocking on slow commands
+command_timeout = 1000
+
+# Prompt character (Green for success, Red for error)
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+
+# ------------------------------------
+# Module Settings
+# ------------------------------------
+
+# Directory path settings
+# [directory]
+# truncation_length = 3
+# truncation_symbol = "…/"
+# style = "bold cyan"
+
+# Git settings (Crucial for developers)
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+# Execution time (Show only if command takes more than 2s)
+[cmd_duration]
+min_time = 2_000
+style = "bold yellow"
+format = "took [$duration]($style) "
+
+# ------------------------------------
+# Language / Tool Context (Lazy Loading)
+# ------------------------------------
+
+[aws]
+symbol = " "
+style = "bold yellow"
+# Can control display based on env vars
+
+[buf]
+disabled = true
+
+[docker_context]
+symbol = " "
+style = "blue condensed"
+disabled = true
+
+[kubernetes]
+symbol = "☸ "
+style = "cyan"
+disabled = false
+
+[nodejs]
+symbol = " "
+style = "bold green"
+
+[package]
+disabled = true
+
+[python]
+symbol = " "
+style = "bold yellow"
+
+[rust]
+symbol = " "
+style = "bold red"
+
+[golang]
+symbol = " "
+style = "bold cyan"
+
