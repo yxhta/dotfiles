@@ -28,7 +28,6 @@ ghostty	~/.config/ghostty
 #
 # Git
 git/gitconfig	~/.gitconfig
-git/gitconfig_private	~/.gitconfig_private
 git/gitignore	~/.gitignore_global
 git/gitmessage	~/.gitmessage
 #
