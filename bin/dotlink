@@ -6,15 +6,14 @@ trap 'exit 0' PIPE
 
 usage() {
   cat <<'USAGE'
-dotlink: manage dotfiles symlinks from a manifest
+dotlink: manage dotfiles symlinks
 
 Usage:
-  dotlink status [--manifest PATH]
-  dotlink plan   [--manifest PATH]
-  dotlink apply  [--manifest PATH] [--backup] [--force]
+  dotlink status
+  dotlink plan
+  dotlink apply [--backup] [--force]
 
 Notes:
-  - Default manifest: ./links.tsv (repo root)
   - `apply` is idempotent: existing correct links are left as-is
   - Conflicts (non-symlink destination, or symlink to different target) are not overwritten unless:
       - --backup: move the existing destination aside (suffix: .bak.<timestamp>)
@@ -70,7 +69,6 @@ abs_path() {
 }
 
 read_manifest() {
-  manifest=$1
   while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in
       ""|\#*)
@@ -86,7 +84,36 @@ EOF
       return 2
     fi
     printf '%s\t%s\n' "$src" "$dest"
-  done <"$manifest"
+  done
+}
+
+embedded_manifest() {
+  cat <<'MANIFEST'
+# Nix
+nix/nix.conf	~/.config/nix/nix.conf
+# Zsh
+zsh	~/.zsh
+zsh/zshrc	~/.zshrc
+zsh/zshenv	~/.zshenv
+zsh/sheldon/plugins.toml	~/.config/sheldon/plugins.toml
+# Neovim
+nvim	~/.config/nvim
+# Tmux
+tmux	~/.config/tmux
+tmux/tmux.conf	~/.tmux.conf
+# Zellij
+zellij	~/.config/zellij
+# Ghostty
+ghostty	~/.config/ghostty
+# Git
+git/gitconfig	~/.gitconfig
+git/gitignore	~/.gitignore_global
+git/gitmessage	~/.gitmessage
+# Mise
+mise/config.toml	~/.config/mise/config.toml
+# Starship
+starship/starship.toml	~/.config/starship.toml
+MANIFEST
 }
 
 normalize_link_target() {
@@ -184,17 +211,12 @@ cmd=${1:-}
 shift || true
 
 root=$(repo_root)
-manifest="$root/links.tsv"
 backup=0
 force=0
 tab=$(printf '\t')
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --manifest)
-      manifest=$2
-      shift 2
-      ;;
     --backup)
       backup=1
       shift 1
@@ -215,12 +237,6 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-manifest=$(expand_home "$manifest")
-if [ ! -f "$manifest" ]; then
-  err "dotlink: manifest not found: $manifest"
-  exit 2
-fi
-
 case "$cmd" in
   status|plan|apply)
     :
@@ -240,7 +256,7 @@ tmp_manifest=$(mktemp "${TMPDIR:-/tmp}/dotlink.XXXXXX")
 trap 'rm -f -- "$tmp_manifest"' EXIT INT TERM HUP
 
 exit_code=0
-read_manifest "$manifest" >"$tmp_manifest"
+embedded_manifest | read_manifest >"$tmp_manifest"
 
 while IFS="$(printf '\t')" read -r src_rel dest_raw; do
   src_raw=$src_rel

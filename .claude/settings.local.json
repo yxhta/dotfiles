@@ -3,7 +3,8 @@
     "allow": [
       "Bash(find:*)",
       "Bash(make:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(./bin/dotlink:*)"
     ],
     "deny": []
   }
