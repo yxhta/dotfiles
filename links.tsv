@@ -33,3 +33,6 @@ git/gitmessage	~/.gitmessage
 #
 # Mise
 mise/config.toml	~/.config/mise/config.toml
+#
+# Starship
+starship/starship.toml	~/.config/starship.toml
