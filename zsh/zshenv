@@ -86,20 +86,3 @@ path=(
 )
 
 export PATH
-
-# ============================================================================
-# Tool Initialization
-# ============================================================================
-
-# Export PNPM_HOME explicitly for tools that expect it
-export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
-
-# Google Cloud SDK PATH (kept in zshenv so non-interactive shells can find gcloud)
-if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then
-  . "$HOME/google-cloud-sdk/path.zsh.inc"
-fi
-
-# Load Cargo environment if available
-if [ -f "$HOME/.cargo/env" ]; then
-  . "$HOME/.cargo/env"
-fi
