@@ -53,14 +53,14 @@ alias dkc='docker compose'
 alias kb='kubectl'
 
 # Package managers
-alias pn='pnpm'
+# alias pn='pnpm'
 
 # Build tools (commented out - uncomment if needed)
 # alias make='gmake'
 
 # Claude Code
-alias cc='claude'
 alias claude="$HOME/.claude/local/claude"
+alias cc='claude'
 
 # Codex
 alias cx='codex'
@@ -70,18 +70,18 @@ alias cx='codex'
 # ==========================================================================
 
 # Bundler
-alias b='bundle'
+# alias b='bundle'
 
 # Rails shortcuts
-alias migrate='rake db:migrate db:rollback && rake db:migrate db:test:prepare'
-alias s='rspec'
+# alias migrate='rake db:migrate db:rollback && rake db:migrate db:test:prepare'
+# alias s='rspec'
 
 # ==========================================================================
 # System Utilities
 # ==========================================================================
 
 # Pretty print PATH
-alias path='echo $PATH | tr -s ":" "\n"'
+# alias path='echo $PATH | tr -s ":" "\n"'
 
 # Shell management
-alias reload!='exec $SHELL -l'
+alias rr='exec $SHELL -l'
