@@ -65,6 +65,10 @@ alias cc='claude'
 # Codex
 alias cx='codex'
 
+# mise
+alias mi='mise install'
+alias mr='mise run'
+
 # ==========================================================================
 # Ruby/Rails Development
 # ==========================================================================
