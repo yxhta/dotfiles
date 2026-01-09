@@ -8,7 +8,7 @@ return {
       require("kanagawa").setup({
         transparent = true,
       })
-      vim.cmd("colorscheme kanagawa-dragon")
+      vim.cmd("colorscheme kanagawa")
       require("colors").overrides()
     end,
   },
