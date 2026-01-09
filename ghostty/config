@@ -15,7 +15,7 @@ clipboard-write = allow
 # --- Visuals & Theme ---
 # Background opacity (Replaces alpha-blending)
 # 0.9 to 0.95 provides a good balance of readability and aesthetics.
-background-opacity = 0.95
+background-opacity = 0.90
 
 # Blur effect (Recommended for a native macOS feel)
 background-blur-radius = 20
@@ -24,6 +24,9 @@ background-blur-radius = 20
 window-padding-x = 10
 window-padding-y = 10
 window-padding-balance = true
+
+# Color theme
+theme = "Kanagawa Dragon"
 
 # --- Font Configuration ---
 # Primary font
