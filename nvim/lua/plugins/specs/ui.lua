@@ -5,7 +5,10 @@ return {
     priority = 1000,
     config = function()
       require("colors")
-      vim.cmd("colorscheme kanagawa-wave")
+      require("kanagawa").setup({
+        transparent = true,
+      })
+      vim.cmd("colorscheme kanagawa-dragon")
       require("colors").overrides()
     end,
   },
