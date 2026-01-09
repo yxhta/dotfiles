@@ -1,6 +1,6 @@
 # --- Core Behavior ---
 # Disable native fullscreen to use the current screen space (faster transition)
-macos-non-native-fullscreen = true
+# macos-non-native-fullscreen = true
 
 # Treat the Option key as Alt (Useful for Vim/Emacs users)
 macos-option-as-alt = true
@@ -24,6 +24,12 @@ background-blur-radius = 20
 window-padding-x = 10
 window-padding-y = 10
 window-padding-balance = true
+
+# Cursor appearance
+cursor-color = "#c0c0c0"
+cursor-style = block
+cursor-style-blink = true
+shell-integration-features = no-cursor
 
 # Color theme
 # theme = "Kanagawa Wave"
