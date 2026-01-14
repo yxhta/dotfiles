@@ -81,7 +81,7 @@ vim.opt.foldtext = 'v:lua.CustomFoldText()'
 
 -- Accept suggested completion with <C-j> from GitHub Copilot
 vim.g.copilot_no_tab_map = true
-vim.keymap.set("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.cmd([[imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")]])
 
 -- Clipboard integration
 vim.opt.clipboard:append("unnamedplus")
