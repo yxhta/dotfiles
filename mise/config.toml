@@ -11,3 +11,8 @@ node = "22"
 "npm:typescript-language-server" = "latest"
 python = "3.12"
 flutter = "3.38.3"
+"npm:agent-browser" = "latest"
+ruby = "4"
+
+[settings]
+experimental = true
