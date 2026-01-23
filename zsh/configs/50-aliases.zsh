@@ -59,7 +59,6 @@ alias kb='kubectl'
 # alias make='gmake'
 
 # Claude Code
-alias claude="$HOME/.claude/local/claude"
 alias cc='claude'
 
 # Codex
