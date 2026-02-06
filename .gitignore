@@ -5,5 +5,8 @@ vim/bundle/
 vim/undo/
 nvim/plugin/packer_compiled.lua
 
+# Claude Code
+.claude/settings.local.json
+
 # FVM Version Cache
 .fvm/
