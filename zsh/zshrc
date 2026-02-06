@@ -4,6 +4,7 @@
 
 # Load custom executable functions
 for fn in "$HOME/.zsh/functions/"*(N-.); do
+  [[ "$fn" == *.md ]] && continue
   source "$fn"
 done
 
@@ -23,7 +24,7 @@ _load_settings() {
     # Load main configuration files
     for config in "$dir"/**/*(N-.); do
       case "$config" in
-        "$dir"/(pre|post)/*|*.zwc)
+        "$dir"/(pre|post)/*|*.zwc|*.md)
           ;;
         *)
           source "$config"
