@@ -111,6 +111,8 @@ git/gitignore	~/.gitignore_global
 git/gitmessage	~/.gitmessage
 # Mise
 mise/config.toml	~/.config/mise/config.toml
+# Lazygit
+lazygit/config.yml	~/.config/lazygit/config.yml
 # Starship
 starship/starship.toml	~/.config/starship.toml
 MANIFEST
