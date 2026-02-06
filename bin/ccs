@@ -8,8 +8,27 @@ show_empty_state_and_exit() {
   message=$1
 
   if [ -n "${TMUX:-}" ] && [ -t 0 ] && [ -t 1 ]; then
-    printf '%s\n\nPress Enter to close...' "$message"
-    read -r _
+    printf '%s' "$message"
+
+    tty_state=$(stty -g < /dev/tty 2>/dev/null || true)
+    if [ -n "$tty_state" ]; then
+      stty -echo -icanon min 1 time 0 < /dev/tty 2>/dev/null || true
+      trap 'stty "$tty_state" < /dev/tty 2>/dev/null || true; exit 130' INT TERM
+
+      while :; do
+        key_code=$(dd bs=1 count=1 2>/dev/null < /dev/tty | od -An -t u1 | tr -d '[:space:]')
+
+        case "$key_code" in
+          10|13|27|81|113) break ;;
+        esac
+      done
+
+      trap - INT TERM
+      stty "$tty_state" < /dev/tty 2>/dev/null || true
+    else
+      read -r _
+    fi
+
     exit 0
   fi
 
