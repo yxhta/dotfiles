@@ -13,6 +13,7 @@ python = "3.12"
 flutter = "3.38.3"
 "npm:agent-browser" = "latest"
 ruby = "4"
+bun = "latest"
 
 [settings]
 experimental = true
