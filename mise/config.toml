@@ -14,6 +14,7 @@ flutter = "3.38.3"
 "npm:agent-browser" = "latest"
 ruby = "4"
 bun = "latest"
+prek = "latest"
 
 [settings]
 experimental = true
