@@ -1,10 +1,13 @@
 [init]
   templatedir = ~/.git_template
+
 [push]
   default = current
+
 [color]
   ui = auto
   editor = vim
+
 [alias]
   l = log --pretty=colored
   aa = add --all
@@ -16,32 +19,53 @@
   co = checkout
   pf = push --force-with-lease
   st = status
+
 [core]
+  pager = delta
   excludesfile = ~/.gitignore_global
   autocrlf = input
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    light = false
+    side-by-side = false
+
 [merge]
   ff = only
+
 [commit]
   template = ~/.gitmessage
+
 [fetch]
   prune = true
+
 [rebase]
   autosquash = true
+
 [diff]
   colorMoved = zebra
+
 [pretty]
   colored = format:%Cred%h%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset
+
 [user]
   name = "REDACTED_NAME"
   email = redacted@example.com
+
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
+
 [includeIf "gitdir:~/dotfiles/"]
 	path = .gitconfig_private
+
 [includeIf "gitdir:~/ghq/github.com/"]
 	path = .gitconfig_private
