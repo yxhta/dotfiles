@@ -1,0 +1,90 @@
+#!/bin/sh
+#
+# AI Code Session Selector
+# List Claude Code / Codex sessions running in tmux and jump to one.
+# Dependencies: tmux, fzf
+
+# --- Process detection ---
+_claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
+_codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
+
+_raw_ppids=$(printf '%s\n%s\n' "$_claude_ppids" "$_codex_ppids" | awk 'NF' | sort -u)
+
+if [ -z "$_raw_ppids" ]; then
+  echo "No AI code sessions found in tmux" >&2
+  exit 1
+fi
+
+# Build newline-wrapped PID lists for exact matching
+claude_ppids="
+${_claude_ppids}
+"
+codex_ppids="
+${_codex_ppids}
+"
+all_ppids="
+${_raw_ppids}
+"
+
+# --- Pane scanning ---
+pane_data=$(tmux list-panes -a \
+  -F '#{session_name}:#{window_index}.#{pane_index}	#{pane_pid}	#{pane_current_path}	#{window_name}')
+
+pane_list=""
+OLD_IFS="$IFS"
+IFS='
+'
+for line in $pane_data; do
+  target=$(printf '%s' "$line" | cut -f1)
+  pid=$(printf '%s' "$line" | cut -f2)
+  cwd=$(printf '%s' "$line" | cut -f3)
+  wname=$(printf '%s' "$line" | cut -f4)
+
+  case "$all_ppids" in
+    *"
+${pid}
+"*) ;;
+    *) continue ;;
+  esac
+
+  # Determine session type
+  type="claude"
+  case "$codex_ppids" in
+    *"
+${pid}
+"*) type="codex" ;;
+  esac
+
+  short_cwd=$(printf '%s' "$cwd" | sed "s|^$HOME|~|")
+  pane_list="${pane_list}${target}	[${type}]	${short_cwd}	${wname}
+"
+done
+IFS="$OLD_IFS"
+
+if [ -z "$pane_list" ]; then
+  echo "No AI code sessions found in tmux" >&2
+  exit 1
+fi
+
+# --- fzf selection ---
+selection=$(printf '%s' "$pane_list" | column -t -s '	' | fzf \
+  --prompt="AI session: " \
+  --header="PANE            TYPE      DIRECTORY                   WINDOW" \
+  --no-multi \
+  --height=100% \
+  --reverse \
+  --preview 'line=$(printf "%s" {}); target=${line%% *}; tmux capture-pane -p -e -t "$target" -S -80 2>/dev/null || printf "Preview unavailable: %s\n" "$target"' \
+  --preview-window="right:60%:wrap:follow")
+
+[ -z "$selection" ] && exit 0
+
+target_pane=$(printf '%s' "$selection" | awk '{ print $1 }')
+
+if [ -n "$TMUX" ]; then
+  session_window="${target_pane%.*}"
+  tmux switch-client -t "$session_window"
+  tmux select-pane -t "$target_pane"
+else
+  session_name="${target_pane%%:*}"
+  tmux attach-session -t "$session_name"
+fi
