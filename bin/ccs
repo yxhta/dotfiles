@@ -4,6 +4,19 @@
 # List Claude Code / Codex sessions running in tmux and jump to one.
 # Dependencies: tmux, fzf
 
+show_empty_state_and_exit() {
+  message=$1
+
+  if [ -n "${TMUX:-}" ] && [ -t 0 ] && [ -t 1 ]; then
+    printf '%s\n\nPress Enter to close...' "$message"
+    read -r _
+    exit 0
+  fi
+
+  echo "$message" >&2
+  exit 1
+}
+
 # --- Process detection ---
 _claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
 _codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
@@ -11,8 +24,7 @@ _codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
 _raw_ppids=$(printf '%s\n%s\n' "$_claude_ppids" "$_codex_ppids" | awk 'NF' | sort -u)
 
 if [ -z "$_raw_ppids" ]; then
-  echo "No AI code sessions found in tmux" >&2
-  exit 1
+  show_empty_state_and_exit "No AI code sessions found in tmux"
 fi
 
 # Build newline-wrapped PID lists for exact matching
@@ -62,8 +74,7 @@ done
 IFS="$OLD_IFS"
 
 if [ -z "$pane_list" ]; then
-  echo "No AI code sessions found in tmux" >&2
-  exit 1
+  show_empty_state_and_exit "No AI code sessions found in tmux"
 fi
 
 # --- fzf selection ---
