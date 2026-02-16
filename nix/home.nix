@@ -3,10 +3,21 @@
 let
   has = builtins.hasAttr;
   opt = name: value: lib.optionals (has name pkgs) [ value ];
+  requireEnv = name:
+    let
+      value = builtins.getEnv name;
+    in
+    if value != "" then
+      value
+    else
+      throw ''
+        Missing environment variable `${name}`.
+        If you are using flakes, run with `--impure`.
+      '';
 in
 {
-  home.username = "a24-033";
-  home.homeDirectory = "/Users/REDACTED";
+  home.username = requireEnv "USER";
+  home.homeDirectory = requireEnv "HOME";
   home.stateVersion = "25.05";
 
   programs.home-manager.enable = true;
