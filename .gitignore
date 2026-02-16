@@ -8,5 +8,8 @@ nvim/plugin/packer_compiled.lua
 # Claude Code
 .claude/settings.local.json
 
+# MCP config (contains credentials)
+ai-rules/mcp.json
+
 # FVM Version Cache
 .fvm/
