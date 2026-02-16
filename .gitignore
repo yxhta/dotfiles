@@ -4,6 +4,7 @@ vim/autoload/
 vim/bundle/
 vim/undo/
 nvim/plugin/packer_compiled.lua
+nvim/lazy-lock.json
 git/gitconfig_private
 
 # Claude Code (local-only)
