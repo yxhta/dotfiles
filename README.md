@@ -32,6 +32,21 @@ cd ~/dotfiles
 ./bin/dotlink apply --backup
 ```
 
+## Private configuration (not tracked)
+
+Keep personal identity settings out of this repository by creating `~/.gitconfig_private`.
+This repo's `git/gitconfig` includes it via `includeIf`.
+
+```bash
+cat > ~/.gitconfig_private <<'EOF'
+[user]
+  name = "Your Name"
+  email = you@example.com
+EOF
+```
+
+For Claude Code settings, put local-only values under `~/.claude/` (the entire directory is gitignored).
+
 ## Key Features
 
 - **Neovim**: Modern Lua-based configuration with LSP support
