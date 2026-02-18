@@ -1,6 +1,6 @@
 [tools]
 "aqua:ariga/atlas" = "0.38.0"
-"aqua:golangci/golangci-lint" = "2.6.2"
+"aqua:golangci/golangci-lint" = "2.9.0"
 go = "1.25"
 node = "22"
 "npm:@biomejs/biome" = "latest"
