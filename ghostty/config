@@ -68,3 +68,7 @@ keybind = super+down=goto_split:bottom
 
 # Toggle split zoom (Maximize current pane)
 keybind = super+z=toggle_split_zoom
+
+# Toggle quick terminal (Cmd + `)
+keybind = global:cmd+backquote=toggle_quick_terminal
+
