@@ -43,3 +43,6 @@ _load_settings() {
 
 # Load all zsh configurations
 _load_settings "$HOME/.zsh/configs"
+
+# Entire CLI shell completion
+autoload -Uz compinit && compinit && source <(entire completion zsh)
