@@ -27,10 +27,6 @@ alias v="$VISUAL"
 alias n='nvim'
 alias vi='nvim'
 
-# Quick access to common files
-alias daily='$EDITOR ~/daily.md'
-alias memo='$EDITOR ~/code/memo.md'
-
 # ==========================================================================
 # Development Tools
 # ==========================================================================

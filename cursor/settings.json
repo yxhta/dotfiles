@@ -33,7 +33,7 @@
   },
   // Vim settings
   "vim.enableNeovim": true,
-  "vim.neovimPath": "/opt/homebrew/bin/nvim",
+  "vim.neovimPath": "nvim",
   "vim.neovimUseConfigFile": true,
   "vim.neovimConfigPath": "~/.config/nvim/init.lua",
   "vim.useSystemClipboard": true,
