@@ -57,9 +57,6 @@
   process = git-lfs filter-process
   required = true
 
-[url "ssh://git@github.com/"]
-  insteadOf = https://github.com/
-
 [includeIf "gitdir:~/dotfiles/"]
 	path = .gitconfig_private
 
