@@ -9,6 +9,9 @@ vim.g.loaded_netrwPlugin = 1
 -- Leader must be set before lazy.nvim loads
 vim.g.mapleader = " "
 
+-- Compatibility shims that must be defined before plugins are loaded.
+require("core.compat")
+
 -- Core settings
 require("core")
 

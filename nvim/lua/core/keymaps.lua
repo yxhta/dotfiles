@@ -2,6 +2,7 @@ local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
 local copts = { noremap = true }
 local clipboard_utils = require('utils.clipboard')
+local lsp_ui = require("lsp.lsp-config")
 
 local function telescope_ext_call(ext, fn)
   local ok, telescope = pcall(require, 'telescope')
@@ -18,9 +19,13 @@ end
 -- LSP
 keymap("n", "gD", vim.lsp.buf.declaration, opts)
 keymap("n", "gd", vim.lsp.buf.definition, opts)
-keymap("n", "K", vim.lsp.buf.hover, opts)
+keymap("n", "K", function()
+  vim.lsp.buf.hover(lsp_ui.hover_config)
+end, opts)
 keymap("n", "gi", vim.lsp.buf.implementation, opts)
-keymap("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+keymap("n", "<C-k>", function()
+  vim.lsp.buf.signature_help(lsp_ui.signature_help_config)
+end, opts)
 keymap("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
 keymap("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
 keymap("n", "<space>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)

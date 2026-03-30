@@ -64,15 +64,15 @@ local handlers = {
     -- end,
 }
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+local signature_help_config = {
     silent = true,
-    max_height = "10",
+    max_height = 10,
     border = borders,
-})
+}
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+local hover_config = {
     border = borders,
-})
+}
 
 vim.lsp.util.close_preview_autocmd = function(events, winnr)
     events = vim.tbl_filter(function(v)
@@ -129,4 +129,6 @@ M = {}
 M.on_attach = on_attach
 M.capabilites = capabilities
 M.borders = borders
+M.hover_config = hover_config
+M.signature_help_config = signature_help_config
 return M
