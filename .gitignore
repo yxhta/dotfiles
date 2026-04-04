@@ -7,8 +7,12 @@ nvim/plugin/packer_compiled.lua
 nvim/lazy-lock.json
 git/gitconfig_private
 
-# Claude Code (local-only)
+# Conding Agents
 .claude/
+.agents/
+.specify/
+specs/
+skills-lock.json
 
 # MCP config (contains credentials)
 ai-rules/mcp.json
