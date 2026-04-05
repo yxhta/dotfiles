@@ -19,3 +19,6 @@ ai-rules/mcp.json
 
 # FVM Version Cache
 .fvm/
+
+# Nix build output symlink
+result

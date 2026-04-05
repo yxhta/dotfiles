@@ -3,21 +3,10 @@
 let
   has = builtins.hasAttr;
   opt = name: value: lib.optionals (has name pkgs) [ value ];
-  requireEnv = name:
-    let
-      value = builtins.getEnv name;
-    in
-    if value != "" then
-      value
-    else
-      throw ''
-        Missing environment variable `${name}`.
-        If you are using flakes, run with `--impure`.
-      '';
 in
 {
-  home.username = requireEnv "USER";
-  home.homeDirectory = requireEnv "HOME";
+  home.username = "yxhta";
+  home.homeDirectory = "/Users/yxhta";
   home.stateVersion = "25.05";
 
   programs.home-manager.enable = true;
@@ -25,29 +14,37 @@ in
   home.packages =
     (with pkgs; [
       awscli2
+      bottom
       btop
       buf
       cloudflared
       cmake
       cocoapods
+      delta
       direnv
       duckdb
       eza
       fd
+      ffmpeg
       fzf
       gh
       ghq
       git
+      git-filter-repo
+      git-lfs
       golangci-lint
       grpcurl
       lazygit
       libyaml
       neovim
+      ngrok
       nushell
       openssl
       pueue
       readline
       ripgrep
+      sheldon
+      supabase-cli
       tmux
       tree
       utf8proc

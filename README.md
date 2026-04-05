@@ -13,6 +13,7 @@ This repository contains configuration files for various development tools inclu
 ├── bin/        # Custom shell scripts
 ├── docs/       # Documentation and guides
 ├── git/        # Git configuration
+├── nix/        # Nix configuration (nix-darwin + home-manager)
 ├── nvim/       # Neovim configuration (Lua)
 ├── tmux/       # Tmux configuration
 ├── vim/        # Legacy Vim configuration
@@ -22,15 +23,51 @@ This repository contains configuration files for various development tools inclu
 
 ## Installation
 
-Clone this repository and create symbolic links to the configuration files:
+### New Machine Setup
+
+#### Step 1: Install Nix
+
+```bash
+sh <(curl -L https://nixos.org/nix/install)
+exec $SHELL -l
+```
+
+#### Step 2: Build environment with nix-darwin
 
 ```bash
 git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-# Create symlinks (recommended)
-./bin/dotlink plan
-./bin/dotlink apply --backup
+nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ./nix#mac
 ```
+
+This sets up everything in one command:
+- **System settings (nix-darwin)**: Touch ID for sudo, Nix daemon config (flakes enabled)
+- **CLI tools (home-manager)**: neovim, tmux, fzf, ripgrep, lazygit, delta, and 40+ more
+
+#### Step 3: Install GUI apps
+
+```bash
+brew bundle --file=Brewfile
+```
+
+### Updating
+
+After editing `nix/home.nix` or `nix/darwin.nix`:
+
+```bash
+darwin-rebuild switch --flake ./nix#mac
+```
+
+### Migration from standalone home-manager
+
+If you previously used home-manager standalone:
+
+```bash
+nix profile remove home-manager
+nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ./nix#mac
+```
+
+See `specs/001-nix-dev-environment/quickstart.md` for detailed steps.
 
 ## Private configuration (not tracked)
 
@@ -56,62 +93,18 @@ For Claude Code settings, put local-only values under `~/.claude/` (the entire d
 
 ## Requirements
 
-- macOS
-- Homebrew (optional)
-- Nix (optional)
+- macOS (Apple Silicon)
+- Nix (installed via official installer)
 - Git
-- Zsh
-- Neovim 0.9+
-- Tmux 3.0+
+- Homebrew (for GUI apps only)
 
-## Usage
+## Package Management
 
-See [CLAUDE.md](./CLAUDE.md) for detailed configuration information and common commands.
-
-## Package management
-
-### Homebrew
-
-Full Homebrew setup (legacy):
-
-```bash
-brew bundle --file Brewfile
-```
-
-GUI apps + VSCode extensions only (use with Nix-managed CLI tools):
-
-```bash
-brew bundle --file Brewfile.cask
-```
-
-### Nix (home-manager)
-
-This repo includes a minimal home-manager flake under `nix/` for managing CLI tools.
-
-1) Install Nix (recommended: daemon installer)
-2) Switch:
-
-```bash
-nix run github:nix-community/home-manager -- switch --flake ./nix#mac
-```
-
-Adjust user settings and package list in `nix/home.nix`.
-If Nix complains about unfree packages, update `unfreePackageNames` in `nix/flake.nix`.
-
-Migration guide: see `docs/nix-migration.md`.
+- **CLI tools**: Managed by Nix (home-manager) via `nix/home.nix`
+- **GUI apps**: Managed by Homebrew Cask via `Brewfile`
+- **System settings**: Managed by nix-darwin via `nix/darwin.nix`
 
 ## Symlinks
 
 Dotfiles-managed configs are synced to the host machine via symlinks.
 See `docs/dotlink.md`.
-
-### Migration tips (Brew → Nix for CLI)
-
-1) Apply Nix first, then open a new login shell
-2) Install GUI apps via Homebrew casks:
-
-```bash
-brew bundle --file Brewfile.cask
-```
-
-3) Remove Homebrew formulae once you confirm the Nix versions work (to avoid duplicates/conflicts)

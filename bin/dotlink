@@ -89,8 +89,6 @@ EOF
 
 embedded_manifest() {
   cat <<'MANIFEST'
-# Nix
-nix/nix.conf	~/.config/nix/nix.conf
 # Zsh
 zsh	~/.zsh
 zsh/zshrc	~/.zshrc

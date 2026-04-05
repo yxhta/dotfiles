@@ -73,3 +73,11 @@ When modifying configurations:
 ## File Linking
 
 This repository appears to use symbolic links to connect configuration files to their expected locations in the home directory. When adding new configuration files, ensure they are properly linked to their target locations.
+
+## Recent Changes
+- 001-nix-dev-environment: Added Nix (flakes + nix-darwin + home-manager) + nixpkgs-unstable, nix-darwin (LnL7/nix-darwin), home-manager
+- 001-nix-dev-environment: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+
+## Active Technologies
+- Nix (flakes + nix-darwin + home-manager) + nixpkgs-unstable, nix-darwin (LnL7/nix-darwin), home-manager (001-nix-dev-environment)
+- N/A（設定ファイルのみ） (001-nix-dev-environment)
