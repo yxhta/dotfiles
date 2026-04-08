@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.7",
+  "checkpoint_id": "e5812533879c",
+  "session_id": "7a805256-978d-44c2-823f-da49b666f284",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-08T06:46:36.195788Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "zsh/zshenv"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "3cbe51f5dc45",
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 42010,
+    "cache_read_tokens": 351040,
+    "output_tokens": 2554,
+    "api_call_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-08T06:46:36.170726Z",
+    "agent_lines": 6,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 6,
+    "agent_percentage": 100
+  }
+}
