@@ -86,3 +86,9 @@ path=(
 )
 
 export PATH
+
+# ============================================================================
+# Local overrides (not tracked in git)
+# ============================================================================
+# Put machine-specific env vars and secrets in ~/.zshenv.local
+[[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
