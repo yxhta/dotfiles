@@ -4,80 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository containing configuration files for various development tools on macOS. The repository is organized by tool with each major tool having its own directory.
+Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are declaratively managed by Nix (flakes + nix-darwin + home-manager); GUI apps by Homebrew Cask; per-tool config files live as plain files in this repo and are symlinked into `$HOME` by the `bin/dotlink` script.
 
-## Repository Structure
+## Architecture: three layers of provisioning
 
-Key directories:
-- `nvim/` - Neovim configuration using Lua
-- `tmux/` - Tmux configuration with custom statusline
-- `zsh/` - Zsh shell configuration with custom functions and zinit plugin manager
-- `cursor/` - Cursor editor settings and keybindings
-- `git/` - Git configuration files
-- `vim/` - Legacy Vim configuration
-- `bin/` - Custom shell scripts (e.g., `tat` for tmux session management)
+Changes land in different places depending on what you're modifying. Knowing which layer is authoritative prevents drift:
 
-## Common Commands
+1. **`nix/` — packages and system state (authoritative).**
+   - `nix/flake.nix` defines the `darwinConfigurations.mac` system (aarch64-darwin) and wires home-manager as a nix-darwin module. There is no standalone home-manager anymore.
+   - `nix/darwin.nix` holds system-level settings (Touch ID for sudo, Nix daemon flakes flag, unfree package allowlist).
+   - `nix/home.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
+   - Apply changes with `darwin-rebuild switch --flake ./nix#mac`. First-ever bootstrap uses `nix run nix-darwin -- switch --flake ./nix#mac`.
 
-### Reload Shell Configuration
+2. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/home.nix`, not here. Apply with `brew bundle --file=Brewfile`.
+
+3. **Config files + `bin/dotlink` — per-tool dotfiles.**
+   - `bin/dotlink` contains an **embedded manifest** (see `embedded_manifest()` in the script) mapping repo paths to `$HOME` destinations. `links.tsv` mentioned in older docs is not the source of truth — the embedded manifest is.
+   - `dotlink status` / `dotlink plan` / `dotlink apply [--backup] [--force]`. `apply` is idempotent; conflicts are never overwritten without `--backup` or `--force`.
+   - **When adding a new tool config, edit `embedded_manifest()` in `bin/dotlink`** — don't just drop files in place and assume they'll be linked.
+
+## Common commands
+
 ```bash
-reload!  # Alias to reload the shell (exec $SHELL -l)
+# Apply Nix config (most common loop when editing nix/*.nix)
+darwin-rebuild switch --flake ./nix#mac
+
+# Preview / apply symlinks
+./bin/dotlink plan
+./bin/dotlink apply --backup
+
+# GUI apps
+brew bundle --file=Brewfile
+
+# Reload shell after zsh changes
+rr                   # alias for: exec $SHELL -l
 ```
 
-### Neovim Development
-- The main editor alias is `n` or `nvim`
-- Plugin management is handled by lazy.nvim (see `nvim/lazy-lock.json`)
-- LSP servers are configured in `nvim/lua/lsp/servers.lua`
+## Zsh layout
 
-### Tmux Session Management
-```bash
-tat [session-name]  # Attach or create tmux session
-```
+`zsh/zshrc` sources files from `$HOME/.zsh/configs/` (symlinked from `zsh/configs/`) using a three-phase loader: `pre/` → main files → `post/`. Main files are numbered (`00-core`, `10-history`, …, `80-tools`) to control load order — keep that convention when adding new config. Standalone functions live in `zsh/functions/` as individual files and are sourced at startup.
 
-### Version Management
-- Uses `mise` for runtime version management
-- Python packages managed with `rye` and `uv`
-- Node packages managed with `pnpm`
+- Plugin manager: **sheldon** (config at `zsh/sheldon/plugins.toml`). Older docs mentioning zinit are stale.
+- Prompt: starship.
+- Runtime version manager: mise (`mi`/`mr` aliases).
 
-## Key Configuration Details
+## Neovim
 
-### Zsh Configuration
-- Plugin manager: zinit
-- Prompt: starship
-- Fuzzy finder: fzf with ag (silver searcher)
-- Custom functions located in `zsh/functions/`
+- Lua config under `nvim/lua/`. Entry mappings in `nvim/lua/keymaps.lua`.
+- Plugins via lazy.nvim; lockfile is `nvim/lazy-lock.json` (commit it only when intentionally updating plugins).
+- LSP server list: `nvim/lua/lsp/servers.lua`. DAP is set up for Go.
+- After plugin changes, run `:Lazy sync` inside nvim.
 
-### Neovim Configuration
-- Written in Lua
-- Plugin manager: lazy.nvim
-- LSP configuration with multiple language servers
-- DAP (Debug Adapter Protocol) support for Go
-- Custom keymaps in `nvim/lua/keymaps.lua`
+## Conventions
 
-### Development Tool Aliases
-- `lg` - lazygit
-- `ldk` - lazydocker
-- `dk` - docker
-- `dkc` - docker compose
-- `kb` - kubectl
-- `pn` - pnpm
+- **Commit prefixes** are scoped by tool: `zsh: ...`, `nvim: ...`, `nix: ...`, `ghostty: ...`; use `feat:` / `fix:` / `chore:` only for repo-wide changes.
+- **Shell scripts in `bin/`** use `#!/bin/sh`, `set -eu`, 2-space indent, and must be POSIX-sh compatible (they run under macOS's bash-3.2-backed `/bin/sh`). See `dotlink` for the established style — note the defensive `expand_home`/`abs_path` helpers.
+- **Private git identity** lives in `~/.gitconfig_private` (not tracked); `git/gitconfig` includes it via `includeIf`. Don't add personal name/email to the tracked config.
+- **No automated tests.** Validate changes by applying them and exercising the affected tool in a fresh shell / editor instance.
 
-## Working with Configurations
+## File linking model
 
-When modifying configurations:
-1. Test changes in a new shell/editor instance before committing
-2. For Neovim plugins, run `:Lazy sync` after modifying plugin configurations
-3. Shell changes require running `reload!` or opening a new terminal
-4. Tmux changes require reloading tmux config or restarting tmux sessions
-
-## File Linking
-
-This repository appears to use symbolic links to connect configuration files to their expected locations in the home directory. When adding new configuration files, ensure they are properly linked to their target locations.
-
-## Recent Changes
-- 001-nix-dev-environment: Added Nix (flakes + nix-darwin + home-manager) + nixpkgs-unstable, nix-darwin (LnL7/nix-darwin), home-manager
-- 001-nix-dev-environment: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-
-## Active Technologies
-- Nix (flakes + nix-darwin + home-manager) + nixpkgs-unstable, nix-darwin (LnL7/nix-darwin), home-manager (001-nix-dev-environment)
-- N/A（設定ファイルのみ） (001-nix-dev-environment)
+Most tool configs in this repo are symlinked into `$HOME` by `dotlink`. A handful of tools (notably neovim via nix home-manager) are also installed via Nix — the Nix side provides the *binary*, and `dotlink` provides the *config*. Don't try to manage config through home-manager's `home.file`; this repo keeps those responsibilities separated.
