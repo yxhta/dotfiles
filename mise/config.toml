@@ -13,6 +13,8 @@ flutter = "3.38.3"
 ruby = "4"
 bun = "latest"
 prek = "latest"
+"npm:ctx7" = "latest"
+java = "openjdk-21"
 
 [settings]
 experimental = true

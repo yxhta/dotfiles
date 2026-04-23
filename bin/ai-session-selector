@@ -1,0 +1,195 @@
+#!/bin/sh
+#
+# AI Code Session Selector
+# List Claude Code / Codex sessions running in tmux and jump to one.
+# Dependencies: tmux, fzf
+
+show_empty_state_and_exit() {
+  message=$1
+
+  if [ -n "${TMUX:-}" ] && [ -t 0 ] && [ -t 1 ]; then
+    printf '%s' "$message"
+
+    tty_state=$(stty -g < /dev/tty 2>/dev/null || true)
+    if [ -n "$tty_state" ]; then
+      stty -echo -icanon min 1 time 0 < /dev/tty 2>/dev/null || true
+      trap 'stty "$tty_state" < /dev/tty 2>/dev/null || true; exit 130' INT TERM
+
+      while :; do
+        key_code=$(dd bs=1 count=1 2>/dev/null < /dev/tty | od -An -t u1 | tr -d '[:space:]')
+
+        case "$key_code" in
+          10|13|27|81|113) break ;;
+        esac
+      done
+
+      trap - INT TERM
+      stty "$tty_state" < /dev/tty 2>/dev/null || true
+    else
+      read -r _
+    fi
+
+    exit 0
+  fi
+
+  echo "$message" >&2
+  exit 1
+}
+
+# --- Process detection ---
+_claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
+_codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
+
+_raw_ppids=$(printf '%s\n%s\n' "$_claude_ppids" "$_codex_ppids" | awk 'NF' | sort -u)
+
+if [ -z "$_raw_ppids" ]; then
+  show_empty_state_and_exit "No AI code sessions found in tmux"
+fi
+
+# Build newline-wrapped PID lists for exact matching
+claude_ppids="
+${_claude_ppids}
+"
+codex_ppids="
+${_codex_ppids}
+"
+all_ppids="
+${_raw_ppids}
+"
+
+# --- Pane scanning ---
+pane_data=$(tmux list-panes -a \
+  -F '#{session_name}:#{window_index}.#{pane_index}	#{pane_pid}	#{pane_current_path}	#{window_name}')
+
+pane_records=""
+pane_index=1
+OLD_IFS="$IFS"
+IFS='
+'
+for line in $pane_data; do
+  target=$(printf '%s' "$line" | cut -f1)
+  pid=$(printf '%s' "$line" | cut -f2)
+  cwd=$(printf '%s' "$line" | cut -f3)
+  wname=$(printf '%s' "$line" | cut -f4)
+
+  case "$all_ppids" in
+    *"
+${pid}
+"*) ;;
+    *) continue ;;
+  esac
+
+  # Determine session type
+  type="claude"
+  case "$codex_ppids" in
+    *"
+${pid}
+"*) type="codex" ;;
+  esac
+
+  short_cwd=$(printf '%s' "$cwd" | sed "s|^$HOME|~|")
+  pane_records="${pane_records}${pane_index}	${target}	[${type}]	${short_cwd}	${wname}
+"
+  pane_index=$((pane_index + 1))
+done
+IFS="$OLD_IFS"
+
+if [ -z "$pane_records" ]; then
+  show_empty_state_and_exit "No AI code sessions found in tmux"
+fi
+
+pane_count=$((pane_index - 1))
+display_list=$(printf '%s' "$pane_records" | awk -F '	' '
+  {
+    rows[NR] = $0
+    if (length($1) > w1) w1 = length($1)
+    if (length($3) > w3) w3 = length($3)
+    if (length($4) > w4) w4 = length($4)
+  }
+  END {
+    for (i = 1; i <= NR; i++) {
+      split(rows[i], fields, "\t")
+      printf "%-*s  %-*s  %-*s  %s\t%s\n", w1, fields[1], w3, fields[3], w4, fields[4], fields[5], fields[2]
+    }
+  }
+')
+
+# --- fzf selection ---
+fzf_header=$(printf 'NUM  TYPE      DIRECTORY  WINDOW\nType a number and press Enter, or use arrow keys to pick a session.')
+fzf_expect_args=""
+
+if [ "$pane_count" -le 9 ]; then
+  fzf_header=$(printf 'NUM  TYPE      DIRECTORY  WINDOW\nPress 1-%s to jump instantly, or use arrow keys and Enter.' "$pane_count")
+  fzf_expect_args="--expect=1,2,3,4,5,6,7,8,9"
+fi
+
+selection_output=$(printf '%s' "$display_list" | fzf \
+  --prompt="AI session #: " \
+  --header="$fzf_header" \
+  --delimiter='	' \
+  --with-nth='1' \
+  --no-multi \
+  --no-sort \
+  --disabled \
+  --print-query \
+  --height=100% \
+  --reverse \
+  $fzf_expect_args \
+  --preview 'tmux capture-pane -p -e -t {2} -S -80 2>/dev/null || printf "Preview unavailable: %s\n" {2}' \
+  --preview-window="right:60%:wrap:follow")
+
+[ -z "$selection_output" ] && exit 0
+
+selection_query=$(printf '%s\n' "$selection_output" | sed -n '1p')
+selection_key=""
+selection_line=""
+
+if [ -n "$fzf_expect_args" ]; then
+  selection_key=$(printf '%s\n' "$selection_output" | sed -n '2p')
+  selection_line=$(printf '%s\n' "$selection_output" | sed -n '3p')
+else
+  selection_line=$(printf '%s\n' "$selection_output" | sed -n '2p')
+fi
+
+if [ -n "$selection_key" ]; then
+  selection_query="$selection_key"
+fi
+
+if [ -n "$selection_query" ]; then
+  case "$selection_query" in
+    *[!0-9]*)
+      show_empty_state_and_exit "Type a session number or use arrow keys to choose one"
+      ;;
+    0*)
+      if [ "$selection_query" != "0" ]; then
+        selection_query=$(printf '%s' "$selection_query" | sed 's/^0*//')
+      fi
+      ;;
+  esac
+
+  case "$selection_query" in
+    ''|0)
+      show_empty_state_and_exit "Session numbers start at 1"
+      ;;
+  esac
+
+  target_pane=$(printf '%s\n' "$pane_records" | awk -F '	' -v target_index="$selection_query" '$1 == target_index { print $2; exit }')
+
+  if [ -z "$target_pane" ]; then
+    show_empty_state_and_exit "No AI session found for number ${selection_query}"
+  fi
+fi
+
+if [ -z "${target_pane:-}" ]; then
+  [ -z "$selection_line" ] && exit 0
+  target_pane=$(printf '%s' "$selection_line" | cut -f2)
+fi
+
+if [ -n "$TMUX" ]; then
+  session_window="${target_pane%.*}"
+  tmux switch-client -t "$session_window"
+  tmux select-pane -t "$target_pane"
+else
+  session_name="${target_pane%%:*}"
+  tmux attach-session -t "$session_name"
+fi
