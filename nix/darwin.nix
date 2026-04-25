@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, username, homeDirectory, ... }:
 
 let
   unfreePackageNames = [
@@ -22,9 +22,9 @@ in
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  users.users.yxhta = {
-    name = "yxhta";
-    home = "/Users/yxhta";
+  users.users.${username} = {
+    name = username;
+    home = homeDirectory;
   };
 
   system.stateVersion = 6;

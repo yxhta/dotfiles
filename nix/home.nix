@@ -1,12 +1,12 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, username, homeDirectory, ... }:
 
 let
   has = builtins.hasAttr;
   opt = name: value: lib.optionals (has name pkgs) [ value ];
 in
 {
-  home.username = "yxhta";
-  home.homeDirectory = "/Users/yxhta";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
   home.stateVersion = "25.05";
 
   programs.home-manager.enable = true;
@@ -47,6 +47,7 @@ in
       supabase-cli
       tmux
       tree
+      tree-sitter
       utf8proc
       vault
       libwebp
