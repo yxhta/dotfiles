@@ -15,4 +15,4 @@ github = "zsh-users/zsh-syntax-highlighting"
 github = "zchee/zsh-completions"
 
 [plugins.fzf]
-inline = "if [ -f \"$HOME/.fzf.zsh\" ]; then source \"$HOME/.fzf.zsh\"; fi"
+inline = "if command -v fzf >/dev/null 2>&1; then eval \"$(fzf --zsh)\"; fi"
