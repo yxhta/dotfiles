@@ -12,9 +12,10 @@ Changes land in different places depending on what you're modifying. Knowing whi
 
 1. **`nix/` — packages and system state (authoritative).**
    - `nix/flake.nix` defines the `darwinConfigurations.mac` system (aarch64-darwin) and wires home-manager as a nix-darwin module. There is no standalone home-manager anymore.
-   - `nix/darwin.nix` holds system-level settings (Touch ID for sudo, Nix daemon flakes flag, unfree package allowlist).
+   - `nix/darwin.nix` holds system-level settings (Touch ID for sudo, unfree package allowlist, the `users.users.yxhta` declaration). It sets `nix.enable = false` because the Nix installation is managed by **Determinate Nix** — nix-darwin must not also try to manage the daemon or `/etc/nix/nix.conf`. Don't re-enable `nix.*` options; if you need flakes/experimental features, edit `/etc/nix/nix.custom.conf` (DetSys's user-config slot) instead.
+   - `users.users.yxhta = { name = "yxhta"; home = "/Users/yxhta"; }` in `darwin.nix` is load-bearing: when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this. Removing it makes activation fail with `home.homeDirectory = null`.
    - `nix/home.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
-   - Apply changes with `darwin-rebuild switch --flake ./nix#mac`. First-ever bootstrap uses `nix run nix-darwin -- switch --flake ./nix#mac`.
+   - Apply changes with `darwin-rebuild switch --flake ./nix#mac`. First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
 
 2. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/home.nix`, not here. Apply with `brew bundle --file=Brewfile`.
 

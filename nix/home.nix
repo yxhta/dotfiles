@@ -49,7 +49,7 @@ in
       tree
       utf8proc
       vault
-      webp
+      libwebp
       wget
       zellij
       zoxide

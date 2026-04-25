@@ -11,10 +11,9 @@ let
   ];
 in
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  # Determinate Nix manages the Nix installation itself; let it.
+  # nix-darwin must not touch /etc/nix/nix.conf or the daemon.
+  nix.enable = false;
 
   nixpkgs.config.allowUnfreePredicate =
     pkg: builtins.elem (lib.getName pkg) unfreePackageNames;
@@ -22,6 +21,11 @@ in
   programs.zsh.enable = true;
 
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  users.users.yxhta = {
+    name = "yxhta";
+    home = "/Users/yxhta";
+  };
 
   system.stateVersion = 6;
 }
