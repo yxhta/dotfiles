@@ -1,5 +1,26 @@
 {
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "project_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "git_panel": {
+    "dock": "right"
+  },
   "agent": {
+    "dock": "left",
     "play_sound_when_agent_done": false,
     "always_allow_tool_actions": true,
     "model_parameters": [],
