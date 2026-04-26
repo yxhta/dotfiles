@@ -1,110 +1,138 @@
 # dotfiles
 
-Personal dotfiles for macOS development environment.
+Personal macOS (Apple Silicon) dotfiles.
 
-## Overview
-
-This repository contains configuration files for various development tools including Neovim, Tmux, Zsh, and more.
+CLI tools and system settings are declaratively managed by **Nix** (flakes + nix-darwin + home-manager); GUI apps by **Homebrew Cask**; per-tool config files are symlinked into `$HOME` by **`bin/dotlink`**.
 
 ## Structure
 
 ```
 .
-├── bin/        # Custom shell scripts
-├── docs/       # Documentation and guides
-├── git/        # Git configuration
-├── nix/        # Nix configuration (nix-darwin + home-manager)
-├── nvim/       # Neovim configuration (Lua)
-├── tmux/       # Tmux configuration
-├── vim/        # Legacy Vim configuration
-├── zsh/        # Zsh shell configuration
-└── links.tsv   # Symlink manifest for dotlink
+├── bin/        # Custom shell scripts (dotlink, tat, ...)
+├── nix/        # nix-darwin + home-manager flake
+├── nvim/       # Neovim (Lua)
+├── zsh/        # Zsh + sheldon plugins
+├── tmux/       # Tmux
+├── git/        # Git config (private identity is loaded from ~/.gitconfig_private)
+├── ghostty/, zellij/, lazygit/, mise/, starship/, zed/, cursor/  # tool configs
+└── Brewfile    # GUI apps / casks
 ```
 
-## Installation
+## Setup on a new machine
 
-### New Machine Setup
+The flake assumes `aarch64-darwin` and a username of `yxhta` (defined once in `nix/flake.nix`). To use this on a different host, change the `username` / `homeDirectory` `let` bindings at the top of `nix/flake.nix` first.
 
-#### Step 1: Install Nix
+### 1. Install Nix (Determinate Systems installer)
 
-```bash
-sh <(curl -L https://nixos.org/nix/install)
+The flake requires the **Determinate Systems** installer on an arm64 shell. The legacy `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that cannot build the `aarch64-darwin` system, and `nix.enable = false` in `nix/darwin.nix` is set specifically to coexist with Determinate Nix — do not switch installers.
+
+```sh
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 exec $SHELL -l
 ```
 
-#### Step 2: Build environment with nix-darwin
+### 2. Clone the repo
 
-```bash
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+```sh
+git clone https://github.com/yxhta/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ./nix#mac
 ```
 
-This sets up everything in one command:
-- **System settings (nix-darwin)**: Touch ID for sudo, Nix daemon config (flakes enabled)
-- **CLI tools (home-manager)**: neovim, tmux, fzf, ripgrep, lazygit, delta, and 40+ more
+### 3. Bootstrap with nix-darwin
 
-#### Step 3: Install GUI apps
+`darwin-rebuild` is not yet on `PATH`, so run nix-darwin from the flake directly. After this first switch, subsequent rebuilds use `darwin-rebuild` (see [Updating](#updating)).
 
-```bash
+```sh
+sudo nix run nix-darwin -- switch --flake ./nix#mac
+```
+
+This installs in one step:
+
+- **System settings** (`nix/darwin.nix`): Touch ID for sudo, unfree allowlist, the user declaration.
+- **CLI tools + Neovim + home-manager state** (`nix/home.nix`): ripgrep, fd, fzf, lazygit, delta, mise, starship, sheldon, neovim, and ~40 more.
+
+### 4. Install GUI apps
+
+```sh
 brew bundle --file=Brewfile
 ```
 
-### Updating
+### 5. Symlink dotfiles into `$HOME`
 
-After editing `nix/home.nix` or `nix/darwin.nix`:
+`bin/dotlink` reads its manifest from `embedded_manifest()` inside the script (not from any `.tsv` file) and creates symlinks like `~/.zshrc → zsh/zshrc`, `~/.config/nvim → nvim`, etc.
 
-```bash
-darwin-rebuild switch --flake ./nix#mac
+```sh
+./bin/dotlink plan          # preview
+./bin/dotlink apply --backup  # apply; existing files are moved aside as .bak.<timestamp>
 ```
 
-### Migration from standalone home-manager
+`apply` is idempotent. Conflicts are never overwritten without `--backup` or `--force`.
 
-If you previously used home-manager standalone:
+### 6. Private git identity
 
-```bash
-nix profile remove home-manager
-nix --extra-experimental-features "nix-command flakes" run nix-darwin -- switch --flake ./nix#mac
-```
+`git/gitconfig` includes `~/.gitconfig_private` via `includeIf`. That file is intentionally not tracked — create it with your personal name/email:
 
-See `specs/001-nix-dev-environment/quickstart.md` for detailed steps.
-
-## Private configuration (not tracked)
-
-Keep personal identity settings out of this repository by creating `~/.gitconfig_private`.
-This repo's `git/gitconfig` includes it via `includeIf`.
-
-```bash
+```sh
 cat > ~/.gitconfig_private <<'EOF'
 [user]
-  name = "Your Name"
+  name = Your Name
   email = you@example.com
 EOF
 ```
 
-For Claude Code settings, put local-only values under `~/.claude/` (the entire directory is gitignored).
+For Claude Code, local-only values go under `~/.claude/` (the entire directory is gitignored).
 
-## Key Features
+### 7. Reload the shell
 
-- **Neovim**: Modern Lua-based configuration with LSP support
-- **Tmux**: Custom statusline and session management with `tat` script
-- **Zsh**: Zinit plugin manager with starship prompt
-- **Tools**: Pre-configured settings for various development tools
+```sh
+exec $SHELL -l   # or `rr` once the alias is loaded
+```
+
+## Updating
+
+After editing anything under `nix/`:
+
+```sh
+darwin-rebuild switch --flake ./nix#mac
+```
+
+After editing the symlink manifest in `bin/dotlink`:
+
+```sh
+./bin/dotlink apply
+```
+
+After editing `Brewfile`:
+
+```sh
+brew bundle --file=Brewfile
+```
+
+After editing zsh plugins (`zsh/sheldon/plugins.toml`):
+
+```sh
+sheldon lock --update && exec $SHELL -l
+```
+
+After editing Neovim plugins, run `:Lazy sync` inside nvim.
+
+## Provisioning model
+
+Three layers, each authoritative for a different concern. Knowing which layer to edit prevents drift:
+
+| Layer | Source of truth | What it owns |
+|---|---|---|
+| Nix | `nix/flake.nix`, `nix/darwin.nix`, `nix/home.nix` | CLI tools, Neovim binary, system settings |
+| Homebrew | `Brewfile` | GUI apps and casks only |
+| dotlink | `embedded_manifest()` in `bin/dotlink` | Per-tool config files (symlinks into `$HOME`) |
+
+Notably, Neovim's binary comes from Nix but its config (`~/.config/nvim`) comes from `dotlink` — these responsibilities are deliberately split, so don't try to manage configs through home-manager's `home.file`.
 
 ## Requirements
 
-- macOS (Apple Silicon)
-- Nix (installed via official installer)
+- macOS on Apple Silicon (`aarch64-darwin`)
+- Determinate Systems Nix installer (see step 1)
 - Git
-- Homebrew (for GUI apps only)
+- Homebrew (for GUI apps only — installed automatically by the Determinate Nix flow if missing, otherwise install manually)
 
-## Package Management
-
-- **CLI tools**: Managed by Nix (home-manager) via `nix/home.nix`
-- **GUI apps**: Managed by Homebrew Cask via `Brewfile`
-- **System settings**: Managed by nix-darwin via `nix/darwin.nix`
-
-## Symlinks
-
-Dotfiles-managed configs are synced to the host machine via symlinks.
-See `docs/dotlink.md`.
+See `CLAUDE.md` for the conventions used when editing this repo.
