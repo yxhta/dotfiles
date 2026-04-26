@@ -30,6 +30,12 @@ Changes land in different places depending on what you're modifying. Knowing whi
 # Apply Nix config (most common loop when editing nix/*.nix)
 darwin-rebuild switch --flake ./nix#mac
 
+# Format nix files with the flake's `formatter` output (RFC 166 / nixfmt)
+(cd nix && nix fmt -- flake.nix darwin.nix home.nix)
+
+# Validate flake outputs without building
+(cd nix && nix flake check --no-build)
+
 # Preview / apply symlinks
 ./bin/dotlink plan
 ./bin/dotlink apply --backup

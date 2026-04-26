@@ -1,8 +1,15 @@
-{ pkgs, lib, username, homeDirectory, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  homeDirectory,
+  ...
+}:
 
 let
-  has = builtins.hasAttr;
-  opt = name: value: lib.optionals (has name pkgs) [ value ];
+  # Add a package if the current nixpkgs revision exposes it. Avoids hard
+  # failures when an attribute is renamed or temporarily missing upstream.
+  opt = name: lib.optional (pkgs ? ${name}) pkgs.${name};
 in
 {
   home.username = username;
@@ -35,6 +42,7 @@ in
       golangci-lint
       grpcurl
       lazygit
+      libwebp
       libyaml
       neovim
       ngrok
@@ -50,22 +58,21 @@ in
       tree-sitter
       utf8proc
       vault
-      libwebp
       wget
       zellij
       zoxide
       zstd
     ])
-    ++ opt "lazydocker" pkgs.lazydocker
-    ++ opt "rbenv" pkgs.rbenv
-    ++ opt "ruby-build" pkgs."ruby-build"
-    ++ opt "shopify-cli" pkgs."shopify-cli"
-    ++ opt "stripe-cli" pkgs."stripe-cli"
-    ++ opt "terminal-notifier" pkgs."terminal-notifier"
-    ++ opt "turso" pkgs.turso
-    ++ opt "fvm" pkgs.fvm
-    ++ opt "maestro" pkgs.maestro
-    ++ opt "claude-squad" pkgs."claude-squad"
-    ++ opt "fzf-make" pkgs."fzf-make"
-    ++ opt "git-flow-avh" pkgs."git-flow-avh";
+    ++ opt "claude-squad"
+    ++ opt "fvm"
+    ++ opt "fzf-make"
+    ++ opt "git-flow-avh"
+    ++ opt "lazydocker"
+    ++ opt "maestro"
+    ++ opt "rbenv"
+    ++ opt "ruby-build"
+    ++ opt "shopify-cli"
+    ++ opt "stripe-cli"
+    ++ opt "terminal-notifier"
+    ++ opt "turso";
 }

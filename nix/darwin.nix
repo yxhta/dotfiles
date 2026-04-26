@@ -1,4 +1,10 @@
-{ pkgs, lib, username, homeDirectory, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  homeDirectory,
+  ...
+}:
 
 let
   unfreePackageNames = [
@@ -15,8 +21,7 @@ in
   # nix-darwin must not touch /etc/nix/nix.conf or the daemon.
   nix.enable = false;
 
-  nixpkgs.config.allowUnfreePredicate =
-    pkg: builtins.elem (lib.getName pkg) unfreePackageNames;
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackageNames;
 
   programs.zsh.enable = true;
 
