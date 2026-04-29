@@ -29,7 +29,6 @@ in
       cocoapods
       delta
       direnv
-      duckdb
       eza
       fd
       ffmpeg
@@ -48,31 +47,19 @@ in
       ngrok
       nushell
       openssl
-      pueue
       readline
       ripgrep
       sheldon
-      supabase-cli
       tmux
       tree
       tree-sitter
       utf8proc
-      vault
       wget
-      zellij
       zoxide
       zstd
     ])
-    ++ opt "claude-squad"
-    ++ opt "fvm"
     ++ opt "fzf-make"
     ++ opt "git-flow-avh"
     ++ opt "lazydocker"
-    ++ opt "maestro"
-    ++ opt "rbenv"
-    ++ opt "ruby-build"
-    ++ opt "shopify-cli"
-    ++ opt "stripe-cli"
-    ++ opt "terminal-notifier"
-    ++ opt "turso";
+    ++ opt "terminal-notifier";
 }
