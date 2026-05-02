@@ -39,7 +39,6 @@ alias lg='lazygit'
 # gwl                  - List worktrees
 # gwr <path>          - Remove worktree
 # gwp                  - Prune worktree info
-# gwq <issue>         - Quick add (e.g., gwq 5938)
 # gwcd                - Change to worktree (with fzf)
 
 # Docker and Kubernetes
