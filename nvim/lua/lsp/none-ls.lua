@@ -10,14 +10,29 @@ local function has_biome_config()
     return false
 end
 
-local sources = {
-    has_biome_config() and null_ls.builtins.formatting.biome or null_ls.builtins.formatting.prettier,
-    -- null_ls.builtins.diagnostics.eslint,
-    null_ls.builtins.formatting.goimports,
-    null_ls.builtins.formatting.gofmt,
-    null_ls.builtins.diagnostics.golangci_lint,
-    null_ls.builtins.diagnostics.staticcheck
-}
+local function exe(name)
+    return vim.fn.executable(name) == 1
+end
+
+local sources = {}
+local function add_if(cond, src)
+    if cond then
+        table.insert(sources, src)
+    end
+end
+
+if has_biome_config() then
+    add_if(exe("biome"), null_ls.builtins.formatting.biome)
+elseif exe("prettierd") then
+    add_if(true, null_ls.builtins.formatting.prettierd)
+else
+    add_if(exe("prettier"), null_ls.builtins.formatting.prettier)
+end
+
+add_if(exe("goimports"), null_ls.builtins.formatting.goimports)
+add_if(exe("gofmt"), null_ls.builtins.formatting.gofmt)
+add_if(exe("golangci-lint"), null_ls.builtins.diagnostics.golangci_lint)
+add_if(exe("staticcheck"), null_ls.builtins.diagnostics.staticcheck)
 
 -- formatting on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})

@@ -38,7 +38,9 @@ in
       git
       git-filter-repo
       git-lfs
+      go-tools
       golangci-lint
+      gotools
       grpcurl
       lazygit
       libwebp
@@ -47,6 +49,7 @@ in
       ngrok
       nushell
       openssl
+      prettierd
       readline
       ripgrep
       sheldon
