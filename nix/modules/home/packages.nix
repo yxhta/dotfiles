@@ -1,8 +1,6 @@
 {
   pkgs,
   lib,
-  username,
-  homeDirectory,
   ...
 }:
 
@@ -12,12 +10,6 @@ let
   opt = name: lib.optional (pkgs ? ${name}) pkgs.${name};
 in
 {
-  home.username = username;
-  home.homeDirectory = homeDirectory;
-  home.stateVersion = "25.05";
-
-  programs.home-manager.enable = true;
-
   home.packages =
     (with pkgs; [
       awscli2

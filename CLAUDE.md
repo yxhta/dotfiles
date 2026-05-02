@@ -11,13 +11,18 @@ Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are decla
 Changes land in different places depending on what you're modifying. Knowing which layer is authoritative prevents drift:
 
 1. **`nix/` — packages and system state (authoritative).**
-   - `nix/flake.nix` defines the `darwinConfigurations.mac` system (aarch64-darwin) and wires home-manager as a nix-darwin module. There is no standalone home-manager anymore.
-   - `nix/darwin.nix` holds system-level settings (Touch ID for sudo, unfree package allowlist, the user declaration). It sets `nix.enable = false` because the Nix installation is managed by **Determinate Nix** — nix-darwin must not also try to manage the daemon or `/etc/nix/nix.conf`. Don't re-enable `nix.*` options; if you need flakes/experimental features, edit `/etc/nix/nix.custom.conf` (DetSys's user-config slot) instead.
-   - User identity (`username` / `homeDirectory`) is defined once in `nix/flake.nix` as a `let` binding and passed to both `darwin.nix` and `home.nix` via `specialArgs` / `home-manager.extraSpecialArgs`. To use this flake on a different host, change those two lines in `flake.nix` and nothing else. The `users.users.${username}` block in `darwin.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
-   - `nix/home.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
-   - Apply changes with `darwin-rebuild switch --flake ./nix#mac`. First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
+   - `nix/flake.nix` is built on **flake-parts**. It pins inputs (`nixpkgs`, `nix-darwin`, `home-manager`, `flake-parts`), declares `darwinConfigurations.mac` (aarch64-darwin) under `flake.*`, and defines `apps.*` (`build`, `switch`) and the `nixfmt` formatter under `perSystem`. Home-manager is wired in as a nix-darwin module (no standalone home-manager).
+   - Configuration bodies live under `nix/modules/`:
+     - `nix/modules/darwin/default.nix` is the entry point that imports the rest of the darwin module.
+     - `nix/modules/darwin/system.nix` holds system-level settings (Touch ID for sudo, unfree package allowlist, the user declaration). It sets `nix.enable = false` because the Nix installation is managed by **Determinate Nix** — nix-darwin must not also try to manage the daemon or `/etc/nix/nix.conf`. Don't re-enable `nix.*` options; if you need flakes/experimental features, edit `/etc/nix/nix.custom.conf` (DetSys's user-config slot) instead.
+     - `nix/modules/home/default.nix` is the home-manager entry point — sets `home.username`, `home.homeDirectory`, `home.stateVersion`, and imports the rest.
+     - `nix/modules/home/packages.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
+   - **Convention for adding new config**: tool-specific home-manager `programs.<tool>` blocks (or larger system pieces) belong in their own file under `nix/modules/home/programs/<tool>.nix` (or `nix/modules/darwin/programs/<tool>.nix`), imported from the corresponding `default.nix`. Don't grow `system.nix` / `packages.nix` into a catch-all.
+   - User identity (`username` / `homeDirectory`) is defined once in `nix/flake.nix` as a `let` binding and passed to both modules via `specialArgs` / `home-manager.extraSpecialArgs`. To use this flake on a different host, change those two lines in `flake.nix` and nothing else. The `users.users.${username}` block in `system.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
+   - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the canonical command (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
+   - **flake-tracked sources**: `nix flake check` / `nix build` only see git-tracked files. After adding a new file under `nix/`, run `git add` (no commit needed) before invoking flake commands, otherwise evaluation fails with "Path … is not tracked by Git".
 
-2. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/home.nix`, not here. Apply with `brew bundle --file=Brewfile`.
+2. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/modules/home/packages.nix`, not here. Apply with `brew bundle --file=Brewfile`.
 
 3. **Config files + `bin/dotlink` — per-tool dotfiles.**
    - `bin/dotlink` contains an **embedded manifest** (see `embedded_manifest()` in the script) mapping repo paths to `$HOME` destinations. `links.tsv` mentioned in older docs is not the source of truth — the embedded manifest is.
@@ -27,11 +32,17 @@ Changes land in different places depending on what you're modifying. Knowing whi
 ## Common commands
 
 ```bash
-# Apply Nix config (most common loop when editing nix/*.nix)
-darwin-rebuild switch --flake ./nix#mac
+# Apply Nix config (most common loop when editing nix/**/*.nix)
+sudo darwin-rebuild switch --flake ./nix#mac
+
+# Equivalent shortcut (auto-detects AI agent shells and skips nix-output-monitor)
+nix run ./nix#switch
+
+# Build the system without activating, to validate eval + build
+nix run ./nix#build
 
 # Format nix files with the flake's `formatter` output (RFC 166 / nixfmt)
-(cd nix && nix fmt -- flake.nix darwin.nix home.nix)
+(cd nix && nix fmt -- flake.nix modules/darwin/*.nix modules/home/*.nix)
 
 # Validate flake outputs without building
 (cd nix && nix flake check --no-build)
