@@ -1,20 +1,22 @@
 [tools]
-"aqua:ariga/atlas" = "0.38.0"
-"aqua:golangci/golangci-lint" = "2.9.0"
-go = "1.25"
-node = "22"
-"npm:@biomejs/biome" = "latest"
-"npm:@openai/codex" = "latest"
-"npm:prettier" = "latest"
-"npm:typescript" = "latest"
-"npm:typescript-language-server" = "latest"
+# Language runtimes
+go     = "1.26"
+node   = "24"
 python = "3.12"
-flutter = "3.38.3"
-ruby = "4"
-bun = "latest"
-prek = "latest"
-"npm:ctx7" = "latest"
-java = "openjdk-21"
+ruby   = "4"
+bun    = "latest"
+# java    = "openjdk-21"
+
+# Aqua-managed binaries
+# "aqua:golangci/golangci-lint" = "2.9.0"
+
+# npm-managed CLIs
+"npm:@biomejs/biome" = "latest"
+"npm:@openai/codex"  = "latest"
+"npm:ctx7"           = "latest"
+# "npm:prettier"                  = "latest"
+# "npm:typescript"                = "latest"
+# "npm:typescript-language-server" = "latest"
 
 [settings]
 experimental = true
