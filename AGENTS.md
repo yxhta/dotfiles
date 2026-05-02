@@ -3,11 +3,11 @@
 ## Project Structure & Module Organization
 
 This is a macOS dotfiles repository organized by tool. Key locations:
-- `bin/`: executable shell scripts (`dotlink`, `tat`).
+- `bin/`: executable shell scripts (`tat`, `ai-session-selector`, `ccs`).
 - `git/`, `zsh/`, `tmux/`, `nvim/`: tool-specific configs.
 - `ghostty/`, `cursor/`, `zed/`: app/editor configs.
-- `nix/`: Nix/home-manager setup.
-- Root manifests: `Brewfile`, `Brewfile.cask`, `links.tsv`.
+- `nix/`: nix-darwin + home-manager flake (modules under `nix/modules/`). The symlink manifest that wires repo configs into `$HOME` lives in `nix/modules/home/dotlinks.nix`.
+- Root manifests: `Brewfile`.
 
 ### Neovim (`nvim/`)
 - Lua config lives under `nvim/lua/`; core mappings are in `nvim/lua/keymaps.lua`.
@@ -21,11 +21,9 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 ## Build, Test, and Development Commands
 
 There is no build step. Common workflows:
-- `./bin/dotlink plan`: preview symlink changes from `links.tsv`.
-- `./bin/dotlink apply --backup`: apply symlinks with backups.
-- `brew bundle --file Brewfile`: install Homebrew packages.
-- `brew bundle --file Brewfile.cask`: install GUI apps/VSCode extensions.
-- `nix run github:nix-community/home-manager -- switch --flake ./nix#mac`: apply Nix config.
+- `sudo darwin-rebuild switch --flake ./nix#mac`: apply Nix config (also runs the symlink activation script).
+- `(cd nix && nix flake check --no-build)`: validate flake outputs without building.
+- `brew bundle --file=Brewfile`: install GUI apps / casks.
 
 ## Coding Style & Naming Conventions
 
@@ -36,8 +34,8 @@ There is no build step. Common workflows:
 ## Testing Guidelines
 
 No automated test suite is present. Validate changes by:
-- Running `./bin/dotlink plan` and `./bin/dotlink apply --backup`.
-- Opening a new shell (`reload!`) or restarting the relevant tool (tmux, nvim).
+- Running `sudo darwin-rebuild switch --flake ./nix#mac` and confirming activation succeeds.
+- Opening a new shell (`rr`) or restarting the relevant tool (tmux, nvim).
 
 ## Commit & Pull Request Guidelines
 
@@ -46,8 +44,8 @@ Prefer the tool name as the prefix when changes are scoped to a single area.
 
 For pull requests:
 - Summarize the affected tools and files.
-- Call out any changes to `links.tsv` or package manifests.
-- Include verification notes (e.g., “ran dotlink plan/apply”).
+- Call out any changes to `nix/modules/home/dotlinks.nix` or package manifests.
+- Include verification notes (e.g., "ran `darwin-rebuild switch`").
 
 ## Agent-Specific Notes
 

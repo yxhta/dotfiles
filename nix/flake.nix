@@ -27,6 +27,11 @@
       username = "yxhta";
       homeDirectory = "/Users/${username}";
 
+      # Path to the live dotfiles repo working tree. The home.activation
+      # symlinker points at this (not a /nix/store snapshot) so editing
+      # a tracked file in the repo is reflected in $HOME immediately.
+      dotfilesDir = "${homeDirectory}/dotfiles";
+
       hostname = "mac";
       system = "aarch64-darwin";
     in
@@ -96,7 +101,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit username homeDirectory; };
+            home-manager.extraSpecialArgs = { inherit username homeDirectory dotfilesDir; };
             home-manager.users.${username} = import ./modules/home;
           }
         ];

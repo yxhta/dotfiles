@@ -6,6 +6,7 @@
 {
   imports = [
     ./packages.nix
+    ./dotlinks.nix
   ];
 
   home.username = username;
