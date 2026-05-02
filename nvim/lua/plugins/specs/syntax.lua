@@ -11,9 +11,4 @@ return {
       }
     end,
   },
-
-  {
-    "chrisbra/csv.vim",
-    cmd = "CSVInit",
-  },
 }

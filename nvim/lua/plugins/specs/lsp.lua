@@ -70,17 +70,6 @@ return {
   },
 
   {
-    "akinsho/flutter-tools.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "stevearc/dressing.nvim", -- optional for vim.ui.select
-    },
-    config = function()
-      require("flutter-tools").setup({})
-    end,
-  },
-
-  {
     "folke/trouble.nvim",
     cmd = { "Trouble", "TroubleToggle" },
     keys = "<leader>x",
@@ -96,13 +85,5 @@ return {
     config = function()
       require("plugins.vista")
     end,
-  },
-
-  {
-    "danymat/neogen",
-    config = function()
-      require("neogen").setup({})
-    end,
-    cmd = "Neogen",
   },
 }

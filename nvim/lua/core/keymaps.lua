@@ -50,14 +50,7 @@ keymap('n', '<leader>f.', function() telescope_ext_call('file_browser', 'file_br
 keymap("n", "<leader>fl", clipboard_utils.copy_git_relative_path, { desc = "Copy git-relative path" })
 keymap("n", "<leader>fq", builtin.quickfix, copts)
 keymap("n", "<leader>fh", builtin.oldfiles, copts)
-keymap("n", "<leader>fr", function()
-  local ok, telescope = pcall(require, 'telescope')
-  if ok and telescope.extensions and telescope.extensions.frecency then
-    telescope.extensions.frecency.frecency()
-  else
-    builtin.oldfiles()
-  end
-end, copts)
+keymap("n", "<leader>fr", builtin.oldfiles, copts)
 keymap("n", "<leader>fb", builtin.buffers, copts)
 keymap("n", "<leader>fg", builtin.live_grep, copts)
 keymap("n", "<leader>fc", builtin.commands, copts)

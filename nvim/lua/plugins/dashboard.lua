@@ -21,7 +21,7 @@ dashboard.section.header.opts = {
 
 dashboard.section.buttons.val = {
     dashboard.button("<leader>ff", "  Find File", ":Telescope find_files<CR>"),
-    dashboard.button("<leader>fr", "  Recents", ":Telescope frecency<CR>"),
+    dashboard.button("<leader>fr", "  Recents", ":Telescope oldfiles<CR>"),
     dashboard.button("<leader>fg", "  Find Word", ":Telescope live_grep<CR>"),
     dashboard.button("<leader>en", "  New File", ":enew<CR>"),
     dashboard.button("u", "  Update Plugins", ":Lazy sync<CR>"),

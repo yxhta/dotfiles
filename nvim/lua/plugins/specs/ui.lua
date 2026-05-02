@@ -13,13 +13,6 @@ return {
     end,
   },
 
-  { "EdenEast/nightfox.nvim" },
-
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-  },
-
   {
     "akinsho/nvim-bufferline.lua",
     event = { "VimEnter" },
