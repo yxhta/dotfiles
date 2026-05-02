@@ -66,11 +66,8 @@ path=(
   # Language-specific tools
   $GOPATH/bin                                    # Go binaries
   $CARGO_HOME/bin                               # Rust/Cargo binaries
-  $HOME/.pub-cache/bin                          # Dart/Flutter pub cache
 
-  # Flutter SDK
-  $HOME/development/flutter/bin
-  # export PATH="$PATH:$ANDROID_SDK_ROOT/platform-tools"
+  # Android SDK
   $ANDROID_SDK_ROOT/platform-tools
 
   # System tools
