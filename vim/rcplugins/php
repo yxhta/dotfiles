@@ -1,6 +1,0 @@
-" PHP
-
-" Plug 'stanangeloff/php.vim'
-" Plug 'jwalton512/vim-blade'
-
-" vim:ft=vim

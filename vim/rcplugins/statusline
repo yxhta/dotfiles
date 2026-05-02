@@ -1,5 +1,0 @@
-" StatusLine
-
-Plug 'beauwilliams/statusline.lua'
-
-" vim:ft=vim
