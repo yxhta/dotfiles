@@ -78,6 +78,16 @@ For Claude Code, local-only values go under `~/.claude/` (the entire directory i
 exec $SHELL -l   # or `rr` once the alias is loaded
 ```
 
+### 7. Install the pre-commit hook
+
+The repo has a Nix-managed `pre-commit` hook (gitleaks + nixfmt) wired up via `git-hooks.nix`. Install it once:
+
+```sh
+nix run ./nix#install-hooks
+```
+
+Re-run after editing the hook list in `nix/flake.nix`.
+
 ## Updating
 
 After editing anything under `nix/` (including `nix/modules/home/dotlinks.nix` to add a new symlink):

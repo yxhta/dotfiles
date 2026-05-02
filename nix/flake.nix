@@ -12,6 +12,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -19,6 +23,7 @@
       flake-parts,
       nix-darwin,
       home-manager,
+      git-hooks,
       ...
     }:
     let
@@ -39,7 +44,7 @@
       systems = [ system ];
 
       perSystem =
-        { pkgs, ... }:
+        { pkgs, system, ... }:
         let
           # Frozen-at-eval-time path to this flake. Used by the apps so they
           # work regardless of the caller's CWD (e.g. `nix run ./nix#switch`
@@ -58,9 +63,29 @@
               fi
             done
           '';
+
+          preCommitCheck = git-hooks.lib.${system}.run {
+            # Repo root is the parent of this flake's directory.
+            src = ./..;
+            hooks = {
+              # gitleaks isn't a built-in git-hooks.nix hook so define it
+              # manually. Same invocation as the legacy git_template hook.
+              gitleaks = {
+                enable = true;
+                name = "gitleaks";
+                description = "Scan staged content for hardcoded secrets";
+                entry = "${pkgs.gitleaks}/bin/gitleaks git --staged --verbose --redact";
+                language = "system";
+                pass_filenames = false;
+              };
+              nixfmt-rfc-style.enable = true;
+            };
+          };
         in
         {
           formatter = pkgs.nixfmt;
+
+          checks.pre-commit = preCommitCheck;
 
           apps = {
             build.program = toString (
@@ -87,6 +112,24 @@
                 else
                   sudo darwin-rebuild switch --flake "${flakeRef}" |& ${pkgs.nix-output-monitor}/bin/nom
                 fi
+              ''
+            );
+
+            # Install pre-commit hook into the repo's .git/hooks/. Run once
+            # after clone (or whenever the hook config changes). Idempotent —
+            # safe to re-run. Forces overwrite of any existing hook.
+            install-hooks.program = toString (
+              pkgs.writeShellScript "install-pre-commit-hooks" ''
+                set -eu
+                cd "${dotfilesDir}"
+                if [ ! -d .git ]; then
+                  echo "no .git directory at ${dotfilesDir}; skipping" >&2
+                  exit 1
+                fi
+                # The shellHook from git-hooks.nix sets up .pre-commit-config.yaml
+                # and runs `pre-commit install`. Run it inline.
+                ${preCommitCheck.shellHook}
+                echo "pre-commit hook installed at ${dotfilesDir}/.git/hooks/pre-commit"
               ''
             );
           };
