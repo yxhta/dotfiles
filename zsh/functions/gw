@@ -4,7 +4,7 @@
 
 # Add a new worktree with branch
 # Usage: gwa <path> <branch-name>
-# Example: gwa ../myproject-issue-5938 feat/issue-5938
+# Example: gwa ../myproject-issue-123 feat/issue-123
 gwa() {
   if [[ $# -lt 2 ]]; then
     echo "Usage: gwa <path> <branch-name>"
@@ -48,21 +48,24 @@ gwp() {
   git worktree prune
 }
 
-# Quick add worktree with auto-generated path and branch name
+# Quick add worktree with auto-generated path and branch name.
+# The ticket prefix can be overridden via $GW_TICKET_PREFIX (e.g. set in
+# ~/.zshenv.local) for project-specific naming conventions.
 # Usage: gwq <issue-number>
-# Example: gwq 5938 -> creates ../myproject-issue-5938 with branch feat/issue-5938
+# Example: gwq 123 -> creates ../<repo>-issue-123 with branch feat/issue-123
 gwq() {
   if [[ $# -lt 1 ]]; then
     echo "Usage: gwq <issue-number>"
-    echo "Example: gwq 5938"
+    echo "Example: gwq 123"
     return 1
   fi
-  
+
   local issue=$1
+  local prefix="${GW_TICKET_PREFIX:-issue-}"
   local repo_name=$(basename $(git rev-parse --show-toplevel))
-  local path="../${repo_name}-issue-${issue}"
-  local branch="feat/issue-${issue}"
-  
+  local path="../${repo_name}-${prefix}${issue}"
+  local branch="feat/${prefix}${issue}"
+
   gwa "$path" "$branch"
 }
 
