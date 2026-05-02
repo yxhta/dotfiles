@@ -38,6 +38,7 @@ in
       git
       git-filter-repo
       git-lfs
+      gitleaks
       go-tools
       golangci-lint
       gotools

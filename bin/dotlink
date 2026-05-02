@@ -105,6 +105,7 @@ ghostty	~/.config/ghostty
 git/gitconfig	~/.gitconfig
 git/gitignore	~/.gitignore_global
 git/gitmessage	~/.gitmessage
+git/git_template	~/.git_template
 # Mise
 mise/config.toml	~/.config/mise/config.toml
 # Lazygit

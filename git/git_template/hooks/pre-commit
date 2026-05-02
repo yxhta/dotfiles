@@ -1,0 +1,15 @@
+#!/bin/sh
+# Scan staged changes for secrets with gitleaks before allowing the commit.
+# Bypass: GITLEAKS_SKIP=1 git commit ...   (or)   git commit --no-verify
+set -eu
+
+if [ "${GITLEAKS_SKIP:-0}" = "1" ]; then
+  exit 0
+fi
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  printf 'gitleaks not found in PATH; skipping secret scan.\n' >&2
+  exit 0
+fi
+
+exec gitleaks git --staged --verbose --redact
