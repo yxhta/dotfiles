@@ -99,8 +99,6 @@ nvim	~/.config/nvim
 # Tmux
 tmux	~/.config/tmux
 tmux/tmux.conf	~/.tmux.conf
-# Zellij
-zellij	~/.config/zellij
 # Ghostty
 ghostty	~/.config/ghostty
 # Git

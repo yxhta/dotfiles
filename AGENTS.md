@@ -4,8 +4,8 @@
 
 This is a macOS dotfiles repository organized by tool. Key locations:
 - `bin/`: executable shell scripts (`dotlink`, `tat`).
-- `git/`, `zsh/`, `tmux/`, `nvim/`, `vim/`: tool-specific configs.
-- `ghostty/`, `cursor/`, `zed/`, `zellij/`: app/editor configs.
+- `git/`, `zsh/`, `tmux/`, `nvim/`: tool-specific configs.
+- `ghostty/`, `cursor/`, `zed/`: app/editor configs.
 - `nix/`: Nix/home-manager setup.
 - Root manifests: `Brewfile`, `Brewfile.cask`, `links.tsv`.
 

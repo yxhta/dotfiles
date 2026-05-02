@@ -14,7 +14,7 @@ CLI tools and system settings are declaratively managed by **Nix** (flakes + nix
 ├── zsh/        # Zsh + sheldon plugins
 ├── tmux/       # Tmux
 ├── git/        # Git config (private identity is loaded from ~/.gitconfig_private)
-├── ghostty/, zellij/, lazygit/, mise/, starship/, zed/, cursor/  # tool configs
+├── ghostty/, lazygit/, mise/, starship/, zed/, cursor/  # tool configs
 └── Brewfile    # GUI apps / casks
 ```
 
