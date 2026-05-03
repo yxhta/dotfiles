@@ -70,10 +70,6 @@ path=(
   # Android SDK
   $ANDROID_SDK_ROOT/platform-tools
 
-  # System tools
-  /usr/local/opt/make/libexec/gnubin           # GNU make
-  /usr/local/opt/llvm/bin                      # LLVM tools
-
   # Applications
   /Applications/WezTerm.app/Contents/MacOS      # WezTerm terminal
 

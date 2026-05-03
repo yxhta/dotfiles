@@ -4,7 +4,7 @@
 
 # History file location and size (XDG State)
 hist_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
-[ -d "$hist_dir" ] || mkdir -p "$hist_dir"
+mkdir -p "$hist_dir"
 export HISTFILE="$hist_dir/history"
 export HISTSIZE=50000
 export SAVEHIST=50000

@@ -38,17 +38,12 @@ function claude_commit_interactive() {
     return 1
   fi
 
-  if [[ $show_diff -eq 1 ]]; then
-    git diff --staged | ${PAGER:-less}
-  fi
-
-  echo "Analyzing staged changes..."
-  commit_msg=$(echo "$diff_output" | claude -p "You are a git commit message generator. Analyze the provided git diff and generate a single-line Conventional Commits compliant commit message.
+  local prompt='You are a git commit message generator. Analyze the provided git diff and generate a single-line Conventional Commits compliant commit message.
 
 CRITICAL REQUIREMENTS:
 1. Output ONLY the commit message text - no explanations, no markdown, no quotes, no additional commentary
 2. Format: <type>[optional scope]: <description>
-3. The entire output must be a valid git commit message that can be used directly with 'git commit -m'
+3. The entire output must be a valid git commit message that can be used directly with '"'"'git commit -m'"'"'
 
 TYPE SELECTION (choose ONE):
 - feat: new features or functionality
@@ -63,16 +58,27 @@ TYPE SELECTION (choose ONE):
 - chore: maintenance tasks, tooling, configs
 
 FORMATTING RULES:
-- Description: imperative mood (\"add\" not \"added\"), lowercase, no period at end
+- Description: imperative mood ("add" not "added"), lowercase, no period at end
 - Length: keep total message under 72 characters
-- Scope: add if changes focus on specific component (e.g., \"api\", \"ui\", \"auth\")
+- Scope: add if changes focus on specific component (e.g., "api", "ui", "auth")
 - Examples:
   * feat(auth): add JWT token validation
   * fix: resolve memory leak in worker threads
   * docs: update installation guide
   * refactor(parser): simplify token handling logic
 
-IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script." --model opus --max-turns 3 --strict-mcp-config)
+IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script.'
+
+  _generate_commit_msg() {
+    printf '%s\n' "$diff_output" | claude -p "$prompt" --model opus --max-turns 3 --strict-mcp-config
+  }
+
+  if [[ $show_diff -eq 1 ]]; then
+    printf '%s\n' "$diff_output" | ${PAGER:-less}
+  fi
+
+  echo "Analyzing staged changes..."
+  commit_msg=$(_generate_commit_msg)
   if [[ -z "$commit_msg" ]]; then
     echo "Error: Failed to generate commit message"
     return 1
@@ -117,43 +123,14 @@ IMPORTANT: Your entire response must be the commit message only. Any extra text 
         ;;
       [Rr])
         echo "Re-generating commit message..."
-        commit_msg=$(echo "$diff_output" | claude -p "You are a git commit message generator. Analyze the provided git diff and generate a single-line Conventional Commits compliant commit message.
-
-CRITICAL REQUIREMENTS:
-1. Output ONLY the commit message text - no explanations, no markdown, no quotes, no additional commentary
-2. Format: <type>[optional scope]: <description>
-3. The entire output must be a valid git commit message that can be used directly with 'git commit -m'
-
-TYPE SELECTION (choose ONE):
-- feat: new features or functionality
-- fix: bug fixes
-- docs: documentation changes only
-- style: formatting, whitespace, no code logic changes
-- refactor: code restructuring without changing behavior
-- perf: performance improvements
-- test: adding or modifying tests
-- build: build system, dependencies (package.json, Cargo.toml, etc)
-- ci: CI/CD configuration (GitHub Actions, CircleCI, etc)
-- chore: maintenance tasks, tooling, configs
-
-FORMATTING RULES:
-- Description: imperative mood (\"add\" not \"added\"), lowercase, no period at end
-- Length: keep total message under 72 characters
-- Scope: add if changes focus on specific component (e.g., \"api\", \"ui\", \"auth\")
-- Examples:
-  * feat(auth): add JWT token validation
-  * fix: resolve memory leak in worker threads
-  * docs: update installation guide
-  * refactor(parser): simplify token handling logic
-
-IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script." --model opus --max-turns 3 --strict-mcp-config)
+        commit_msg=$(_generate_commit_msg)
         if [[ -z "$commit_msg" ]]; then
           echo "Error: Failed to generate commit message"
           return 1
         fi
         ;;
       [Ss])
-        git diff --staged | ${PAGER:-less}
+        printf '%s\n' "$diff_output" | ${PAGER:-less}
         ;;
       [Qq])
         echo "❌ Commit cancelled"

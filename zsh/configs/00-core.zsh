@@ -5,9 +5,8 @@
 # Prevent accidental logout with Ctrl+D
 setopt ignoreeof
 
-# Shell options
-setopt no_beep                # Disable beep sound
-setopt auto_cd                # Auto change to directory without typing cd
-setopt multios                # Enable multiple redirections
-setopt correct                # Enable command correction
-setopt interactive_comments   # Allow comments in interactive shell
+setopt no_beep
+setopt auto_cd
+setopt multios
+setopt correct
+setopt interactive_comments

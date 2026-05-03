@@ -31,55 +31,21 @@ alias vi='nvim'
 # Development Tools
 # ==========================================================================
 
-# Git shortcuts
 alias lg='lazygit'
 
-# Git worktree shortcuts (source from functions/gw)
-# gwa <path> <branch>  - Add worktree with branch
-# gwl                  - List worktrees
-# gwr <path>          - Remove worktree
-# gwp                  - Prune worktree info
-# gwcd                - Change to worktree (with fzf)
-
-# Docker and Kubernetes
 alias ldk='lazydocker'
 alias dk='docker'
 alias dkc='docker compose'
 alias kb='kubectl'
 
-# Package managers
-# alias pn='pnpm'
-
-# Build tools (commented out - uncomment if needed)
-# alias make='gmake'
-
-# Claude Code
 alias cc='claude'
-
-# Codex
 alias cx='codex'
 
-# mise
 alias mi='mise install'
 alias mr='mise run'
-
-# ==========================================================================
-# Ruby/Rails Development
-# ==========================================================================
-
-# Bundler
-# alias b='bundle'
-
-# Rails shortcuts
-# alias migrate='rake db:migrate db:rollback && rake db:migrate db:test:prepare'
-# alias s='rspec'
 
 # ==========================================================================
 # System Utilities
 # ==========================================================================
 
-# Pretty print PATH
-# alias path='echo $PATH | tr -s ":" "\n"'
-
-# Shell management
 alias rr='exec $SHELL -l'

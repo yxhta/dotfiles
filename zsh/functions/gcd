@@ -7,22 +7,9 @@
 # Usage: gcd
 
 gcd() {
-  # Check if required tools are available
-  if ! command -v ghq &> /dev/null; then
-    echo "Error: ghq is not installed" >&2
-    return 1
-  fi
-  
-  if ! command -v fzf &> /dev/null; then
-    echo "Error: fzf is not installed" >&2
-    return 1
-  fi
-
-  # Get repository path using fzf
   local repo_path
   repo_path=$(ghq list --full-path | fzf --prompt="Select repository: " --height=40% --reverse)
 
-  # Change to selected directory if a selection was made
   if [[ -n "$repo_path" ]]; then
     cd "$repo_path" || return 1
   fi
