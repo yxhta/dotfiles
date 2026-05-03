@@ -86,6 +86,7 @@ rr                   # alias for: exec $SHELL -l
 - **Shell scripts in `bin/`** use `#!/bin/sh`, `set -eu`, 2-space indent, and must be POSIX-sh compatible (they run under macOS's bash-3.2-backed `/bin/sh`). See `bin/ai-session-selector` for the established style.
 - **Private git identity** lives in `~/.gitconfig_private` (not tracked); `git/gitconfig` includes it via `includeIf`. Don't add personal name/email to the tracked config.
 - **No automated tests.** Validate changes by applying them and exercising the affected tool in a fresh shell / editor instance.
+- **`AGENTS.md`** holds a shorter parallel summary for other AI agents (e.g. Codex). When changing structural facts here, sync the relevant bits there too.
 
 ## File linking model
 
