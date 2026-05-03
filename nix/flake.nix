@@ -68,8 +68,7 @@
             # Repo root is the parent of this flake's directory.
             src = ./..;
             hooks = {
-              # gitleaks isn't a built-in git-hooks.nix hook so define it
-              # manually. Same invocation as the legacy git_template hook.
+              # gitleaks isn't a built-in git-hooks.nix hook, so define it manually.
               gitleaks = {
                 enable = true;
                 name = "gitleaks";
@@ -115,9 +114,7 @@
               ''
             );
 
-            # Install pre-commit hook into the repo's .git/hooks/. Run once
-            # after clone (or whenever the hook config changes). Idempotent —
-            # safe to re-run. Forces overwrite of any existing hook.
+            # Idempotent: re-run after clone or whenever the hook config changes.
             install-hooks.program = toString (
               pkgs.writeShellScript "install-pre-commit-hooks" ''
                 set -eu
@@ -126,8 +123,6 @@
                   echo "no .git directory at ${dotfilesDir}; skipping" >&2
                   exit 1
                 fi
-                # The shellHook from git-hooks.nix sets up .pre-commit-config.yaml
-                # and runs `pre-commit install`. Run it inline.
                 ${preCommitCheck.shellHook}
                 echo "pre-commit hook installed at ${dotfilesDir}/.git/hooks/pre-commit"
               ''
@@ -144,7 +139,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit username homeDirectory dotfilesDir; };
+            home-manager.extraSpecialArgs = { inherit dotfilesDir; };
             home-manager.users.${username} = import ./modules/home;
           }
         ];

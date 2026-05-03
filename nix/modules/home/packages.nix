@@ -54,8 +54,9 @@ in
       zoxide
       zstd
     ])
-    ++ opt "fzf-make"
-    ++ opt "git-flow-avh"
-    ++ opt "lazydocker"
-    ++ opt "terminal-notifier";
+    ++ lib.concatMap opt [
+      "git-flow-avh"
+      "lazydocker"
+      "terminal-notifier"
+    ];
 }

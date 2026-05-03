@@ -6,8 +6,6 @@
 
 let
   # Manifest: <repo-relative source> = <home-relative destination>.
-  # Mirrors `embedded_manifest()` in bin/dotlink. Keep in sync until
-  # bin/dotlink is removed.
   links = {
     # Zsh
     "zsh" = ".zsh";
@@ -35,7 +33,9 @@ let
   };
 
   linkLines = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (src: dest: "  link ${lib.escapeShellArg src} ${lib.escapeShellArg dest}") links
+    lib.mapAttrsToList (
+      src: dest: "    link ${lib.escapeShellArg src} ${lib.escapeShellArg dest}"
+    ) links
   );
 in
 {
