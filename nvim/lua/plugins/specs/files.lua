@@ -29,8 +29,6 @@ return {
     },
     config = function()
       require("plugins.telescope")
-
-      require("telescope").load_extension("file_browser")
     end,
   },
 }

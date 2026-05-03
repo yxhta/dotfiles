@@ -45,23 +45,6 @@ local handlers = {
             }
         }
     end,
-
-    -- ["gopls"] = function()
-    --     lspconfig.gopls.setup {
-    --         -- cmd = { "gopls", "serve" },
-    --         -- cmd = { "gopls", "--remote=auto" },
-    --         -- cmd = { "gopls", "serve", "-rpc.trace", "--debug=localhost:6060" },
-    --         -- root_patterns = { "go.mod", ".git" },
-    --         -- settings = {
-    --         --     gopls = {
-    --         --         analyses = {
-    --         --             unusedparams = true,
-    --         --         },
-    --         --         staticcheck = true,
-    --         --     },
-    --         -- },
-    --     }
-    -- end,
 }
 
 local signature_help_config = {
@@ -125,9 +108,9 @@ mason_lspconfig.setup({
     handlers = handlers,
 })
 
-M = {}
+local M = {}
 M.on_attach = on_attach
-M.capabilites = capabilities
+M.capabilities = capabilities
 M.borders = borders
 M.hover_config = hover_config
 M.signature_help_config = signature_help_config

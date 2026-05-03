@@ -30,7 +30,5 @@ require("bufferline").setup({
   }
 })
 
-vim.cmd [[
-nnoremap <S-l> :BufferLineCycleNext<CR>
-nnoremap <S-h> :BufferLineCyclePrev<CR>
-]]
+vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>", { silent = true })
+vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>", { silent = true })

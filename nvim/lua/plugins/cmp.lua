@@ -1,42 +1,16 @@
 vim.o.completeopt = "menu,menuone,noselect"
 
--- TODO: cmp.complete_common_string
-
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local function has_ultisnips_func(name)
-    return vim.fn.exists("*" .. name) == 1
-end
-
-local function try_ultisnips_jump(direction)
-    local fn_name = direction == "forward" and "UltiSnips#CanJumpForwards" or "UltiSnips#CanJumpBackwards"
-    if has_ultisnips_func(fn_name) and vim.fn[fn_name]() == 1 then
-        local plug = direction == "forward" and "<Plug>(ultisnips_jump_forward)" or "<Plug>(ultisnips_jump_backward)"
-        vim.api.nvim_feedkeys(t(plug), "m", true)
-        return true
-    end
-    return false
 end
 
 local cmp = require("cmp")
 cmp.setup({
     snippet = {
         expand = function(args)
-            if has_ultisnips_func("UltiSnips#Anon") then
-                vim.fn["UltiSnips#Anon"](args.body)
-            elseif vim.snippet and vim.snippet.expand then
-                vim.snippet.expand(args.body)
-            end
+            vim.snippet.expand(args.body)
         end,
     },
-    -- preselect = cmp.PreselectMode.None,
-    -- enabled = function()
-    --     local prompt = vim.api.nvim_buf_get_option(0, 'buftype') ~= 'prompt'
-    --     local command_line = vim.fn.bufname("%") ~= '[Command Line]'
-    --     return prompt and command_line
-    -- end,
     window = {
         documentation = {
             border = require 'lsp.lsp-config'.borders
@@ -55,15 +29,6 @@ cmp.setup({
             i = function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-                elseif try_ultisnips_jump("forward") then
-                    -- handled by UltiSnips jump
-                else
-                    fallback()
-                end
-            end,
-            s = function(fallback)
-                if try_ultisnips_jump("forward") then
-                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
@@ -80,15 +45,6 @@ cmp.setup({
             i = function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-                elseif try_ultisnips_jump("backward") then
-                    -- handled by UltiSnips jump
-                else
-                    fallback()
-                end
-            end,
-            s = function(fallback)
-                if try_ultisnips_jump("backward") then
-                    -- handled by UltiSnips jump
                 else
                     fallback()
                 end
@@ -131,18 +87,9 @@ cmp.setup({
         ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
         ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
         ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-        -- ["<C-Space>"] = cmp.mapping(function()
-        --     cmp.complete({ config = { sources = { { name = "nvim_lsp" }, { name = "ultisnips" } } } })
-        --     -- if not cmp.get_entries() then
-        --     --     print("no entries")
-        --     --     cmp.complete()
-        --     -- end
-        -- end, { "i" }),
-        -- ['<C-e>']  = cmp.mapping.close(),
         ["<C-e>"] = cmp.mapping({ i = cmp.mapping.close(), c = cmp.mapping.close() }),
         ["<CR>"] = cmp.mapping({
             i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-            -- c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
             c = function(fallback)
                 if cmp.visible() and cmp.get_selected_entry() then
                     cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
@@ -153,24 +100,18 @@ cmp.setup({
         }),
     },
     experimental = {
-        -- native_menu = false,
         ghost_text = true,
     },
 
     formatting = {
         format = function(entry, vim_item)
-            -- vim_item.kind = require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
             vim_item = require("lspkind").cmp_format()(entry, vim_item)
 
             local alias = {
                 buffer = "buffer",
                 path = "path",
                 nvim_lsp = "LSP",
-                luasnip = "LuaSnip",
-                ultisnips = "UltiSnips",
                 nvim_lua = "Lua",
-                tmux = "tmux",
-                latex_symbols = "Latex",
                 nvim_lsp_signature_help = "LSP Signature",
             }
 
@@ -185,31 +126,22 @@ cmp.setup({
     sources = {
         { name = "nvim_lsp_signature_help" },
         { name = "nvim_lsp" },
-        { name = "ultisnips" },
         { name = "path" },
         { name = "buffer" },
-        { name = "tmux", option = { all_panes = true } },
-        -- { name = "latex_symbols" },
-        -- { name = "dictionary", keyword_length = 2 },
     },
 })
 
--- Use buffer source for `/`.
--- { name = "buffer", option = { keyword_pattern = [=[[^[:blank:]].*]=] } },
 cmp.setup.cmdline("/", {
     completion = { autocomplete = false },
     sources = {
         { name = "nvim_lsp_document_symbol" },
-        { name = "buffer" }, --, option = { keyword_pattern = [=[[^[:blank:]].*]=] } },
-        -- { name = "buffer" },
+        { name = "buffer" },
     },
 })
 
--- Use cmdline & path source for ':'.
 cmp.setup.cmdline(":", {
     completion = { autocomplete = false },
     sources = {
-        -- { name = 'cmdline_history', max_item_count = 2 },
         { name = "cmdline" },
         { name = "nvim_lua" },
         { name = "path" },
@@ -220,11 +152,7 @@ cmp.setup.filetype({ "markdown", "pandoc", "text", "latex" }, {
     sources = {
         { name = "nvim_lsp_signature_help" },
         { name = "nvim_lsp" },
-        { name = "ultisnips" },
         { name = "path" },
         { name = "buffer" },
-        { name = "dictionary", keyword_length = 2 },
-        { name = "latex_symbols" },
-        { name = "tmux", option = { all_panes = true } },
     },
 })

@@ -1,10 +1,4 @@
-local vim = vim
-
 local M = {}
-
-function M.get_color(hlgroup, attr)
-  return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hlgroup)), attr, 'gui')
-end
 
 vim.opt.background = "dark"
 

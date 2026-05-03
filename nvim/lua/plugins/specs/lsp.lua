@@ -5,7 +5,6 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufRead", "BufNewFile" },
     lazy = false,
-    cmd = "Mason",
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
@@ -13,8 +12,8 @@ return {
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup()
-      require("lspconfig.ui.windows").default_options.border = vim.g.FloatBorders
-      require("lsp.lsp-config")
+      local lsp_ui = require("lsp.lsp-config")
+      require("lspconfig.ui.windows").default_options.border = lsp_ui.borders
     end,
   },
 
@@ -81,7 +80,7 @@ return {
   {
     "liuchengxu/vista.vim",
     cmd = "Vista",
-    keys = "<leader>vv",
+    keys = { { "<leader>vv", "<cmd>Vista!!<CR>" } },
     config = function()
       require("plugins.vista")
     end,
