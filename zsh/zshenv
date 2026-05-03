@@ -55,12 +55,9 @@ path=(
 
   # User scripts and shims
   $HOME/bin
-  $HOME/.claude/local
-  $HOME/.antigravity/antigravity/bin
 
   # Package managers
   ${PNPM_HOME:-$HOME/Library/pnpm}
-  $HOME/.asdf/bin
   $HOME/.local/share/mise/bin
 
   # Language-specific tools

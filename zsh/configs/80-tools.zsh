@@ -25,22 +25,20 @@ fi
 
 # Python tools — lazy-load uv completion on first invocation
 if command -v uv >/dev/null 2>&1; then
-  _uv_lazy_load() {
-    unfunction uv 2>/dev/null || true
+  uv() {
+    unfunction uv
     eval "$(command uv generate-shell-completion zsh)"
     command uv "$@"
   }
-  uv() { _uv_lazy_load "$@"; }
 fi
 
 # Google Cloud Platform
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
-  _gcloud_lazy_load() {
-    unfunction gcloud 2>/dev/null || true
+  gcloud() {
+    unfunction gcloud
     . "$HOME/google-cloud-sdk/completion.zsh.inc"
     command gcloud "$@"
   }
-  gcloud() { _gcloud_lazy_load "$@"; }
 fi
 export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-/usr/local/bin/python3}"
 

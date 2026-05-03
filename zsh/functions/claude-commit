@@ -69,16 +69,12 @@ FORMATTING RULES:
 
 IMPORTANT: Your entire response must be the commit message only. Any extra text will break the script.'
 
-  _generate_commit_msg() {
-    printf '%s\n' "$diff_output" | claude -p "$prompt" --model opus --max-turns 3 --strict-mcp-config
-  }
-
   if [[ $show_diff -eq 1 ]]; then
     printf '%s\n' "$diff_output" | ${PAGER:-less}
   fi
 
   echo "Analyzing staged changes..."
-  commit_msg=$(_generate_commit_msg)
+  commit_msg=$(printf '%s\n' "$diff_output" | claude -p "$prompt" --model opus --max-turns 3 --strict-mcp-config)
   if [[ -z "$commit_msg" ]]; then
     echo "Error: Failed to generate commit message"
     return 1
@@ -123,7 +119,7 @@ IMPORTANT: Your entire response must be the commit message only. Any extra text 
         ;;
       [Rr])
         echo "Re-generating commit message..."
-        commit_msg=$(_generate_commit_msg)
+        commit_msg=$(printf '%s\n' "$diff_output" | claude -p "$prompt" --model opus --max-turns 3 --strict-mcp-config)
         if [[ -z "$commit_msg" ]]; then
           echo "Error: Failed to generate commit message"
           return 1
