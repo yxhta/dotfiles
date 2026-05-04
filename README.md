@@ -114,12 +114,12 @@ After editing Neovim plugins, run `:Lazy sync` inside nvim.
 
 Two layers, each authoritative for a different concern. Knowing which layer to edit prevents drift:
 
-| Layer | Source of truth | What it owns |
-|---|---|---|
-| Nix | `nix/flake.nix`, `nix/modules/{darwin,home}/**` | CLI tools, Neovim binary, system settings, per-tool config symlinks |
-| Homebrew | `Brewfile` | GUI apps and casks only |
+| Layer    | Source of truth                                 | What it owns                                                        |
+| -------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| Nix      | `nix/flake.nix`, `nix/modules/{darwin,home}/**` | CLI tools, Neovim binary, system settings, per-tool config symlinks |
+| Homebrew | `Brewfile`                                      | GUI apps and casks only                                             |
 
-Within the Nix layer, packages and configs are still tracked separately: `nix/modules/home/packages.nix` declares CLI binaries (e.g. neovim), while `nix/modules/home/dotlinks.nix` symlinks the matching config (e.g. `~/.config/nvim → nvim/`) from this repo's working tree. Symlinks point at the *live* repo path, not a `/nix/store` snapshot, so editing a config file is reflected without re-activating. That's the reason linking is done via a raw `home.activation` script and not home-manager's `home.file`.
+Within the Nix layer, packages and configs are still tracked separately: `nix/modules/home/packages.nix` declares CLI binaries (e.g. neovim), while `nix/modules/home/dotlinks.nix` symlinks the matching config (e.g. `~/.config/nvim → nvim/`) from this repo's working tree. Symlinks point at the _live_ repo path, not a `/nix/store` snapshot, so editing a config file is reflected without re-activating. That's the reason linking is done via a raw `home.activation` script and not home-manager's `home.file`.
 
 ## Requirements
 

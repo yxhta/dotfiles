@@ -1,71 +1,44 @@
 {
-  lib,
+  config,
   dotfilesDir,
   ...
 }:
 
 let
-  # Manifest: <repo-relative source> = <home-relative destination>.
-  links = {
-    # Zsh
-    "zsh" = ".zsh";
-    "zsh/zshrc" = ".zshrc";
-    "zsh/zshenv" = ".zshenv";
-    "zsh/sheldon/plugins.toml" = ".config/sheldon/plugins.toml";
-    # Neovim
-    "nvim" = ".config/nvim";
-    # Tmux
-    "tmux" = ".config/tmux";
-    "tmux/tmux.conf" = ".tmux.conf";
-    # Ghostty
-    "ghostty" = ".config/ghostty";
-    # Git
-    "git/gitconfig" = ".gitconfig";
-    "git/gitignore" = ".gitignore_global";
-    "git/gitmessage" = ".gitmessage";
-    "git/git_template" = ".git_template";
-    # Mise
-    "mise/config.toml" = ".config/mise/config.toml";
-    # Lazygit
-    "lazygit/config.yml" = ".config/lazygit/config.yml";
-    # Starship
-    "starship/starship.toml" = ".config/starship.toml";
-  };
-
-  linkLines = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (
-      src: dest: "    link ${lib.escapeShellArg src} ${lib.escapeShellArg dest}"
-    ) links
-  );
+  # Symlink an entry under $HOME directly into the live working tree.
+  # mkOutOfStoreSymlink requires an absolute path *string* under flakes —
+  # passing a path literal would copy into /nix/store and defeat live editing.
+  link = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/${path}";
 in
 {
-  # Point each $HOME entry at the live repo (not a /nix/store snapshot)
-  # so edits in the working tree are reflected without re-activation.
-  # That's why this is a raw activation script and not `home.file`.
-  home.activation.linkDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        DOTFILES=${lib.escapeShellArg dotfilesDir}
+  # Zsh
+  home.file.".zsh".source = link "zsh";
+  home.file.".zshrc".source = link "zsh/zshrc";
+  home.file.".zshenv".source = link "zsh/zshenv";
+  xdg.configFile."sheldon/plugins.toml".source = link "zsh/sheldon/plugins.toml";
 
-        link() {
-          src="$DOTFILES/$1"
-          dst="$HOME/$2"
-          if [ ! -e "$src" ]; then
-            echo "[dotlinks] source missing: $src" >&2
-            return
-          fi
-          $DRY_RUN_CMD mkdir -p "$(dirname "$dst")"
-          if [ -L "$dst" ]; then
-            cur=$(readlink "$dst")
-            if [ "$cur" = "$src" ]; then
-              return
-            fi
-            $DRY_RUN_CMD rm "$dst"
-          elif [ -e "$dst" ]; then
-            echo "[dotlinks] conflict: $dst exists and is not a symlink; leaving in place" >&2
-            return
-          fi
-          $DRY_RUN_CMD ln -s "$src" "$dst"
-        }
+  # Neovim
+  xdg.configFile."nvim".source = link "nvim";
 
-    ${linkLines}
-  '';
+  # Tmux
+  xdg.configFile."tmux".source = link "tmux";
+  home.file.".tmux.conf".source = link "tmux/tmux.conf";
+
+  # Ghostty
+  xdg.configFile."ghostty".source = link "ghostty";
+
+  # Git
+  home.file.".gitconfig".source = link "git/gitconfig";
+  home.file.".gitignore_global".source = link "git/gitignore";
+  home.file.".gitmessage".source = link "git/gitmessage";
+  home.file.".git_template".source = link "git/git_template";
+
+  # Mise
+  xdg.configFile."mise/config.toml".source = link "mise/config.toml";
+
+  # Lazygit
+  xdg.configFile."lazygit/config.yml".source = link "lazygit/config.yml";
+
+  # Starship
+  xdg.configFile."starship.toml".source = link "starship/starship.toml";
 }

@@ -11,15 +11,24 @@ Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are decla
 Changes land in different places depending on what you're modifying. Knowing which layer is authoritative prevents drift:
 
 1. **`nix/` — packages and system state (authoritative).**
-   - `nix/flake.nix` is built on **flake-parts**. It pins inputs (`nixpkgs`, `nix-darwin`, `home-manager`, `flake-parts`), declares `darwinConfigurations.mac` (aarch64-darwin) under `flake.*`, and defines `apps.*` (`build`, `switch`) and the `nixfmt` formatter under `perSystem`. Home-manager is wired in as a nix-darwin module (no standalone home-manager).
+   - `nix/flake.nix` is intentionally thin: it only pins inputs (`nixpkgs`, `nix-darwin`, `home-manager`, `flake-parts`, `git-hooks`, `treefmt-nix`) and lists the **flake-parts** modules that build everything else. Home-manager is wired in as a nix-darwin module (no standalone home-manager).
+   - Top-level outputs are split across `nix/modules/flake-parts/`:
+     - `identity.nix` — single source of truth for `username` / `homeDirectory` / `dotfilesDir` / `hostname` / `system`. Injected into both flake-level and `perSystem` scopes via `_module.args.identity`.
+     - `darwin-systems.nix` — defines `flake.darwinConfigurations.<host>` via the `mkDarwin` helper.
+     - `apps.nix` — `apps.build` / `apps.switch` / `apps.install-hooks` (the `darwin-rebuild` wrappers).
+     - `pre-commit.nix` — `checks.pre-commit` configured via `cachix/git-hooks.nix` (gitleaks + treefmt).
+     - `treefmt.nix` — `formatter` and the multi-language treefmt config.
    - Configuration bodies live under `nix/modules/`:
      - `nix/modules/darwin/default.nix` is the entry point that imports the rest of the darwin module.
      - `nix/modules/darwin/system.nix` holds system-level settings (Touch ID for sudo, unfree package allowlist, the user declaration). It sets `nix.enable = false` because the Nix installation is managed by **Determinate Nix** — nix-darwin must not also try to manage the daemon or `/etc/nix/nix.conf`. Don't re-enable `nix.*` options; if you need flakes/experimental features, edit `/etc/nix/nix.custom.conf` (DetSys's user-config slot) instead.
      - `nix/modules/home/default.nix` is the home-manager entry point — sets `home.username`, `home.homeDirectory`, `home.stateVersion`, and imports the rest.
      - `nix/modules/home/packages.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
-     - `nix/modules/home/dotlinks.nix` symlinks per-tool config files from the dotfiles working tree into `$HOME` via a `home.activation` script. The manifest is the `links` attrset at the top of that file (`<repo-relative source> = <home-relative dest>`). **When adding a new tool config, add a line there.** Symlinks point at the live repo (not a `/nix/store` snapshot) so edits in the working tree are reflected without re-activation; that's why this is a raw activation script rather than `home.file`.
-   - **Convention for adding new config**: tool-specific home-manager `programs.<tool>` blocks (or larger system pieces) belong in their own file under `nix/modules/home/programs/<tool>.nix` (or `nix/modules/darwin/programs/<tool>.nix`), imported from the corresponding `default.nix`. Don't grow `system.nix` / `packages.nix` into a catch-all.
-   - User identity (`username` / `homeDirectory` / `dotfilesDir`) is defined once in `nix/flake.nix` as `let` bindings and passed to home-manager via `home-manager.extraSpecialArgs`. To use this flake on a different host, change those lines in `flake.nix` and nothing else. The `users.users.${username}` block in `system.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
+     - `nix/modules/home/dotlinks.nix` declares per-tool symlinks via `home.file` / `xdg.configFile`, using `config.lib.file.mkOutOfStoreSymlink` so each entry points at the live working tree (not a `/nix/store` snapshot). **When adding a new tool config, add an entry there.** Removing an entry now also removes the corresponding symlink at the next `darwin-rebuild switch` — home-manager's standard cleanup mechanism handles it (no more manual `rm ~/.foo`).
+   - **Convention for adding new config**:
+     - Tool-specific home-manager `programs.<tool>` blocks (or larger system pieces) belong in their own file under `nix/modules/home/programs/<tool>.nix` (or `nix/modules/darwin/programs/<tool>.nix`), imported from the corresponding `default.nix`.
+     - flake-parts modules (apps, formatters, pre-commit hooks, host definitions, dev shells) belong in `nix/modules/flake-parts/<concern>.nix` and get added to the `imports` list in `flake.nix`.
+     - Don't grow `system.nix` / `packages.nix` / `flake.nix` into a catch-all.
+   - User identity (`username` / `homeDirectory` / `dotfilesDir`) lives in `nix/modules/flake-parts/identity.nix`. To use this flake on a different host, change those bindings (and nothing else). The `users.users.${username}` block in `nix/modules/darwin/system.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
    - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the canonical command (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
    - **flake-tracked sources**: `nix flake check` / `nix build` only see git-tracked files. After adding a new file under `nix/`, run `git add` (no commit needed) before invoking flake commands, otherwise evaluation fails with "Path … is not tracked by Git".
 
@@ -27,7 +36,7 @@ Changes land in different places depending on what you're modifying. Knowing whi
 
 ### Pre-commit hooks
 
-This repo has a Nix-managed `pre-commit` hook (gitleaks + nixfmt-rfc-style) configured in `nix/flake.nix` via `cachix/git-hooks.nix`. The hook config is generated by Nix and symlinked into `.pre-commit-config.yaml` (gitignored). To install (run once per clone, or whenever you change the hook list):
+This repo has a Nix-managed `pre-commit` hook (gitleaks + treefmt) configured in `nix/modules/flake-parts/pre-commit.nix` via `cachix/git-hooks.nix`. The treefmt hook reuses the same wrapper as `nix fmt`, so what gets formatted at commit time matches what `nix fmt` formats locally. The hook config is generated by Nix and symlinked into `.pre-commit-config.yaml` (gitignored). To install (run once per clone, or whenever you change the hook list):
 
 ```sh
 nix run ./nix#install-hooks
@@ -49,8 +58,10 @@ nix run ./nix#switch
 # Build the system without activating, to validate eval + build
 nix run ./nix#build
 
-# Format nix files with the flake's `formatter` output (RFC 166 / nixfmt)
-(cd nix && nix fmt -- flake.nix modules/darwin/*.nix modules/home/*.nix)
+# Format the entire repo via treefmt — covers nixfmt + shfmt + stylua + taplo + prettier.
+# Run from the nix/ directory (that's where the flake lives) but treefmt anchors on
+# the repo root via projectRootFile = "Brewfile" so all files are in scope.
+(cd nix && nix fmt)
 
 # Validate flake outputs without building
 (cd nix && nix flake check --no-build)
@@ -90,6 +101,6 @@ rr                   # alias for: exec $SHELL -l
 
 ## File linking model
 
-Tool configs in this repo are symlinked into `$HOME` by `home.activation.linkDotfiles` (defined in `nix/modules/home/dotlinks.nix`) on every `darwin-rebuild switch`. The Nix side provides the *binary* (e.g. neovim via `home.packages`); the activation script provides the *config*. The symlink target is the live repo path (`${dotfilesDir}/...` resolved to `/Users/<user>/dotfiles/...`), not a `/nix/store` snapshot — so editing a tracked file is reflected in `$HOME` immediately. That live-edit behavior is the reason the linking is done via a raw activation script rather than home-manager's `home.file` (which would copy into the store).
+Tool configs are symlinked into `$HOME` via `home.file` / `xdg.configFile` entries declared in `nix/modules/home/dotlinks.nix`, using `config.lib.file.mkOutOfStoreSymlink` so each link target is the live repo path (`${dotfilesDir}/...` → `/Users/<user>/dotfiles/...`) rather than a `/nix/store` snapshot. The Nix side provides the _binary_ (e.g. neovim via `home.packages`); these symlinks provide the _config_. Editing a tracked file is reflected in `$HOME` immediately, without re-activation.
 
-Removing an entry from the manifest does **not** remove the corresponding symlink in `$HOME` — the activation script only adds. Stale links must be cleaned up by hand (`rm ~/.foo`).
+Removing an entry from the manifest causes home-manager's standard cleanup to remove the corresponding symlink in `$HOME` at the next `darwin-rebuild switch`. On first migration from the old activation-script approach, `home-manager.backupFileExtension = "hm-bak"` (set in `nix/modules/flake-parts/darwin-systems.nix`) renames pre-existing files to `.hm-bak` rather than failing.
