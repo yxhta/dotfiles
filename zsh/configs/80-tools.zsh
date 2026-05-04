@@ -2,14 +2,33 @@
 # Tool Integrations
 # ==========================================================================
 
+# Cache `eval "$(tool init zsh)"` to skip forking on every shell start.
+# Invalidated when the binary's realpath changes (e.g. Nix store updates) —
+# we can't rely on mtime alone since /nix/store files have a fixed epoch.
+_cache_init() {
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  local name="$1" bin="$2"
+  shift 2
+  local cache="$cache_dir/init-$name.zsh"
+  local pathfile="$cache.path"
+  local real="${bin:A}"
+  if [[ ! -s "$cache" || ! -f "$pathfile" || "$(< "$pathfile")" != "$real" ]]; then
+    mkdir -p "$cache_dir"
+    "$bin" "$@" > "$cache" || return 1
+    print -r -- "$real" > "$pathfile"
+    zcompile "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}
+
 # Shell prompt
 if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init zsh)"
+  _cache_init starship "$(command -v starship)" init zsh --print-full-init
 fi
 
 # Version managers
 if [ -x "$HOME/.local/bin/mise" ]; then
-  eval "$($HOME/.local/bin/mise activate zsh)" # added by https://mise.run/zsh
+  _cache_init mise "$HOME/.local/bin/mise" activate zsh
 fi
 
 # Tool environments
@@ -44,7 +63,7 @@ export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-/usr/local/bin/python3}"
 
 # Zoxide
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh --cmd cd)"
+  _cache_init zoxide "$(command -v zoxide)" init zsh --cmd cd
   # Prefer zoxide's `zi` over any existing alias.
   (( ${+aliases[zi]} )) && unalias zi
 fi
