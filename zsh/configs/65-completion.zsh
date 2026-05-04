@@ -2,6 +2,11 @@
 # Completion
 # ==========================================================================
 
+# zsh-completions ships extra completion files under src/. sheldon clones
+# the repo to ~/.local/share/sheldon/repos, but its init runs in
+# 70-plugins.zsh — too late for compinit to pick up. Add the fpath here.
+fpath=("$HOME/.local/share/sheldon/repos/github.com/zchee/zsh-completions/src" $fpath)
+
 compdump_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 mkdir -p "$compdump_dir"
 zcompdump="$compdump_dir/zcompdump"

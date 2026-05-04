@@ -5,14 +5,25 @@ shell = "zsh"
 [plugins.fzf-history]
 github = "joshskidmore/zsh-fzf-history-search"
 
+# zsh-completions ships extra completion files via fpath. The fpath itself
+# is added in zsh/configs/65-completion.zsh (compinit needs it before
+# 70-plugins.zsh runs sheldon source); this entry just ensures the repo
+# stays cloned at the path that file expects.
+[plugins.zsh-completions]
+github = "zchee/zsh-completions"
+
+# fzf-tab — replaces the default tab completion UI with fzf. Must source
+# AFTER compinit (65-completion.zsh runs before 70-plugins.zsh sources
+# sheldon) and BEFORE plugins that wrap ZLE widgets (autosuggestions and
+# syntax-highlighting below). Reordering breaks the widget chain.
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+
 [plugins.autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 
 [plugins.syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
-
-[plugins.zsh-completions]
-github = "zchee/zsh-completions"
 
 [plugins.fzf]
 inline = "if command -v fzf >/dev/null 2>&1; then eval \"$(fzf --zsh)\"; fi"
