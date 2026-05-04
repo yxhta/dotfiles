@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# bin/cxd — pick a ghq repository and launch `codex` in a tmux window.
+# Companion to bin/ai-session-selector (which jumps to existing sessions).
+
+set -eu
+
+repo=$(ghq list --full-path | fzf --prompt='codex › ' --reverse --no-multi --height=80%)
+[ -z "$repo" ] && exit 0
+
+window="codex:$(basename "$repo")"
+
+if [ -n "${TMUX:-}" ]; then
+  tmux new-window -n "$window" -c "$repo" codex
+else
+  tmux new-session -A -s codex -n "$window" -c "$repo" codex
+fi

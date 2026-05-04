@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# bin/ccd — pick a ghq repository and launch `claude` in a tmux window.
+# Companion to bin/ai-session-selector (which jumps to existing sessions).
+
+set -eu
+
+repo=$(ghq list --full-path | fzf --prompt='claude › ' --reverse --no-multi --height=80%)
+[ -z "$repo" ] && exit 0
+
+window="claude:$(basename "$repo")"
+
+if [ -n "${TMUX:-}" ]; then
+  tmux new-window -n "$window" -c "$repo" claude
+else
+  tmux new-session -A -s claude -n "$window" -c "$repo" claude
+fi

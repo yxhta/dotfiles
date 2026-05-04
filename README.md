@@ -8,7 +8,7 @@ CLI tools and system settings are declaratively managed by **Nix** (flakes + nix
 
 ```
 .
-├── bin/        # Custom shell scripts (tat, ai-session-selector, ...)
+├── bin/        # Custom shell scripts (doctor, tat, ai-session-selector, ccd, cxd, ...)
 ├── nix/        # nix-darwin + home-manager flake (modules under nix/modules/)
 ├── nvim/       # Neovim (Lua)
 ├── zsh/        # Zsh + sheldon plugins
@@ -87,6 +87,14 @@ nix run ./nix#install-hooks
 ```
 
 Re-run after editing the hook list in `nix/flake.nix`.
+
+### 8. Verify the setup
+
+```sh
+bin/doctor
+```
+
+Reports `[OK] / [WARN] / [FAIL]` for the assumptions documented in `CLAUDE.md` (Determinate Nix install, `darwin-rebuild` on PATH, sheldon plugins cloned, mise available, pre-commit hook installed, PATH order). Exit code `1` only on `[FAIL]`.
 
 ## Updating
 

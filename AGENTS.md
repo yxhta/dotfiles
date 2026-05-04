@@ -32,6 +32,7 @@ There is no build step. Common workflows:
 - `(cd nix && nix fmt)` (or `treefmt` from inside the dev shell): run treefmt across the whole repo (nixfmt + shfmt + stylua + taplo + prettier). Same wrapper is invoked by the pre-commit hook.
 - `nix develop ./nix`: enter the dev shell (auto-loaded by direnv at repo root).
 - `brew bundle --file=Brewfile`: install GUI apps / casks.
+- `bin/doctor`: sanity-check the bootstrap state (Determinate Nix / darwin-rebuild / sheldon / mise / pre-commit hook / PATH order). Exits non-zero only on `[FAIL]`.
 
 ## Coding Style & Naming Conventions
 

@@ -1,0 +1,78 @@
+#!/bin/sh
+#
+# bin/doctor — sanity-check the dotfiles bootstrap state.
+# Verifies the assumptions documented in CLAUDE.md so a fresh machine
+# (or one that drifted) can spot what's broken in one command.
+
+set -eu
+
+warn_count=0
+fail_count=0
+
+OK()   { printf '\033[32m[OK]\033[0m   %s\n' "$1"; }
+WARN() { printf '\033[33m[WARN]\033[0m %s\n' "$1"; warn_count=$((warn_count + 1)); }
+FAIL() { printf '\033[31m[FAIL]\033[0m %s\n' "$1"; fail_count=$((fail_count + 1)); }
+
+# Determinate Nix: nix-darwin sets nix.enable = false on this assumption.
+if [ -f /etc/nix/nix.custom.conf ]; then
+  OK "Determinate Nix install (/etc/nix/nix.custom.conf present)"
+else
+  FAIL "/etc/nix/nix.custom.conf missing — install via curl -fsSL https://install.determinate.systems/nix | sh -s -- install"
+fi
+
+if command -v darwin-rebuild >/dev/null 2>&1; then
+  OK "darwin-rebuild on PATH ($(command -v darwin-rebuild))"
+else
+  FAIL "darwin-rebuild not found — bootstrap with: sudo nix run nix-darwin -- switch --flake ./nix#mac"
+fi
+
+if [ -f "$HOME/.gitconfig_private" ]; then
+  OK "~/.gitconfig_private present"
+else
+  WARN "~/.gitconfig_private missing — git/gitconfig includeIf will silently fall through"
+fi
+
+sheldon_repos="$HOME/.local/share/sheldon/repos"
+if [ -d "$sheldon_repos" ] && [ -n "$(ls -A "$sheldon_repos" 2>/dev/null)" ]; then
+  count=$(find "$sheldon_repos" -mindepth 2 -maxdepth 2 -type d 2>/dev/null | wc -l | tr -d ' ')
+  OK "sheldon plugins cloned (${count} repos under ${sheldon_repos})"
+else
+  WARN "sheldon repos not cloned — run: sheldon lock --update"
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  OK "mise on PATH ($(command -v mise))"
+else
+  WARN "mise not found — install: curl https://mise.run | sh"
+fi
+
+if git_top=$(git rev-parse --show-toplevel 2>/dev/null); then
+  hook="$git_top/.git/hooks/pre-commit"
+  if [ -x "$hook" ]; then
+    OK "pre-commit hook installed in ${git_top}"
+  else
+    WARN "pre-commit hook missing in ${git_top} — run: nix run ./nix#install-hooks"
+  fi
+fi
+
+# nix profile dirs should appear before homebrew so nix-managed CLIs win.
+nix_pos=$(printf '%s\n' "$PATH" | tr ':' '\n' | grep -n -E '^/etc/profiles/per-user|^/run/current-system/sw/bin|^/nix/var/nix/profiles' | head -1 | cut -d: -f1 || true)
+brew_pos=$(printf '%s\n' "$PATH" | tr ':' '\n' | grep -n -E '^/opt/homebrew/bin|^/usr/local/bin' | head -1 | cut -d: -f1 || true)
+if [ -n "$nix_pos" ] && [ -n "$brew_pos" ]; then
+  if [ "$nix_pos" -lt "$brew_pos" ]; then
+    OK "PATH order: nix (${nix_pos}) before homebrew (${brew_pos})"
+  else
+    WARN "PATH order: homebrew (${brew_pos}) before nix (${nix_pos}) — nix CLIs may be shadowed"
+  fi
+fi
+
+printf '\n'
+if [ "$fail_count" -gt 0 ]; then
+  printf '%d failed, %d warnings\n' "$fail_count" "$warn_count" >&2
+  exit 1
+elif [ "$warn_count" -gt 0 ]; then
+  printf '%d warnings\n' "$warn_count"
+  exit 0
+else
+  printf 'all checks passed\n'
+fi

@@ -89,6 +89,10 @@ brew bundle --file=Brewfile
 
 # Reload shell after zsh changes
 rr                   # alias for: exec $SHELL -l
+
+# Sanity-check the bootstrap state (Determinate Nix / darwin-rebuild / sheldon /
+# mise / pre-commit hook / PATH order). Run after a fresh clone or any drift.
+bin/doctor
 ```
 
 ## Zsh layout
