@@ -72,3 +72,8 @@ fi
 if command -v direnv >/dev/null 2>&1; then
   _cache_init direnv "$(command -v direnv)" hook zsh
 fi
+
+# git-wt — `git wt` worktree subcommand: completion + auto-cd via git() wrapper
+if command -v git-wt >/dev/null 2>&1; then
+  _cache_init git-wt "$(command -v git-wt)" --init zsh
+fi

@@ -29,6 +29,7 @@ in
       git
       git-filter-repo
       git-lfs
+      git-wt
       gitleaks
       go-tools
       golangci-lint
