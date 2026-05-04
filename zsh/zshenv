@@ -23,6 +23,11 @@ export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME XDG_STATE_HOME
 
 export LANG LC_CTYPE
 
+# Suppress zoxide's "init at end of shell" doctor warning. Our post/99-profile.zsh
+# (zprof) intentionally runs after the zoxide hook, which is fine — zoxide just
+# wants to be sure no later init re-overrides its prompt hook.
+export _ZO_DOCTOR=0
+
 # ============================================================================
 # Development Environment
 # ============================================================================
