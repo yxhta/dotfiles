@@ -1,3 +1,3 @@
-require'gitsigns'.setup {
-    trouble = true,
-}
+require("gitsigns").setup({
+	trouble = true,
+})

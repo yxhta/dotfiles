@@ -67,3 +67,8 @@ if command -v zoxide >/dev/null 2>&1; then
   # Prefer zoxide's `zi` over any existing alias.
   (( ${+aliases[zi]} )) && unalias zi
 fi
+
+# direnv (with nix-direnv) — auto-loads .envrc on cd
+if command -v direnv >/dev/null 2>&1; then
+  _cache_init direnv "$(command -v direnv)" hook zsh
+fi

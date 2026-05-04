@@ -3,6 +3,7 @@
   imports = [
     ./packages.nix
     ./dotlinks.nix
+    ./programs/direnv.nix
   ];
 
   # home.username / home.homeDirectory are auto-derived from

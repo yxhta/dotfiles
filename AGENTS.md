@@ -7,7 +7,9 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 - `bin/`: executable shell scripts (`tat`, `ai-session-selector`, `ccs`).
 - `git/`, `zsh/`, `tmux/`, `nvim/`: tool-specific configs.
 - `ghostty/`, `cursor/`, `zed/`: app/editor configs.
-- `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. The symlink manifest that wires repo configs into `$HOME` lives in `nix/modules/home/dotlinks.nix` (uses `mkOutOfStoreSymlink` so edits in the working tree are reflected in `$HOME` immediately).
+- `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. The symlink manifest that wires repo configs into `$HOME` lives in `nix/modules/home/dotlinks.nix` (uses `mkOutOfStoreSymlink` so edits in the working tree are reflected in `$HOME` immediately).
+- `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
+- `.github/workflows/nix.yml` runs `nix flake check` + `nix build` on `macos-14` for pushes/PRs (Markdown-only diffs are skipped).
 - Root manifests: `Brewfile`.
 
 ### Neovim (`nvim/`)
@@ -26,8 +28,9 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 There is no build step. Common workflows:
 
 - `sudo darwin-rebuild switch --flake ./nix#mac`: apply Nix config (also writes the home-manager symlinks).
-- `(cd nix && nix flake check --no-build)`: validate flake outputs without building.
-- `(cd nix && nix fmt)`: run treefmt across the whole repo (nixfmt + shfmt + stylua + taplo + prettier). Same wrapper is invoked by the pre-commit hook.
+- `nix flake check ./nix --no-build`: validate flake outputs without building.
+- `(cd nix && nix fmt)` (or `treefmt` from inside the dev shell): run treefmt across the whole repo (nixfmt + shfmt + stylua + taplo + prettier). Same wrapper is invoked by the pre-commit hook.
+- `nix develop ./nix`: enter the dev shell (auto-loaded by direnv at repo root).
 - `brew bundle --file=Brewfile`: install GUI apps / casks.
 
 ## Coding Style & Naming Conventions

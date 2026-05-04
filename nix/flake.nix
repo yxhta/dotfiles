@@ -33,6 +33,7 @@
         ./modules/flake-parts/treefmt.nix
         ./modules/flake-parts/pre-commit.nix
         ./modules/flake-parts/apps.nix
+        ./modules/flake-parts/devshell.nix
         ./modules/flake-parts/darwin-systems.nix
       ];
     };

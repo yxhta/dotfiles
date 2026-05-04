@@ -1,10 +1,10 @@
-require'trouble'.setup {
-    use_diagnostic_signs = true
-}
+require("trouble").setup({
+	use_diagnostic_signs = true,
+})
 
-vim.cmd [[
+vim.cmd([[
     augroup trouble_au
     autocmd!
     autocmd FileType Trouble setl cursorline 
     augroup END
-]]
+]])

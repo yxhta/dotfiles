@@ -20,7 +20,6 @@ in
       cmake
       cocoapods
       delta
-      direnv
       eza
       fd
       ffmpeg

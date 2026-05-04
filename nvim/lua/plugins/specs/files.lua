@@ -1,32 +1,32 @@
 return {
-  {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons", -- optional, for file icons
-    },
-    cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
-    keys = { "<leader>n", "<leader>nf" },
-    config = function()
-      require("nvim-tree").setup({})
-    end,
-  },
+	{
+		"nvim-tree/nvim-tree.lua",
+		version = "*",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons", -- optional, for file icons
+		},
+		cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
+		keys = { "<leader>n", "<leader>nf" },
+		config = function()
+			require("nvim-tree").setup({})
+		end,
+	},
 
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    enabled = true,
-    dependencies = {
-      { "nvim-lua/plenary.nvim" },
-      {
-        "nvim-telescope/telescope-file-browser.nvim",
-        config = function()
-          require("telescope").load_extension("file_browser")
-        end,
-      },
-    },
-    config = function()
-      require("plugins.telescope")
-    end,
-  },
+	{
+		"nvim-telescope/telescope.nvim",
+		cmd = "Telescope",
+		enabled = true,
+		dependencies = {
+			{ "nvim-lua/plenary.nvim" },
+			{
+				"nvim-telescope/telescope-file-browser.nvim",
+				config = function()
+					require("telescope").load_extension("file_browser")
+				end,
+			},
+		},
+		config = function()
+			require("plugins.telescope")
+		end,
+	},
 }
