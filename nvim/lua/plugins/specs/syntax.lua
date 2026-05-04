@@ -1,8 +1,9 @@
 return {
-  { "chrisbra/vim-zsh" },
+  { "chrisbra/vim-zsh", ft = "zsh" },
 
   {
     "andymass/vim-matchup",
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       vim.g.matchup_override_vimtex = 1
       vim.g.matchup_matchparen_deferred = 1

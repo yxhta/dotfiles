@@ -2,7 +2,6 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     version = "*",
-    lazy = false,
     dependencies = {
       "nvim-tree/nvim-web-devicons", -- optional, for file icons
     },
@@ -17,7 +16,6 @@ return {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     enabled = true,
-    lazy = false,
     dependencies = {
       { "nvim-lua/plenary.nvim" },
       {

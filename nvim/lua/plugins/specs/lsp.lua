@@ -1,17 +1,15 @@
 return {
-  { "github/copilot.vim" },
+  { "github/copilot.vim", event = "InsertEnter" },
 
   {
     "neovim/nvim-lspconfig",
-    event = { "BufRead", "BufNewFile" },
-    lazy = false,
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
-      require("mason").setup()
-      require("mason-lspconfig").setup()
       local lsp_ui = require("lsp.lsp-config")
       require("lspconfig.ui.windows").default_options.border = lsp_ui.borders
     end,
@@ -19,7 +17,7 @@ return {
 
   {
     "nvimtools/none-ls.nvim",
-    lazy = false,
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("lsp.none-ls")
     end,
@@ -28,6 +26,7 @@ return {
   {
     "j-hui/fidget.nvim",
     tag = 'legacy',
+    event = "LspAttach",
     config = function()
       require("fidget").setup({})
     end,
@@ -35,6 +34,7 @@ return {
 
   {
     "onsails/lspkind-nvim",
+    lazy = true,
     config = function()
       require("lspkind").init({
         mode = "symbol_text",

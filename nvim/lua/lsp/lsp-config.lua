@@ -2,17 +2,7 @@ local lspconfig = require("lspconfig")
 local navic = require("nvim-navic")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
-
-local borders = {
-    { "🭽", "FloatBorder" },
-    { "▔", "FloatBorder" },
-    { "🭾", "FloatBorder" },
-    { "▕", "FloatBorder" },
-    { "🭿", "FloatBorder" },
-    { "▁", "FloatBorder" },
-    { "🭼", "FloatBorder" },
-    { "▏", "FloatBorder" },
-}
+local ui = require("lsp.ui")
 
 -----------------------
 -- Handlers --
@@ -45,16 +35,6 @@ local handlers = {
             }
         }
     end,
-}
-
-local signature_help_config = {
-    silent = true,
-    max_height = 10,
-    border = borders,
-}
-
-local hover_config = {
-    border = borders,
 }
 
 vim.lsp.util.close_preview_autocmd = function(events, winnr)
@@ -111,7 +91,7 @@ mason_lspconfig.setup({
 local M = {}
 M.on_attach = on_attach
 M.capabilities = capabilities
-M.borders = borders
-M.hover_config = hover_config
-M.signature_help_config = signature_help_config
+M.borders = ui.borders
+M.hover_config = ui.hover_config
+M.signature_help_config = ui.signature_help_config
 return M

@@ -13,7 +13,7 @@ cmp.setup({
     },
     window = {
         documentation = {
-            border = require 'lsp.lsp-config'.borders
+            border = require("lsp.ui").borders
         },
     },
 

@@ -23,6 +23,7 @@ return {
 
   {
     "nvim-lualine/lualine.nvim",
+    event = "VimEnter",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("lualine").setup()
@@ -31,6 +32,7 @@ return {
 
   {
     "goolord/alpha-nvim",
+    event = "VimEnter",
     config = function()
       require("plugins.dashboard")
     end,
@@ -41,6 +43,6 @@ return {
     config = function()
       require("colorizer").setup()
     end,
-    event = "BufEnter",
+    event = { "BufReadPost", "BufNewFile" },
   },
 }

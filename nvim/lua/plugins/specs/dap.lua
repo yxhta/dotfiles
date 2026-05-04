@@ -1,6 +1,15 @@
 return {
   {
     "mfussenegger/nvim-dap",
+    keys = {
+      "<F5>",
+      "<F10>",
+      "<F11>",
+      "<F12>",
+      "<leader>b",
+      "<leader>bc",
+      "<leader>l",
+    },
     config = function()
       require("dap-config")
     end,
@@ -8,7 +17,14 @@ return {
 
   {
     "rcarriga/nvim-dap-ui",
-    lazy = true,
+    keys = {
+      "<leader>d",
+      "<leader><leader>df",
+    },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-neotest/nvim-nio",
+    },
     config = function()
       require("dapui").setup({
         controls = {
@@ -31,6 +47,12 @@ return {
 
   {
     "leoluz/nvim-dap-go",
+    keys = {
+      "<leader>td",
+    },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
     config = function()
       require("plugins.dap-go")
     end,

@@ -7,8 +7,39 @@ return {
     end,
   },
 
-  { "sindrets/diffview.nvim", dependencies = "nvim-lua/plenary.nvim" },
+  {
+    "sindrets/diffview.nvim",
+    cmd = {
+      "DiffviewClose",
+      "DiffviewFileHistory",
+      "DiffviewFocusFiles",
+      "DiffviewLog",
+      "DiffviewOpen",
+      "DiffviewRefresh",
+      "DiffviewToggleFiles",
+    },
+    dependencies = "nvim-lua/plenary.nvim",
+  },
 
-  { "tpope/vim-fugitive" },
-  { "tpope/vim-rhubarb" },
+  {
+    "tpope/vim-fugitive",
+    cmd = {
+      "G",
+      "Git",
+      "Gclog",
+      "Gdiffsplit",
+      "Gedit",
+      "Ggrep",
+      "Gread",
+      "Gsplit",
+      "Gtabedit",
+      "Gvdiffsplit",
+      "Gwrite",
+    },
+  },
+  {
+    "tpope/vim-rhubarb",
+    cmd = "GBrowse",
+    dependencies = "tpope/vim-fugitive",
+  },
 }

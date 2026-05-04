@@ -5,17 +5,31 @@ return {
       vim.cmd("xmap ga <Plug>(EasyAlign)")
     end,
     cmd = "EasyAlign",
-    keys = { "x", "ga" },
+    keys = {
+      { "ga", mode = { "n", "x" } },
+    },
   },
 
   {
     "numToStr/Comment.nvim",
+    keys = {
+      { "gc", mode = { "n", "x", "o" } },
+      { "gcc", mode = "n" },
+    },
     config = function()
       require("Comment").setup({ mappings = { extended = true } })
     end,
   },
 
-  { "tpope/vim-surround" },
+  {
+    "tpope/vim-surround",
+    keys = {
+      { "ys", mode = "n" },
+      { "cs", mode = "n" },
+      { "ds", mode = "n" },
+      { "S", mode = "x" },
+    },
+  },
 
   {
     "windwp/nvim-autopairs",
@@ -25,9 +39,9 @@ return {
     end,
   },
 
-  { "wellle/targets.vim" },
+  { "wellle/targets.vim", event = "VeryLazy" },
 
-  { "michaeljsmith/vim-indent-object" },
+  { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
 
-  { "tpope/vim-repeat" },
+  { "tpope/vim-repeat", event = "VeryLazy" },
 }

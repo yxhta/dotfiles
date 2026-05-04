@@ -17,4 +17,16 @@ require("lazy").setup({
     { import = "plugins.specs" },
   },
   rocks = { hererocks = false },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
 })
