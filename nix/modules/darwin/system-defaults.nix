@@ -67,24 +67,6 @@
     loginwindow.GuestEnabled = false;
   };
 
-  # Swap Caps Lock <-> Left Control. HID usage codes:
-  #   0x700000039 (30064771129) = Caps Lock
-  #   0x7000000E0 (30064771296) = Left Control
-  # Applies to Apple keyboards; per-device overrides in System Settings can shadow this.
-  system.keyboard = {
-    enableKeyMapping = true;
-    userKeyMapping = [
-      {
-        HIDKeyboardModifierMappingSrc = 30064771129;
-        HIDKeyboardModifierMappingDst = 30064771296;
-      }
-      {
-        HIDKeyboardModifierMappingSrc = 30064771296;
-        HIDKeyboardModifierMappingDst = 30064771129;
-      }
-    ];
-  };
-
   # Reload preferences so changes apply without a logout. Safe to re-run.
   system.activationScripts.postActivation.text = ''
     /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
