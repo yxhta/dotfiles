@@ -67,8 +67,37 @@
     loginwindow.GuestEnabled = false;
   };
 
-  # Reload preferences so changes apply without a logout. Safe to re-run.
+  # Modifier-key remap, scoped to the built-in Apple Internal Keyboard
+  # (VendorID 0x05ac / ProductID 0x0343) so external keyboards (HHKB etc.)
+  # keep their native layout. `system.keyboard.userKeyMapping` applies
+  # hidutil globally and can't target a single device, so use a launchd
+  # user agent with `hidutil --matching` instead.
+  # HID usage codes:
+  #   0x700000039 = Caps Lock
+  #   0x7000000E0 = Left Control
+  #   0x7000000E4 = Right Control
+  launchd.user.agents.internal-keyboard-keymapping.serviceConfig = {
+    ProgramArguments = [
+      "/usr/bin/hidutil"
+      "property"
+      "--matching"
+      ''{"VendorID":0x05ac,"ProductID":0x0343}''
+      "--set"
+      ''{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E4},{"HIDKeyboardModifierMappingSrc":0x7000000E4,"HIDKeyboardModifierMappingDst":0x700000039},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}''
+    ];
+    RunAtLoad = true;
+  };
+
   system.activationScripts.postActivation.text = ''
+    # Reload preferences so `system.defaults` changes apply without a logout.
     /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
+    # Apply the internal-keyboard mapping immediately, so `darwin-rebuild
+    # switch` takes effect without waiting for the next login.
+    launchctl asuser "$(id -u -- ${username})" sudo --user=${username} -- \
+      /usr/bin/hidutil property \
+        --matching '{"VendorID":0x05ac,"ProductID":0x0343}' \
+        --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E4},{"HIDKeyboardModifierMappingSrc":0x7000000E4,"HIDKeyboardModifierMappingDst":0x700000039},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}' \
+      > /dev/null
   '';
 }
