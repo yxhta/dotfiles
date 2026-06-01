@@ -75,15 +75,19 @@
   # HID usage codes:
   #   0x700000039 = Caps Lock
   #   0x7000000E0 = Left Control
-  #   0x7000000E4 = Right Control
+  # Two-step apply: first clear any globally-set UserKeyMapping that may
+  # linger from a prior `system.keyboard.userKeyMapping`-style global hidutil
+  # call (which would otherwise be inherited by externally connected
+  # keyboards like the HHKB), then apply the swap scoped to the internal
+  # keyboard only.
   launchd.user.agents.internal-keyboard-keymapping.serviceConfig = {
     ProgramArguments = [
-      "/usr/bin/hidutil"
-      "property"
-      "--matching"
-      ''{"VendorID":0x05ac,"ProductID":0x0343}''
-      "--set"
-      ''{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E4},{"HIDKeyboardModifierMappingSrc":0x7000000E4,"HIDKeyboardModifierMappingDst":0x700000039},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}''
+      "/bin/sh"
+      "-c"
+      ''
+        /usr/bin/hidutil property --set '{"UserKeyMapping":[]}' > /dev/null
+        /usr/bin/hidutil property --matching '{"VendorID":0x05ac,"ProductID":0x0343}' --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}' > /dev/null
+      ''
     ];
     RunAtLoad = true;
   };
@@ -92,12 +96,16 @@
     # Reload preferences so `system.defaults` changes apply without a logout.
     /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
-    # Apply the internal-keyboard mapping immediately, so `darwin-rebuild
-    # switch` takes effect without waiting for the next login.
+    # Mirror the launchd agent so `darwin-rebuild switch` takes effect
+    # without waiting for the next login: clear any global UserKeyMapping
+    # (including ones set by a previous `system.keyboard.userKeyMapping`),
+    # then apply the per-device mapping to the internal keyboard.
+    launchctl asuser "$(id -u -- ${username})" sudo --user=${username} -- \
+      /usr/bin/hidutil property --set '{"UserKeyMapping":[]}' > /dev/null
     launchctl asuser "$(id -u -- ${username})" sudo --user=${username} -- \
       /usr/bin/hidutil property \
         --matching '{"VendorID":0x05ac,"ProductID":0x0343}' \
-        --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E4},{"HIDKeyboardModifierMappingSrc":0x7000000E4,"HIDKeyboardModifierMappingDst":0x700000039},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}' \
+        --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}' \
       > /dev/null
   '';
 }
