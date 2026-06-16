@@ -3,9 +3,9 @@ let
   identity = rec {
     # Single source of truth for the user identity. Change these and
     # nothing else to use this flake on a host with a different user.
-    username = "yxhta";
+    username = "yota.ito";
     homeDirectory = "/Users/${username}";
-    dotfilesDir = "${homeDirectory}/dotfiles";
+    dotfilesDir = "${homeDirectory}/ghq/github.com/yxhta/dotfiles";
 
     # Default host targeted by `flake.darwinConfigurations`.
     hostname = "mac";

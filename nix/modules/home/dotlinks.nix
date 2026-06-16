@@ -41,4 +41,7 @@ in
 
   # Starship
   xdg.configFile."starship.toml".source = link "starship/starship.toml";
+
+  # User scripts (tat, ccd, cxd, doctor, …) — $HOME/bin is on PATH via zshenv
+  home.file."bin".source = link "bin";
 }

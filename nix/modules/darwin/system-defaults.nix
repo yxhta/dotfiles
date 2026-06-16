@@ -47,24 +47,6 @@
       NSWindowResizeTime = 0.001;
     };
 
-    LaunchServices.LSQuarantine = false;
-
-    menuExtraClock = {
-      Show24Hour = true;
-      ShowDate = 1;
-      ShowDayOfWeek = true;
-      ShowSeconds = false;
-    };
-
-    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false;
-
-    trackpad = {
-      Clicking = true;
-      TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = false;
-    };
-
-    loginwindow.GuestEnabled = false;
   };
 
   # Modifier-key remap, scoped to the built-in Apple Internal Keyboard
