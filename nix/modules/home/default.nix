@@ -2,7 +2,6 @@
 {
   imports = [
     ./packages.nix
-    ./dotlinks.nix
     ./programs/direnv.nix
   ];
 

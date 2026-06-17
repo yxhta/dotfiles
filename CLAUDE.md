@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are declaratively managed by Nix (flakes + nix-darwin + home-manager); GUI apps by Homebrew Cask; per-tool config files live as plain files in this repo and are symlinked into `$HOME` by a home-manager activation script (`nix/modules/home/dotlinks.nix`).
+Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are declaratively managed by Nix (flakes + nix-darwin + home-manager); GUI apps by Homebrew Cask; per-tool config files live as plain files in this repo and are symlinked into `$HOME` by `bin/dotlink` (a POSIX-sh script with an embedded `src → dest` manifest).
 
-## Architecture: two layers of provisioning
+## Architecture: three layers of provisioning
 
 Changes land in different places depending on what you're modifying. Knowing which layer is authoritative prevents drift:
 
@@ -25,7 +25,6 @@ Changes land in different places depending on what you're modifying. Knowing whi
      - `nix/modules/darwin/system-defaults.nix` declares macOS `defaults write` equivalents (`system.defaults.dock` / `.finder` / `.NSGlobalDomain` / etc.) and sets `system.primaryUser` (required by recent nix-darwin for any user-scoped default). `postActivation` runs `activateSettings -u` so changes apply without a logout. Tweak any line, then `darwin-rebuild switch`.
      - `nix/modules/home/default.nix` is the home-manager entry point — sets `home.username`, `home.homeDirectory`, `home.stateVersion`, and imports the rest.
      - `nix/modules/home/packages.nix` lists all CLI packages. Packages that may not exist in every nixpkgs revision are added conditionally via the `opt` helper — add new "maybe-available" packages the same way rather than unconditionally.
-     - `nix/modules/home/dotlinks.nix` declares per-tool symlinks via `home.file` / `xdg.configFile`, using `config.lib.file.mkOutOfStoreSymlink` so each entry points at the live working tree (not a `/nix/store` snapshot). **When adding a new tool config, add an entry there.** Removing an entry now also removes the corresponding symlink at the next `darwin-rebuild switch` — home-manager's standard cleanup mechanism handles it (no more manual `rm ~/.foo`).
    - **Convention for adding new config**:
      - Tool-specific home-manager `programs.<tool>` blocks (or larger system pieces) belong in their own file under `nix/modules/home/programs/<tool>.nix` (or `nix/modules/darwin/programs/<tool>.nix`), imported from the corresponding `default.nix`.
      - flake-parts modules (apps, formatters, pre-commit hooks, host definitions, dev shells) belong in `nix/modules/flake-parts/<concern>.nix` and get added to the `imports` list in `flake.nix`.
@@ -34,7 +33,9 @@ Changes land in different places depending on what you're modifying. Knowing whi
    - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the canonical command (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
    - **flake-tracked sources**: `nix flake check` / `nix build` only see git-tracked files. After adding a new file under `nix/`, run `git add` (no commit needed) before invoking flake commands, otherwise evaluation fails with "Path … is not tracked by Git".
 
-2. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/modules/home/packages.nix`, not here. Apply with `brew bundle --file=Brewfile`.
+2. **`bin/dotlink` — config symlinks (authoritative).** A POSIX-sh script with an embedded `src → dest` manifest (`embedded_manifest()`) that links each tracked config into `$HOME`. **When adding a new tool config, add a `repo/path<TAB>~/dest` line to that manifest**, then run `./bin/dotlink apply`. Links point at the live working tree (not a `/nix/store` snapshot), so editing a tracked file is reflected in `$HOME` immediately. Subcommands: `status` (report `OK` / `MISSING` / `DIFF` / `CONFLICT`), `plan` (preview), `apply [--backup] [--force]` (idempotent; `--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`, `--force` removes it). Nix does **not** manage symlinks — don't reintroduce `home.file` / `xdg.configFile` entries for configs.
+
+3. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/modules/home/packages.nix`, not here. Apply with `brew bundle --file=Brewfile`.
 
 ### Dev shell + direnv
 
@@ -69,6 +70,11 @@ nix run ./nix#switch
 
 # Build the system without activating, to validate eval + build
 nix run ./nix#build
+
+# Manage config symlinks (after editing the manifest embedded in bin/dotlink)
+./bin/dotlink status         # report OK / MISSING / DIFF / CONFLICT per link
+./bin/dotlink plan           # preview what apply would do
+./bin/dotlink apply --backup # create/update links, moving conflicts to <dest>.bak.<ts>
 
 # Format the entire repo via treefmt — covers nixfmt + shfmt + stylua + taplo + prettier.
 # treefmt anchors on the repo root via projectRootFile = "Brewfile" so all files are in scope.
@@ -121,6 +127,8 @@ bin/doctor
 
 ## File linking model
 
-Tool configs are symlinked into `$HOME` via `home.file` / `xdg.configFile` entries declared in `nix/modules/home/dotlinks.nix`, using `config.lib.file.mkOutOfStoreSymlink` so each link target is the live repo path (`${dotfilesDir}/...` → `/Users/<user>/dotfiles/...`) rather than a `/nix/store` snapshot. The Nix side provides the _binary_ (e.g. neovim via `home.packages`); these symlinks provide the _config_. Editing a tracked file is reflected in `$HOME` immediately, without re-activation.
+Tool configs are symlinked into `$HOME` by `bin/dotlink`, which reads the `src → dest` pairs in its embedded `embedded_manifest()` (tab-separated, `#`-comments allowed). A relative `src` is resolved against the repo root and a `~/`-prefixed `dest` against `$HOME`, so each link target is the live repo path (e.g. `~/.config/nvim → <repo>/nvim`) rather than a `/nix/store` snapshot. The Nix side provides the _binary_ (e.g. neovim via `home.packages`); these symlinks provide the _config_. Editing a tracked file is reflected in `$HOME` immediately, without re-running anything.
 
-Removing an entry from the manifest causes home-manager's standard cleanup to remove the corresponding symlink in `$HOME` at the next `darwin-rebuild switch`. On first migration from the old activation-script approach, `home-manager.backupFileExtension = "hm-bak"` (set in `nix/modules/flake-parts/darwin-systems.nix`) renames pre-existing files to `.hm-bak` rather than failing.
+`apply` is idempotent: a correct existing link is left as-is, a `DIFF` (symlink to a different target) or `CONFLICT` (non-symlink file) is only overwritten with `--force` (remove) or `--backup` (move to `<dest>.bak.<timestamp>`). `status` / `plan` are read-only. Removing a line from the manifest does **not** remove the existing symlink — delete it manually (`rm ~/.foo`).
+
+Nix no longer manages these symlinks (the former `nix/modules/home/dotlinks.nix` was removed). When migrating off the old home-manager-managed links, the existing `~/.foo → /nix/store/.../home-manager-files/...` symlinks show up as `DIFF` in `dotlink status`; run `darwin-rebuild switch` once after dropping the Nix module (home-manager cleans up its own links), then `./bin/dotlink apply --backup` to relink against the repo.

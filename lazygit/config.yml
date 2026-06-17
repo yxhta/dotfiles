@@ -1,4 +1,5 @@
 git:
+  language: "en"
   pagers:
     - colorArg: always
       pager: delta --dark --paging=never

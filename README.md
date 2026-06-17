@@ -2,7 +2,7 @@
 
 Personal macOS (Apple Silicon) dotfiles.
 
-CLI tools and system settings are declaratively managed by **Nix** (flakes + nix-darwin + home-manager); GUI apps by **Homebrew Cask**. Per-tool config files live as plain files in this repo and are symlinked into `$HOME` by a home-manager activation script (`nix/modules/home/dotlinks.nix`) that runs on every `darwin-rebuild switch`.
+CLI tools and system settings are declaratively managed by **Nix** (flakes + nix-darwin + home-manager); GUI apps by **Homebrew Cask**. Per-tool config files live as plain files in this repo and are symlinked into `$HOME` by `bin/dotlink`, a POSIX-sh script with an embedded `src → dest` manifest (`dotlink plan` / `apply` / `status`).
 
 ## Structure
 
@@ -50,15 +50,26 @@ This installs in one step:
 
 - **System settings** (`nix/modules/darwin/system.nix`): Touch ID for sudo, unfree allowlist, the user declaration.
 - **CLI tools + Neovim + home-manager state** (`nix/modules/home/packages.nix`): ripgrep, fd, fzf, lazygit, delta, mise, starship, sheldon, neovim, and ~40 more.
-- **Per-tool config symlinks** (`nix/modules/home/dotlinks.nix`): `~/.zshrc → zsh/zshrc`, `~/.config/nvim → nvim`, etc., pointed at the live repo working tree. Pre-existing non-symlink files at those paths are left in place — move them aside before bootstrap.
 
-### 4. Install GUI apps
+### 4. Link the config files
+
+`bin/dotlink` symlinks each tracked config into `$HOME` from its embedded manifest (`~/.zshrc → zsh/zshrc`, `~/.config/nvim → nvim`, etc.), pointed at the live repo working tree.
+
+```sh
+./bin/dotlink plan            # preview
+./bin/dotlink apply --backup  # apply, moving any conflicting destination aside
+./bin/dotlink status          # confirm every entry is OK
+```
+
+`--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`; use `--force` to remove it instead. `apply` is idempotent — correct links are left as-is.
+
+### 5. Install GUI apps
 
 ```sh
 brew bundle --file=Brewfile
 ```
 
-### 5. Private git identity
+### 6. Private git identity
 
 `git/gitconfig` includes `~/.gitconfig_private` via `includeIf`. That file is intentionally not tracked — create it with your personal name/email:
 
@@ -72,13 +83,13 @@ EOF
 
 For Claude Code, local-only values go under `~/.claude/` (the entire directory is gitignored).
 
-### 6. Reload the shell
+### 7. Reload the shell
 
 ```sh
 exec $SHELL -l   # or `rr` once the alias is loaded
 ```
 
-### 7. Install the pre-commit hook
+### 8. Install the pre-commit hook
 
 The repo has a Nix-managed `pre-commit` hook (gitleaks + nixfmt) wired up via `git-hooks.nix`. Install it once:
 
@@ -88,7 +99,7 @@ nix run ./nix#install-hooks
 
 Re-run after editing the hook list in `nix/flake.nix`.
 
-### 8. Verify the setup
+### 9. Verify the setup
 
 ```sh
 bin/doctor
@@ -98,10 +109,16 @@ Reports `[OK] / [WARN] / [FAIL]` for the assumptions documented in `CLAUDE.md` (
 
 ## Updating
 
-After editing anything under `nix/` (including `nix/modules/home/dotlinks.nix` to add a new symlink):
+After editing anything under `nix/`:
 
 ```sh
 sudo darwin-rebuild switch --flake ./nix#mac
+```
+
+After adding a new config symlink (edit the manifest embedded in `bin/dotlink`):
+
+```sh
+./bin/dotlink apply
 ```
 
 After editing `Brewfile`:
@@ -120,14 +137,15 @@ After editing Neovim plugins, run `:Lazy sync` inside nvim.
 
 ## Provisioning model
 
-Two layers, each authoritative for a different concern. Knowing which layer to edit prevents drift:
+Three layers, each authoritative for a different concern. Knowing which layer to edit prevents drift:
 
-| Layer    | Source of truth                                 | What it owns                                                        |
-| -------- | ----------------------------------------------- | ------------------------------------------------------------------- |
-| Nix      | `nix/flake.nix`, `nix/modules/{darwin,home}/**` | CLI tools, Neovim binary, system settings, per-tool config symlinks |
-| Homebrew | `Brewfile`                                      | GUI apps and casks only                                             |
+| Layer    | Source of truth                                 | What it owns                              |
+| -------- | ----------------------------------------------- | ----------------------------------------- |
+| Nix      | `nix/flake.nix`, `nix/modules/{darwin,home}/**` | CLI tools, Neovim binary, system settings |
+| dotlink  | `bin/dotlink` (embedded manifest)               | Per-tool config symlinks into `$HOME`     |
+| Homebrew | `Brewfile`                                      | GUI apps and casks only                   |
 
-Within the Nix layer, packages and configs are still tracked separately: `nix/modules/home/packages.nix` declares CLI binaries (e.g. neovim), while `nix/modules/home/dotlinks.nix` symlinks the matching config (e.g. `~/.config/nvim → nvim/`) from this repo's working tree. Symlinks point at the _live_ repo path, not a `/nix/store` snapshot, so editing a config file is reflected without re-activating. That's the reason linking is done via a raw `home.activation` script and not home-manager's `home.file`.
+The Nix layer provides the _binaries_ (e.g. `nix/modules/home/packages.nix` declares neovim), while `bin/dotlink` symlinks the matching _config_ (e.g. `~/.config/nvim → nvim/`) from this repo's working tree. Symlinks point at the _live_ repo path, not a `/nix/store` snapshot, so editing a config file is reflected without re-running anything.
 
 ## Requirements
 
