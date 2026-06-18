@@ -12,7 +12,10 @@ require("bufferline").setup({
 		left_trunc_marker = "<",
 		right_trunc_marker = ">",
 		separator_style = "slant",
-		offsets = { { filetype = "NvimTree" }, { filetype = "Vista" } },
+		offsets = {
+			{ filetype = "neo-tree", text = "File Explorer", separator = true },
+			{ filetype = "Vista" },
+		},
 		diagnostics_indicator = function(_, _, diagnostics_dict)
 			local s = " "
 			for e, n in pairs(diagnostics_dict) do

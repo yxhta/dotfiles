@@ -49,9 +49,9 @@ keymap("n", "<space>f", function()
 	vim.lsp.buf.format({ async = true })
 end, opts)
 
--- NvimTree
-keymap("n", "<leader>n", "<cmd>NvimTreeToggle<CR>", copts)
-keymap("n", "<leader>nf", "<cmd>NvimTreeFindFile<CR>", copts)
+-- Neo-tree
+keymap("n", "<leader>n", "<cmd>Neotree toggle<CR>", copts)
+keymap("n", "<leader>nf", "<cmd>Neotree reveal<CR>", copts)
 
 -- Telescope
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Telescope: Find files" })
