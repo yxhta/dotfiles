@@ -46,7 +46,15 @@ keymap("n", "[d", vim.diagnostic.goto_prev, opts)
 keymap("n", "]d", vim.diagnostic.goto_next, opts)
 keymap("n", "<space>q", vim.diagnostic.setloclist, opts)
 keymap("n", "<space>f", function()
-	vim.lsp.buf.format({ async = true })
+	-- tsserver(ts_ls) の整形はプロジェクト設定（Biome 等）を無視して
+	-- 独自スタイル（4スペース等）で書き換えてしまうため除外し、
+	-- none-ls 側のフォーマッタ（Biome / prettier / gofmt 等）で整形する。
+	vim.lsp.buf.format({
+		async = true,
+		filter = function(client)
+			return client.name ~= "ts_ls"
+		end,
+	})
 end, opts)
 
 -- Neo-tree
