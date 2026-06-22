@@ -30,15 +30,30 @@
     }
   },
   "languages": {
-    "JavaScript": { "formatter": { "language_server": { "name": "biome" } } },
+    "JavaScript": {
+      "format_on_save": "on",
+      "formatter": { "language_server": { "name": "biome" } }
+    },
     "TypeScript": {
       "format_on_save": "on",
       "formatter": { "language_server": { "name": "biome" } }
     },
-    "TSX": { "formatter": { "language_server": { "name": "biome" } } },
-    "JSON": { "formatter": { "language_server": { "name": "biome" } } },
-    "JSONC": { "formatter": { "language_server": { "name": "biome" } } },
-    "CSS": { "formatter": { "language_server": { "name": "biome" } } }
+    "TSX": {
+      "format_on_save": "on",
+      "formatter": { "language_server": { "name": "biome" } }
+    },
+    "JSON": {
+      "format_on_save": "on",
+      "formatter": { "language_server": { "name": "biome" } }
+    },
+    "JSONC": {
+      "format_on_save": "on",
+      "formatter": { "language_server": { "name": "biome" } }
+    },
+    "CSS": {
+      "format_on_save": "on",
+      "formatter": { "language_server": { "name": "biome" } }
+    }
   },
   "features": {
     "edit_prediction_provider": "zed"
