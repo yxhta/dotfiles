@@ -28,6 +28,10 @@ error_symbol = "[✗](bold red)"
 symbol = " "
 style = "bold purple"
 
+[git_status]
+# Avoid walking large untracked trees on every prompt.
+untracked = ""
+
 # Execution time (Show only if command takes more than 2s)
 [cmd_duration]
 min_time = 2_000
@@ -54,7 +58,7 @@ disabled = true
 [kubernetes]
 symbol = "☸ "
 style = "cyan"
-disabled = false
+disabled = true
 
 [nodejs]
 symbol = " "
