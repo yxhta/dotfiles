@@ -12,6 +12,9 @@ mouse-hide-while-typing = true
 clipboard-read = allow
 clipboard-write = allow
 
+# Let terminal apps trigger native desktop notifications via OSC 9/777.
+desktop-notifications = true
+
 # --- Visuals & Theme ---
 # Background opacity (Replaces alpha-blending)
 # 0.9 to 0.95 provides a good balance of readability and aesthetics.
@@ -71,4 +74,3 @@ keybind = super+z=toggle_split_zoom
 
 # Toggle quick terminal (Cmd + `)
 keybind = global:cmd+backquote=toggle_quick_terminal
-
