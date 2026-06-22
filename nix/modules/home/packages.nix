@@ -35,6 +35,7 @@ in
       golangci-lint
       gotools
       grpcurl
+      jq
       lazygit
       libwebp
       libyaml
@@ -42,10 +43,12 @@ in
       ngrok
       nushell
       openssl
+      postgresql
       prettierd
       readline
       ripgrep
       sheldon
+      sqlite
       tmux
       tree
       tree-sitter
