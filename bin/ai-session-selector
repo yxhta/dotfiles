@@ -36,6 +36,78 @@ show_empty_state_and_exit() {
   exit 1
 }
 
+detect_agent_status() {
+  target=$1
+  pane_text=$(tmux capture-pane -p -t "$target" -S -80 2>/dev/null || true)
+
+  if [ -z "$pane_text" ]; then
+    printf '%s' "unknown"
+    return
+  fi
+
+  printf '%s\n' "$pane_text" | awk '
+    {
+      line = tolower($0)
+      if (line !~ /^[[:space:]]*$/) {
+        lines[++line_count] = line
+      }
+    }
+
+    END {
+      start = line_count - 30
+      if (start < 1) {
+        start = 1
+      }
+
+      for (i = start; i <= line_count; i++) {
+        line = lines[i]
+
+        if (line ~ /(needs your approval|requires approval|approval requested|waiting for (your|user)|proceed\?|continue\?|are you sure|press enter|press return|type .* to continue|\[y\/n\]|\(y\/n\)|yes\/no|確認待ち|応答待ち|入力待ち|フィードバック待ち|承認待ち)/) {
+          waiting_at = i
+        }
+
+        if (line ~ /(do you want to|would you like|しましょうか？|ますか？|でしょうか？|それとも|どちら)/) {
+          soft_waiting_at = i
+        }
+
+        if (line ~ /(esc to interrupt|press esc|ctrl-c to interrupt|ctrl\+c to interrupt|working \(|thinking|concocting|cogitating)/) {
+          active_running_at = i
+        }
+
+        if (line ~ /(running command|executing|applying patch|calling tool|using tool)/) {
+          running_at = i
+        }
+
+        if (line ~ /(worked for|token usage:|to continue this session|cogitated for|concocted for|ctrl-c to exit|ctrl\+c to exit|message claude|message codex|sauteed for|sautéed for)/) {
+          strong_done_at = i
+        }
+
+        if (line ~ /^[^[:alnum:]]*[[:space:]]*[>›❯][[:space:]]*/ || line ~ /enter to send/) {
+          prompt_done_at = i
+        }
+      }
+
+      if (waiting_at > active_running_at && waiting_at > strong_done_at && waiting_at >= prompt_done_at) {
+        print "waiting"
+      } else if (strong_done_at > active_running_at) {
+        print "done"
+      } else if (active_running_at) {
+        print "running"
+      } else if (waiting_at > prompt_done_at) {
+        print "waiting"
+      } else if (soft_waiting_at && !strong_done_at) {
+        print "waiting"
+      } else if (strong_done_at || prompt_done_at) {
+        print "done"
+      } else if (running_at) {
+        print "running"
+      } else {
+        print "unknown"
+      }
+    }
+  '
+}
+
 # --- Process detection ---
 _claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
 _codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
@@ -87,8 +159,9 @@ ${pid}
 "*) type="codex" ;;
   esac
 
+  status=$(detect_agent_status "$target")
   short_cwd=$(printf '%s' "$cwd" | sed "s|^$HOME|~|")
-  pane_records="${pane_records}${pane_index}	${target}	[${type}]	${short_cwd}	${wname}
+  pane_records="${pane_records}${pane_index}	${target}	[${type}]	${status}	${short_cwd}	${wname}
 "
   pane_index=$((pane_index + 1))
 done
@@ -100,26 +173,48 @@ fi
 
 pane_count=$((pane_index - 1))
 display_list=$(printf '%s' "$pane_records" | awk -F '	' '
+  function status_color(status) {
+    if (status == "running") return yellow
+    if (status == "waiting") return green
+    if (status == "done") return cyan
+    return ""
+  }
+
+  BEGIN {
+    esc = sprintf("%c", 27)
+    yellow = esc "[33m"
+    green = esc "[32m"
+    cyan = esc "[36m"
+    reset = esc "[0m"
+  }
+
   {
     rows[NR] = $0
     if (length($1) > w1) w1 = length($1)
     if (length($3) > w3) w3 = length($3)
     if (length($4) > w4) w4 = length($4)
+    if (length($5) > w5) w5 = length($5)
   }
   END {
     for (i = 1; i <= NR; i++) {
       split(rows[i], fields, "\t")
-      printf "%-*s  %-*s  %-*s  %s\t%s\n", w1, fields[1], w3, fields[3], w4, fields[4], fields[5], fields[2]
+      color = status_color(fields[4])
+      if (color == "") {
+        reset_color = ""
+      } else {
+        reset_color = reset
+      }
+      printf "%-*s  %-*s  %s%-*s%s  %-*s  %s\t%s\n", w1, fields[1], w3, fields[3], color, w4, fields[4], reset_color, w5, fields[5], fields[6], fields[2]
     }
   }
 ')
 
 # --- fzf selection ---
-fzf_header=$(printf 'NUM  TYPE      DIRECTORY  WINDOW\nType a number and press Enter, or use arrow keys to pick a session.')
+fzf_header=$(printf 'NUM  TYPE      STATUS   DIRECTORY  WINDOW\nType a number and press Enter, or use arrow keys to pick a session.')
 fzf_expect_args=""
 
 if [ "$pane_count" -le 9 ]; then
-  fzf_header=$(printf 'NUM  TYPE      DIRECTORY  WINDOW\nPress 1-%s to jump instantly, or use arrow keys and Enter.' "$pane_count")
+  fzf_header=$(printf 'NUM  TYPE      STATUS   DIRECTORY  WINDOW\nPress 1-%s to jump instantly, or use arrow keys and Enter.' "$pane_count")
   fzf_expect_args="--expect=1,2,3,4,5,6,7,8,9"
 fi
 
@@ -128,6 +223,7 @@ selection_output=$(printf '%s' "$display_list" | fzf \
   --header="$fzf_header" \
   --delimiter='	' \
   --with-nth='1' \
+  --ansi \
   --no-multi \
   --no-sort \
   --disabled \

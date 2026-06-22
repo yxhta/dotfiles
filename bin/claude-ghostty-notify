@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+input=$(cat)
+
+title=$(
+  printf '%s' "$input" \
+    | jq -r '(.title // "Claude Code") | gsub("[\u0000-\u001f;]+"; " ")'
+)
+body=$(
+  printf '%s' "$input" \
+    | jq -r '(.message // "Needs your attention") | gsub("[\u0000-\u001f;]+"; " ")'
+)
+
+seq=$(printf '\033]777;notify;%s;%s\007' "$title" "$body")
+jq -nc --arg seq "$seq" '{terminalSequence: $seq}'
