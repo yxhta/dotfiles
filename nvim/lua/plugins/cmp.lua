@@ -113,6 +113,7 @@ cmp.setup({
 				nvim_lsp = "LSP",
 				nvim_lua = "Lua",
 				nvim_lsp_signature_help = "LSP Signature",
+				["vim-dadbod-completion"] = "DB",
 			}
 
 			if entry.source.name == "nvim_lsp" then
@@ -150,6 +151,16 @@ cmp.setup.cmdline(":", {
 
 cmp.setup.filetype({ "markdown", "pandoc", "text", "latex" }, {
 	sources = {
+		{ name = "nvim_lsp_signature_help" },
+		{ name = "nvim_lsp" },
+		{ name = "path" },
+		{ name = "buffer" },
+	},
+})
+
+cmp.setup.filetype({ "sql", "mysql", "plsql" }, {
+	sources = {
+		{ name = "vim-dadbod-completion" },
 		{ name = "nvim_lsp_signature_help" },
 		{ name = "nvim_lsp" },
 		{ name = "path" },
