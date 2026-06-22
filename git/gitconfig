@@ -24,6 +24,8 @@
   pager = delta
   excludesfile = ~/.gitignore_global
   autocrlf = input
+  # Speed up status in large worktrees without hiding untracked files.
+  untrackedCache = true
 
 [interactive]
     diffFilter = delta --color-only
