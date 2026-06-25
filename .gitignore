@@ -11,7 +11,7 @@ git/gitconfig_private
 .claude/
 .agents/
 .specify/
-specs/
+/specs/
 skills-lock.json
 
 # MCP config (contains credentials)
