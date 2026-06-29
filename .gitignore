@@ -13,6 +13,7 @@ git/gitconfig_private
 .specify/
 /specs/
 skills-lock.json
+codex/skills/*/config/*.local.toml
 
 # MCP config (contains credentials)
 ai-rules/mcp.json

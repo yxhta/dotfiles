@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI News Topics"
+  short_description: "Summarize AI news and append to Notion"
+  default_prompt: "Use $summarize-ai-news to extract AI topics from news sites, defaulting to Hacker News when no site is specified, summarize what to watch in Japanese, and append to the configured Notion page when enabled."

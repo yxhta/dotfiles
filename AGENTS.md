@@ -7,6 +7,7 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 - `bin/`: executable shell scripts (`dotlink`, `tat`, `ai-session-selector`, `ccs`).
 - `git/`, `zsh/`, `tmux/`, `nvim/`: tool-specific configs.
 - `ghostty/`, `cursor/`, `zed/`: app/editor configs.
+- `codex/`: user-scoped Codex assets managed by `bin/dotlink` (`codex/skills/` -> `~/.agents/skills/`, `codex/prompts/` -> `~/.codex/prompts/`).
 - `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. Nix owns packages and system state only — it no longer manages symlinks. The symlink manifest that wires repo configs into `$HOME` is embedded in `bin/dotlink` (a POSIX-sh script; links point at the live working tree so edits are reflected in `$HOME` immediately). macOS GUI defaults are declared in `nix/modules/darwin/system-defaults.nix`.
 - `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
 - `.github/workflows/nix.yml` runs `nix flake check` + `nix build` on `macos-14` for pushes/PRs (Markdown-only diffs are skipped).

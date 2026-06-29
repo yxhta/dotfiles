@@ -112,6 +112,9 @@ mise/config.toml	~/.config/mise/config.toml
 lazygit/config.yml	~/.config/lazygit/config.yml
 # Starship
 starship/starship.toml	~/.config/starship.toml
+# Codex
+codex/skills/summarize-ai-news	~/.agents/skills/summarize-ai-news
+codex/prompts/ai-news-topics.md	~/.codex/prompts/ai-news-topics.md
 # User scripts (tat, ccd, cxd, doctor, ...) -- $HOME/bin is on PATH via zshenv
 bin	~/bin
 MANIFEST
