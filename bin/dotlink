@@ -99,6 +99,8 @@ nvim	~/.config/nvim
 # Tmux
 tmux	~/.config/tmux
 tmux/tmux.conf	~/.tmux.conf
+# Herdr
+herdr/config.toml	~/.config/herdr/config.toml
 # Ghostty
 ghostty	~/.config/ghostty
 # Git

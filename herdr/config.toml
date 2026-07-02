@@ -1,0 +1,68 @@
+# herdr configuration
+# Reference: tmux/tmux.conf + tmux/utility.conf (do not port settings back the
+# other way; the two multiplexers are configured independently).
+
+[theme]
+name = "kanagawa"
+auto_switch = false
+
+[keys]
+# Matches tmux/tmux.conf's prefix (ctrl+s) intentionally: tmux and herdr are
+# used exclusively, never nested inside one another, so only one of them ever
+# owns the raw terminal input at a time and there's no runtime key conflict.
+prefix = "ctrl+s"
+
+# Mirrors tmux/tmux.conf's `bind \ split-window -h` (side-by-side split).
+# split_horizontal already defaults to "prefix+minus", which matches
+# tmux/tmux.conf's `bind - split-window -v` (top/bottom split) as-is.
+split_vertical = "prefix+backslash"
+
+# Mirrors tmux/tmux.conf's window navigation (`bind -r C-k select-window -t :-`
+# and `bind -r C-j select-window -t :+`).
+previous_tab = "prefix+ctrl+k"
+next_tab = "prefix+ctrl+j"
+
+# Mirrors tmux/tmux.conf's `bind q kill-pane`. Herdr's default detach was
+# prefix+q, so detach moves to prefix+d (tmux's default detach key).
+close_pane = "prefix+q"
+detach = "prefix+d"
+
+# Mirrors tmux's default `prefix+s` (choose-tree session picker). herdr's
+# workspace is the tmux-session equivalent, so the picker moves here from its
+# default prefix+w.
+workspace_picker = "prefix+s"
+# Herdr's built-in settings screen defaults to prefix+s, which the tmux-style
+# workspace picker binding above takes over; settings moves to shift+s.
+settings = "prefix+shift+s"
+
+# Vim-style up/down in the workspace picker / navigate mode (defaults were
+# arrow keys). Note the defaults for navigate_pane_down/up are also j/k —
+# herdr scopes these per context, but if pane navigation misbehaves in
+# navigate mode, fall back to the arrow keys (left/right stay pane aliases).
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
+
+# Agent navigation. prefix+n/p (herdr's default tab keys) are free because
+# tab navigation moved to the tmux-style ctrl+j/k above; alt is kept only for
+# the indexed jump since prefix+1..9 is taken by tabs.
+focus_agent = "prefix+alt+1..9"
+next_agent = "prefix+n"
+previous_agent = "prefix+p"
+
+[[keys.command]]
+# Mirrors tmux/utility.conf's lazygit popup (`bind -r g display-popup ... lazygit`).
+# Bound to alt+g instead of plain g so it doesn't clobber herdr's built-in
+# `goto = "prefix+g"` workspace jump.
+key = "prefix+alt+g"
+type = "pane"
+command = "lazygit"
+
+[ui]
+agent_panel_sort = "spaces"
+
+show_agent_labels_on_pane_borders = true
+[ui.toast]
+delivery = "herdr"
+
+[experimental]
+pane_history = false
