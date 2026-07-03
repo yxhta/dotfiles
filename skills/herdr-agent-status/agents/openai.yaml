@@ -1,0 +1,4 @@
+interface:
+  display_name: "Herdr Agent Status"
+  short_description: "Check status of agent sessions across Herdr"
+  default_prompt: "Use $herdr-agent-status to report the status of every agent session running in Herdr."

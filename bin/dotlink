@@ -119,6 +119,7 @@ codex/skills/summarize-ai-news	~/.agents/skills/summarize-ai-news
 codex/prompts/ai-news-topics.md	~/.codex/prompts/ai-news-topics.md
 # Agent skills
 skills/herdr-agent-workflow	~/.agents/skills/herdr-agent-workflow
+skills/herdr-agent-status	~/.agents/skills/herdr-agent-status
 # User scripts (tat, ccd, cxd, doctor, ...) -- $HOME/bin is on PATH via zshenv
 bin	~/bin
 MANIFEST
