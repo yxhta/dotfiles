@@ -117,6 +117,8 @@ starship/starship.toml	~/.config/starship.toml
 # Codex
 codex/skills/summarize-ai-news	~/.agents/skills/summarize-ai-news
 codex/prompts/ai-news-topics.md	~/.codex/prompts/ai-news-topics.md
+# Agent skills
+skills/herdr-agent-workflow	~/.agents/skills/herdr-agent-workflow
 # User scripts (tat, ccd, cxd, doctor, ...) -- $HOME/bin is on PATH via zshenv
 bin	~/bin
 MANIFEST

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are declaratively managed by Nix (flakes + nix-darwin + home-manager); GUI apps by Homebrew Cask; per-tool config files live as plain files in this repo and are symlinked into `$HOME` by `bin/dotlink` (a POSIX-sh script with an embedded `src → dest` manifest). User-scoped Codex assets live under `codex/` and are linked to `~/.agents/skills/` and `~/.codex/prompts/`.
+Personal macOS (Apple Silicon) dotfiles. CLI tools and system settings are declaratively managed by Nix (flakes + nix-darwin + home-manager); GUI apps by Homebrew Cask; per-tool config files live as plain files in this repo and are symlinked into `$HOME` by `bin/dotlink` (a POSIX-sh script with an embedded `src → dest` manifest). Agent-neutral skills live under `skills/` for `npx skills` local/private-git installation, while user-scoped Codex assets live under `codex/` and are linked to `~/.agents/skills/` and `~/.codex/prompts/`.
 
 ## Architecture: three layers of provisioning
 
@@ -33,7 +33,7 @@ Changes land in different places depending on what you're modifying. Knowing whi
    - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the canonical command (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
    - **flake-tracked sources**: `nix flake check` / `nix build` only see git-tracked files. After adding a new file under `nix/`, run `git add` (no commit needed) before invoking flake commands, otherwise evaluation fails with "Path … is not tracked by Git".
 
-2. **`bin/dotlink` — config symlinks (authoritative).** A POSIX-sh script with an embedded `src → dest` manifest (`embedded_manifest()`) that links each tracked config into `$HOME`. **When adding a new tool config, add a `repo/path<TAB>~/dest` line to that manifest**, then run `./bin/dotlink apply`. Links point at the live working tree (not a `/nix/store` snapshot), so editing a tracked file is reflected in `$HOME` immediately. Codex user assets follow the same model: `codex/skills/<name>` links to `~/.agents/skills/<name>`, and `codex/prompts/<name>.md` links to `~/.codex/prompts/<name>.md`. Subcommands: `status` (report `OK` / `MISSING` / `DIFF` / `CONFLICT`), `plan` (preview), `apply [--backup] [--force]` (idempotent; `--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`, `--force` removes it). Nix does **not** manage symlinks — don't reintroduce `home.file` / `xdg.configFile` entries for configs.
+2. **`bin/dotlink` — config symlinks (authoritative).** A POSIX-sh script with an embedded `src → dest` manifest (`embedded_manifest()`) that links each tracked config into `$HOME`. **When adding a new tool config, add a `repo/path<TAB>~/dest` line to that manifest**, then run `./bin/dotlink apply`. Links point at the live working tree (not a `/nix/store` snapshot), so editing a tracked file is reflected in `$HOME` immediately. Agent-neutral skills can live in `skills/<name>` for `npx skills` installability and may be linked to `~/.agents/skills/<name>` when desired; Codex-specific prompts remain under `codex/prompts/<name>.md` and link to `~/.codex/prompts/<name>.md`. Subcommands: `status` (report `OK` / `MISSING` / `DIFF` / `CONFLICT`), `plan` (preview), `apply [--backup] [--force]` (idempotent; `--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`, `--force` removes it). Nix does **not** manage symlinks — don't reintroduce `home.file` / `xdg.configFile` entries for configs.
 
 3. **`Brewfile` — GUI apps and casks only.** CLI tools belong in `nix/modules/home/packages.nix`, not here. Apply with `brew bundle --file=Brewfile`.
 
@@ -75,6 +75,10 @@ nix run ./nix#build
 ./bin/dotlink status         # report OK / MISSING / DIFF / CONFLICT per link
 ./bin/dotlink plan           # preview what apply would do
 ./bin/dotlink apply --backup # create/update links, moving conflicts to <dest>.bak.<ts>
+
+# Install local agent-neutral skills without publishing them
+npx skills add ./skills --list
+npx skills add ./skills --skill herdr-agent-workflow -g
 
 # Format the entire repo via treefmt — covers nixfmt + shfmt + stylua + taplo + prettier.
 # treefmt anchors on the repo root via projectRootFile = "Brewfile" so all files are in scope.

@@ -7,6 +7,7 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 - `bin/`: executable shell scripts (`dotlink`, `tat`, `ai-session-selector`, `ccs`).
 - `git/`, `zsh/`, `tmux/`, `nvim/`, `herdr/`: tool-specific configs.
 - `ghostty/`, `cursor/`, `zed/`: app/editor configs.
+- `skills/`: agent-neutral skill packages installable with `npx skills` from a local path or private git source. Selected skills may also be symlinked by `bin/dotlink`.
 - `codex/`: user-scoped Codex assets managed by `bin/dotlink` (`codex/skills/` -> `~/.agents/skills/`, `codex/prompts/` -> `~/.codex/prompts/`).
 - `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. Nix owns packages and system state only — it no longer manages symlinks. The symlink manifest that wires repo configs into `$HOME` is embedded in `bin/dotlink` (a POSIX-sh script; links point at the live working tree so edits are reflected in `$HOME` immediately). macOS GUI defaults are declared in `nix/modules/darwin/system-defaults.nix`.
 - `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
@@ -32,6 +33,8 @@ There is no build step. Common workflows:
 - `./bin/dotlink plan`: preview symlink changes from the embedded manifest.
 - `./bin/dotlink apply --backup`: create/update the config symlinks (move conflicting destinations aside).
 - `./bin/dotlink status`: show the state (`OK` / `MISSING` / `DIFF` / `CONFLICT`) of every link.
+- `npx skills add ./skills --skill <name> -g`: install an agent-neutral local skill without publishing it.
+- `npx skills add ./skills --list`: list locally packaged skills.
 - `nix flake check ./nix --no-build`: validate flake outputs without building.
 - `(cd nix && nix fmt)` (or `treefmt` from inside the dev shell): run treefmt across the whole repo (nixfmt + shfmt + stylua + taplo + prettier). Same wrapper is invoked by the pre-commit hook.
 - `nix develop ./nix`: enter the dev shell (auto-loaded by direnv at repo root).

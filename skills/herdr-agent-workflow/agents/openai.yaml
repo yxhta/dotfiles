@@ -1,0 +1,4 @@
+interface:
+  display_name: "Herdr Agent Workflow"
+  short_description: "Coordinate implementation and review agents"
+  default_prompt: "Use $herdr-agent-workflow to coordinate an implementation agent and an independent review agent in Herdr."
