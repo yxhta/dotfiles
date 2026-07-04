@@ -13,8 +13,8 @@ Changes land in different places depending on what you're modifying. Knowing whi
 1. **`nix/` — packages and system state (authoritative).**
    - `nix/flake.nix` is intentionally thin: it only pins inputs (`nixpkgs`, `nix-darwin`, `home-manager`, `flake-parts`, `git-hooks`, `treefmt-nix`) and lists the **flake-parts** modules that build everything else. Home-manager is wired in as a nix-darwin module (no standalone home-manager).
    - Top-level outputs are split across `nix/modules/flake-parts/`:
-     - `identity.nix` — single source of truth for `username` / `homeDirectory` / `dotfilesDir` / `hostname` / `system`. Injected into both flake-level and `perSystem` scopes via `_module.args.identity`.
-     - `darwin-systems.nix` — defines `flake.darwinConfigurations.<host>` via the `mkDarwin` helper.
+     - `identity.nix` — single source of truth for Darwin profiles (`mac` uses `yxhta`, `work` uses `yota.ito`) and each profile's `username` / `homeDirectory` / `dotfilesDir` / `hostname` / `system`. The default `identity` remains the personal `mac` profile for `apps.*`.
+     - `darwin-systems.nix` — defines `flake.darwinConfigurations.<profile>` via the `mkDarwin` helper.
      - `apps.nix` — `apps.build` / `apps.switch` / `apps.install-hooks` (the `darwin-rebuild` wrappers).
      - `devshell.nix` — `devShells.default` ships `nixd` / `nixfmt-rfc-style` / `nix-output-monitor` / `gitleaks` / the treefmt wrapper, and re-installs the pre-commit hook via `shellHook = config.checks.pre-commit.shellHook`. Auto-loaded by direnv via the repo-root `.envrc` (`use flake ./nix`).
      - `pre-commit.nix` — `checks.pre-commit` configured via `cachix/git-hooks.nix` (gitleaks + treefmt).
@@ -29,8 +29,8 @@ Changes land in different places depending on what you're modifying. Knowing whi
      - Tool-specific home-manager `programs.<tool>` blocks (or larger system pieces) belong in their own file under `nix/modules/home/programs/<tool>.nix` (or `nix/modules/darwin/programs/<tool>.nix`), imported from the corresponding `default.nix`.
      - flake-parts modules (apps, formatters, pre-commit hooks, host definitions, dev shells) belong in `nix/modules/flake-parts/<concern>.nix` and get added to the `imports` list in `flake.nix`.
      - Don't grow `system.nix` / `packages.nix` / `flake.nix` into a catch-all.
-   - User identity (`username` / `homeDirectory` / `dotfilesDir`) lives in `nix/modules/flake-parts/identity.nix`. To use this flake on a different host, change those bindings (and nothing else). The `users.users.${username}` block in `nix/modules/darwin/system.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
-   - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the canonical command (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
+   - User identity profiles live in `nix/modules/flake-parts/identity.nix`. Use `#mac` on the personal machine (`yxhta`) and `#work` on the work machine (`yota.ito`); do not rename the macOS user just to satisfy the flake. The `users.users.${username}` block in `nix/modules/darwin/system.nix` is load-bearing — when home-manager runs as a nix-darwin module it derives `home.homeDirectory` from this; removing it makes activation fail with `home.homeDirectory = null`.
+   - **Apply changes**: `sudo darwin-rebuild switch --flake ./nix#mac` is the personal-machine command; use `sudo darwin-rebuild switch --flake ./nix#work` on the work machine (run inside tmux). The flake also exposes `nix run ./nix#switch` and `nix run ./nix#build` as personal-profile conveniences — they wrap `darwin-rebuild` and pipe through `nix-output-monitor` (auto-skipped when running under an AI agent shell, detected via `CLAUDE_CODE` / `CODEX_SANDBOX` / etc.). First-ever bootstrap (no `darwin-rebuild` in PATH yet) uses `sudo nix run nix-darwin -- switch --flake ./nix#mac` or `./nix#work`. The bootstrap requires Nix to already be installed via the Determinate Systems installer (`curl -fsSL https://install.determinate.systems/nix | sh -s -- install`) on an arm64 shell — the older `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that can't build the `aarch64-darwin` system.
    - **flake-tracked sources**: `nix flake check` / `nix build` only see git-tracked files. After adding a new file under `nix/`, run `git add` (no commit needed) before invoking flake commands, otherwise evaluation fails with "Path … is not tracked by Git".
 
 2. **`bin/dotlink` — config symlinks (authoritative).** A POSIX-sh script with an embedded `src → dest` manifest (`embedded_manifest()`) that links each tracked config into `$HOME`. **When adding a new tool config, add a `repo/path<TAB>~/dest` line to that manifest**, then run `./bin/dotlink apply`. Links point at the live working tree (not a `/nix/store` snapshot), so editing a tracked file is reflected in `$HOME` immediately. Agent-neutral skills can live in `skills/<name>` for `npx skills` installability and may be linked to `~/.agents/skills/<name>` when desired; Codex-specific prompts remain under `codex/prompts/<name>.md` and link to `~/.codex/prompts/<name>.md`. Subcommands: `status` (report `OK` / `MISSING` / `DIFF` / `CONFLICT`), `plan` (preview), `apply [--backup] [--force]` (idempotent; `--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`, `--force` removes it). Nix does **not** manage symlinks — don't reintroduce `home.file` / `xdg.configFile` entries for configs.
@@ -41,11 +41,11 @@ Changes land in different places depending on what you're modifying. Knowing whi
 
 `devShells.default` (`nix/modules/flake-parts/devshell.nix`) ships the editor-time tools needed to work on this repo: `nixd` (for the nvim Nix LSP), `nixfmt-rfc-style`, `nix-output-monitor`, `gitleaks`, and the same `treefmt` wrapper used by `nix fmt` / the pre-commit hook. The `shellHook` re-installs `.git/hooks/pre-commit` if missing, so a fresh clone is one `direnv allow` away from a working setup.
 
-`.envrc` at the repo root contains `use flake ./nix`. With direnv installed and the directory allowed (`direnv allow` once after clone), `cd ~/dotfiles` activates the dev shell automatically — `nvim`, `treefmt`, `gitleaks` etc. resolve to the Nix-provided binaries without needing to be on PATH globally. direnv itself is provided by `nix/modules/home/programs/direnv.nix` (with `nix-direnv` for fast `use flake` caching). The zsh hook is sourced from `zsh/configs/80-tools.zsh` via the same `_cache_init` pattern as starship/mise/zoxide, so it doesn't fork on every prompt.
+`.envrc` at the repo root contains `use flake ./nix`. With direnv installed and the directory allowed (`direnv allow` once after clone), `cd ~/ghq/github.com/yxhta/dotfiles` activates the dev shell automatically — `nvim`, `treefmt`, `gitleaks` etc. resolve to the Nix-provided binaries without needing to be on PATH globally. direnv itself is provided by `nix/modules/home/programs/direnv.nix` (with `nix-direnv` for fast `use flake` caching). The zsh hook is sourced from `zsh/configs/80-tools.zsh` via the same `_cache_init` pattern as starship/mise/zoxide, so it doesn't fork on every prompt.
 
 ### CI
 
-`.github/workflows/nix.yml` runs on `macos-14` (aarch64-darwin) for pushes to `main` and PRs, executing `nix flake check ./nix --no-build` followed by `nix build ./nix#darwinConfigurations.mac.system --no-link`. Markdown-only changes are skipped (`paths-ignore: ['**.md', 'docs/**']`); the `concurrency` group cancels in-progress runs on the same ref.
+`.github/workflows/nix.yml` runs on `macos-14` (aarch64-darwin) for pushes to `main` and PRs, executing `nix flake check ./nix --no-build` followed by builds for both `darwinConfigurations.mac.system` and `darwinConfigurations.work.system`. Markdown-only changes are skipped (`paths-ignore: ['**.md', 'docs/**']`); the `concurrency` group cancels in-progress runs on the same ref.
 
 ### Pre-commit hooks
 
@@ -63,9 +63,13 @@ This is per-repo only. The legacy `git/git_template/hooks/pre-commit` + `init.te
 
 ```bash
 # Apply Nix config (most common loop when editing nix/**/*.nix)
+# Personal machine
 sudo darwin-rebuild switch --flake ./nix#mac
 
-# Equivalent shortcut (auto-detects AI agent shells and skips nix-output-monitor)
+# Work machine
+sudo darwin-rebuild switch --flake ./nix#work
+
+# Personal-machine shortcut (auto-detects AI agent shells and skips nix-output-monitor)
 nix run ./nix#switch
 
 # Build the system without activating, to validate eval + build

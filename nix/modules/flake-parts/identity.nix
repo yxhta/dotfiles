@@ -1,20 +1,48 @@
 { ... }:
 let
-  identity = rec {
-    # Single source of truth for the user identity. Change these and
-    # nothing else to use this flake on a host with a different user.
-    username = "yota.ito";
-    homeDirectory = "/Users/${username}";
-    dotfilesDir = "${homeDirectory}/ghq/github.com/yxhta/dotfiles";
+  mkDarwinProfile =
+    {
+      hostname,
+      username,
+      dotfilesDir ? "/Users/${username}/dotfiles",
+      system ? "aarch64-darwin",
+    }:
+    rec {
+      inherit
+        hostname
+        username
+        dotfilesDir
+        system
+        ;
+      homeDirectory = "/Users/${username}";
+    };
 
-    # Default host targeted by `flake.darwinConfigurations`.
-    hostname = "mac";
-    system = "aarch64-darwin";
+  # Single source of truth for per-environment user identity.
+  darwinProfiles = {
+    mac = mkDarwinProfile {
+      hostname = "mac";
+      username = "yxhta";
+      dotfilesDir = "/Users/yxhta/ghq/github.com/yxhta/dotfiles";
+    };
+
+    work = mkDarwinProfile {
+      hostname = "work";
+      username = "yota.ito";
+    };
   };
+
+  # Default profile for legacy/default apps such as `nix run .#switch`.
+  identity = darwinProfiles.mac;
 in
 {
   # flake-parts has separate scopes for top-level (`flake.*`) and
   # `perSystem` modules — inject `identity` into both.
-  _module.args.identity = identity;
-  perSystem = _: { _module.args.identity = identity; };
+  _module.args = {
+    inherit darwinProfiles identity;
+  };
+  perSystem = _: {
+    _module.args = {
+      inherit darwinProfiles identity;
+    };
+  };
 }

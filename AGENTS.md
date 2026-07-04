@@ -9,8 +9,8 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 - `ghostty/`, `cursor/`, `zed/`: app/editor configs.
 - `skills/`: agent-neutral skill packages installable with `npx skills` from a local path or private git source. Selected skills may also be symlinked by `bin/dotlink`.
 - `codex/`: user-scoped Codex assets managed by `bin/dotlink` (`codex/skills/` -> `~/.agents/skills/`, `codex/prompts/` -> `~/.codex/prompts/`).
-- `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. Nix owns packages and system state only — it no longer manages symlinks. The symlink manifest that wires repo configs into `$HOME` is embedded in `bin/dotlink` (a POSIX-sh script; links point at the live working tree so edits are reflected in `$HOME` immediately). macOS GUI defaults are declared in `nix/modules/darwin/system-defaults.nix`.
-- `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
+- `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. `identity.nix` defines Darwin profiles (`mac` for `yxhta`, `work` for `yota.ito`). Nix owns packages and system state only — it no longer manages symlinks. The symlink manifest that wires repo configs into `$HOME` is embedded in `bin/dotlink` (a POSIX-sh script; links point at the live working tree so edits are reflected in `$HOME` immediately). macOS GUI defaults are declared in `nix/modules/darwin/system-defaults.nix`.
+- `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/ghq/github.com/yxhta/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
 - `.github/workflows/nix.yml` runs `nix flake check` + `nix build` on `macos-14` for pushes/PRs (Markdown-only diffs are skipped).
 - Root manifests: `Brewfile`.
 
@@ -29,7 +29,8 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 
 There is no build step. Common workflows:
 
-- `sudo darwin-rebuild switch --flake ./nix#mac`: apply Nix config (packages + system state).
+- `sudo darwin-rebuild switch --flake ./nix#mac`: apply Nix config for the personal `yxhta` profile.
+- `sudo darwin-rebuild switch --flake ./nix#work`: apply Nix config for the work `yota.ito` profile.
 - `./bin/dotlink plan`: preview symlink changes from the embedded manifest.
 - `./bin/dotlink apply --backup`: create/update the config symlinks (move conflicting destinations aside).
 - `./bin/dotlink status`: show the state (`OK` / `MISSING` / `DIFF` / `CONFLICT`) of every link.
@@ -51,7 +52,7 @@ There is no build step. Common workflows:
 
 No automated test suite is present. Validate changes by:
 
-- Running `sudo darwin-rebuild switch --flake ./nix#mac` and confirming activation succeeds.
+- Running `sudo darwin-rebuild switch --flake ./nix#mac` or `sudo darwin-rebuild switch --flake ./nix#work` for the current machine and confirming activation succeeds.
 - Running `./bin/dotlink plan` / `./bin/dotlink apply --backup` when touching config symlinks.
 - Opening a new shell (`rr`) or restarting the relevant tool (tmux, nvim).
 

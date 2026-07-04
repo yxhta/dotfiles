@@ -62,8 +62,5 @@
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
 
-[includeIf "gitdir:~/dotfiles/"]
-	path = .gitconfig_private
-
 [includeIf "gitdir:~/ghq/github.com/"]
 	path = .gitconfig_private

@@ -56,13 +56,17 @@
         install-hooks.program = toString (
           pkgs.writeShellScript "install-pre-commit-hooks" ''
             set -eu
-            cd "${identity.dotfilesDir}"
+            if repo_root="$(${pkgs.git}/bin/git rev-parse --show-toplevel 2>/dev/null)"; then
+              cd "$repo_root"
+            else
+              cd "${identity.dotfilesDir}"
+            fi
             if [ ! -d .git ]; then
-              echo "no .git directory at ${identity.dotfilesDir}; skipping" >&2
+              echo "no .git directory at $(pwd); skipping" >&2
               exit 1
             fi
             ${config.checks.pre-commit.shellHook}
-            echo "pre-commit hook installed at ${identity.dotfilesDir}/.git/hooks/pre-commit"
+            echo "pre-commit hook installed at $(pwd)/.git/hooks/pre-commit"
           ''
         );
       };

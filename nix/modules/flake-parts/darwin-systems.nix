@@ -1,11 +1,11 @@
-{ inputs, identity, ... }:
+{ inputs, darwinProfiles, ... }:
 let
   mkDarwin =
-    { hostname, system }:
+    identity:
     inputs.nix-darwin.lib.darwinSystem {
       specialArgs = { inherit (identity) username homeDirectory; };
       modules = [
-        { nixpkgs.hostPlatform = system; }
+        { nixpkgs.hostPlatform = identity.system; }
         ./../darwin
         inputs.home-manager.darwinModules.home-manager
         {
@@ -22,7 +22,5 @@ let
     };
 in
 {
-  flake.darwinConfigurations.${identity.hostname} = mkDarwin {
-    inherit (identity) hostname system;
-  };
+  flake.darwinConfigurations = builtins.mapAttrs (_: mkDarwin) darwinProfiles;
 }

@@ -20,7 +20,10 @@ CLI tools and system settings are declaratively managed by **Nix** (flakes + nix
 
 ## Setup on a new machine
 
-The flake assumes `aarch64-darwin` and a username of `yxhta` (defined once in `nix/flake.nix`). To use this on a different host, change the `username` / `homeDirectory` `let` bindings at the top of `nix/flake.nix` first.
+The flake assumes `aarch64-darwin` and exposes two Darwin profiles from `nix/modules/flake-parts/identity.nix`:
+
+- `mac`: personal machine with macOS user `yxhta`
+- `work`: work machine with macOS user `yota.ito`
 
 ### 1. Install Nix (Determinate Systems installer)
 
@@ -34,8 +37,9 @@ exec $SHELL -l
 ### 2. Clone the repo
 
 ```sh
-git clone https://github.com/yxhta/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+mkdir -p ~/ghq/github.com/yxhta
+git clone git@github.com:yxhta/dotfiles.git ~/ghq/github.com/yxhta/dotfiles
+cd ~/ghq/github.com/yxhta/dotfiles
 ```
 
 ### 3. Bootstrap with nix-darwin
@@ -43,7 +47,11 @@ cd ~/dotfiles
 `darwin-rebuild` is not yet on `PATH`, so run nix-darwin from the flake directly. After this first switch, subsequent rebuilds use `darwin-rebuild` (see [Updating](#updating)).
 
 ```sh
+# Personal machine
 sudo nix run nix-darwin -- switch --flake ./nix#mac
+
+# Work machine
+sudo nix run nix-darwin -- switch --flake ./nix#work
 ```
 
 This installs in one step:
@@ -112,7 +120,11 @@ Reports `[OK] / [WARN] / [FAIL]` for the assumptions documented in `CLAUDE.md` (
 After editing anything under `nix/`:
 
 ```sh
+# Personal machine
 sudo darwin-rebuild switch --flake ./nix#mac
+
+# Work machine
+sudo darwin-rebuild switch --flake ./nix#work
 ```
 
 After adding a new config symlink (edit the manifest embedded in `bin/dotlink`):
