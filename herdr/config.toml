@@ -49,13 +49,16 @@ focus_agent = "prefix+alt+1..9"
 next_agent = "prefix+n"
 previous_agent = "prefix+p"
 
+# Herdr's built-in `goto` (pane/window jump) defaults to prefix+g; moved to
+# prefix+w so prefix+g is free for the lazygit popup below.
+goto = "prefix+w"
+
 [[keys.command]]
 # Mirrors tmux/utility.conf's lazygit popup (`bind -r g display-popup ... lazygit`).
-# Bound to alt+g instead of plain g so it doesn't clobber herdr's built-in
-# `goto = "prefix+g"` workspace jump.
-key = "prefix+alt+g"
+key = "prefix+g"
 type = "pane"
 command = "lazygit"
+floating = true
 
 [ui]
 agent_panel_sort = "spaces"
