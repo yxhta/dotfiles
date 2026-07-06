@@ -1,6 +1,8 @@
 -- Settings {{{
-vim.g.python3_host_prog = vim.fn.exepath("python3")
-vim.g.python_host_prog = vim.fn.exepath("python")
+-- Python remote-plugin provider は未使用。起動のたびに exepath() で
+-- PATH を探索しないよう provider ごと無効化する。
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_python_provider = 0
 
 vim.o.termguicolors = true -- enable gui colors for terminal
 vim.g.vimsyn_embed = "lPr"
@@ -16,7 +18,7 @@ vim.o.title = true -- change the terminal's title
 vim.o.backup = false -- no backup file
 vim.o.swapfile = false -- don't write .swp files
 vim.o.undofile = true -- default `undodir = ~/.local/share/nvim/undo/`
-vim.o.wrap = true -- don't wrap lines
+vim.o.wrap = true -- wrap long lines
 vim.o.tabstop = 4 -- a tab is four spaces
 vim.o.shiftwidth = vim.o.tabstop -- number of spaces to use for autoindenting
 vim.o.shiftround = true -- use multiple of shiftwidth when indenting with '<' and '>'
@@ -43,18 +45,18 @@ vim.o.wildignorecase = true -- ignore case command completion menu
 vim.o.showcmd = true -- show key spressed in lower-right corner
 vim.o.sidescroll = 1 -- smooth side scrolling
 vim.o.conceallevel = 2 -- conceal marked text
-vim.o.completeopt = "menuone,noinsert,noselect"
+-- completeopt は nvim-cmp が所有する（plugins/cmp.lua で設定）
 vim.o.pumheight = 15 -- set menu max height
 
 vim.opt.fillchars:append({
-	fold = " ",
-	horiz = "━", -- '▃',--'═', --'─',
-	horizup = "┻", --'╩',-- '┴',
-	horizdown = "┳", --'╦', --'┬',
-	vert = "┃", --'▐', --'║', --'┃',
-	vertleft = "┨", --'╣', --'┤',
-	vertright = "┣", --'╠', --'├',
-	verthoriz = "╋", --'╬',--'┼','
+  fold = " ",
+  horiz = "━", -- '▃',--'═', --'─',
+  horizup = "┻", --'╩',-- '┴',
+  horizdown = "┳", --'╦', --'┬',
+  vert = "┃", --'▐', --'║', --'┃',
+  vertleft = "┨", --'╣', --'┤',
+  vertright = "┣", --'╠', --'├',
+  verthoriz = "╋", --'╬',--'┼','
 })
 
 vim.opt.fillchars:append({ foldopen = "▾", foldsep = "│", foldclose = "▸" })
@@ -74,7 +76,7 @@ vim.o.splitright = true
 vim.o.dictionary = "/usr/share/dict/words"
 
 function _G.CustomFoldText()
-	return vim.fn.getline(vim.v.foldstart) .. " ... " .. vim.fn.getline(vim.v.foldend):gsub("^%s*", "")
+  return vim.fn.getline(vim.v.foldstart) .. " ... " .. vim.fn.getline(vim.v.foldend):gsub("^%s*", "")
 end
 
 vim.opt.foldtext = "v:lua.CustomFoldText()"

@@ -120,9 +120,9 @@ bin/doctor
 
 ## Neovim
 
-- Lua config under `nvim/lua/`. Entry mappings in `nvim/lua/keymaps.lua`.
+- Lua config under `nvim/lua/`. Entry mappings in `nvim/lua/core/keymaps.lua`.
 - Plugins via lazy.nvim; lockfile is `nvim/lazy-lock.json` (commit it only when intentionally updating plugins).
-- LSP server list: `nvim/lua/lsp/servers.lua`. DAP is set up for Go.
+- LSP servers are configured via mason handlers in `nvim/lua/lsp/lsp-config.lua`. DAP is set up for Go.
 - After plugin changes, run `:Lazy sync` inside nvim.
 
 ## Conventions

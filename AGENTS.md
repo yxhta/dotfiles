@@ -16,8 +16,8 @@ This is a macOS dotfiles repository organized by tool. Key locations:
 
 ### Neovim (`nvim/`)
 
-- Lua config lives under `nvim/lua/`; core mappings are in `nvim/lua/keymaps.lua`.
-- LSP servers are configured in `nvim/lua/lsp/servers.lua`.
+- Lua config lives under `nvim/lua/`; core mappings are in `nvim/lua/core/keymaps.lua`.
+- LSP servers are configured via mason handlers in `nvim/lua/lsp/lsp-config.lua`.
 - Plugin lockfile is `nvim/lazy-lock.json` (update only when plugins change).
 
 ### Zsh (`zsh/`)

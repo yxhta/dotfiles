@@ -6,20 +6,54 @@
 
 set -eu
 
+# Same key-wait pattern as bin/ai-session-selector: this script runs in a
+# self-closing floating pane, so hold the message until Enter/Esc/q.
+wait_for_keypress() {
+  tty_state=$(stty -g < /dev/tty 2>/dev/null || true)
+  if [ -n "$tty_state" ]; then
+    stty -echo -icanon min 1 time 0 < /dev/tty 2>/dev/null || true
+    trap 'stty "$tty_state" < /dev/tty 2>/dev/null || true; exit 130' INT TERM
+
+    while :; do
+      key_code=$(dd bs=1 count=1 2>/dev/null < /dev/tty | od -An -t u1 | tr -d '[:space:]')
+
+      case "$key_code" in
+        10|13|27|81|113) break ;;
+      esac
+    done
+
+    trap - INT TERM
+    stty "$tty_state" < /dev/tty 2>/dev/null || true
+  else
+    read -r _
+  fi
+}
+
+in_interactive_popup() {
+  [ -n "${TMUX:-}" ] && [ -t 0 ] && [ -t 1 ]
+}
+
 die() {
   message=$1
 
   echo "herdr-agent-picker: ${message}" >&2
-  sleep 1
+  if in_interactive_popup; then
+    wait_for_keypress
+  fi
   exit 1
 }
 
 show_empty_state_and_exit() {
   message=$1
 
-  echo "$message"
-  sleep 1
-  exit 0
+  if in_interactive_popup; then
+    printf '%s' "$message"
+    wait_for_keypress
+    exit 0
+  fi
+
+  echo "$message" >&2
+  exit 1
 }
 
 require_command() {
@@ -39,11 +73,7 @@ jq_filter='
     if . == null or . == "" then "-" else tostring end;
 
   def location:
-    [
-      (.workspace_id? | dash | select(. != "-")),
-      (.tab_id? | dash | select(. != "-")),
-      (.pane_id? | dash | select(. != "-"))
-    ]
+    [.workspace_id, .tab_id, .pane_id | select(. != null and . != "")]
     | if length == 0 then "-" else join("/") end;
 
   def short_cwd:
@@ -57,9 +87,8 @@ jq_filter='
 
   .result.agents // []
   | .[]
-  | (.terminal_id // "") as $terminal_id
-  | (if $terminal_id != "" then $terminal_id else (.pane_id // "") end) as $target
-  | select($target != "")
+  # herdr accepts either id as a focus/read target; prefer terminal_id
+  | first((.terminal_id, .pane_id) | select(. != null and . != "")) as $target
   | [
       $target,
       (.agent? | dash),
@@ -85,13 +114,12 @@ fi
 set +e
 selection=$(printf '%s\n' "$agent_records" | fzf \
   --ansi \
-  --no-multi \
   --select-1 \
   --prompt="Agent: " \
   --header="AGENT	STATUS	LOCATION	DIRECTORY" \
   --delimiter='	' \
   --with-nth='2..' \
-  --preview='preview_json=$(herdr agent read {1} --source visible --format ansi 2>/dev/null) && printf "%s\n" "$preview_json" | jq -er ".result.read.text // empty" || printf "Preview unavailable: %s\n" {1}' \
+  --preview='herdr agent read {1} --source visible --format ansi 2>/dev/null | jq -er ".result.read.text // empty" || printf "Preview unavailable: %s\n" {1}' \
   --preview-window="right:60%:wrap")
 fzf_status=$?
 set -e
@@ -102,11 +130,8 @@ case "$fzf_status" in
   *) exit "$fzf_status" ;;
 esac
 
-[ -z "$selection" ] && exit 0
-
-terminal_id=$(printf '%s' "$selection" | cut -f1)
-
-[ -z "$terminal_id" ] && exit 0
+tab=$(printf '\t')
+terminal_id=${selection%%"$tab"*}
 
 if ! herdr agent focus "$terminal_id"; then
   die "failed to focus Herdr agent pane: ${terminal_id}"
