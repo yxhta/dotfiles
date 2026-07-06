@@ -54,6 +54,13 @@ previous_agent = "prefix+p"
 goto = "prefix+w"
 
 [[keys.command]]
+# Agents-only goto with preview; built-in goto on prefix+w lists all panes/windows.
+key = "prefix+f"
+type = "pane"
+command = "herdr-agent-picker"
+floating = true
+
+[[keys.command]]
 # Mirrors tmux/utility.conf's lazygit popup (`bind -r g display-popup ... lazygit`).
 key = "prefix+g"
 type = "pane"

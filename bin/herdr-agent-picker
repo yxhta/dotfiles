@@ -1,0 +1,113 @@
+#!/bin/sh
+#
+# Herdr Agent Picker
+# List only Herdr-detected agent panes, preview the selected pane, and jump to it.
+# Dependencies: herdr, jq, fzf
+
+set -eu
+
+die() {
+  message=$1
+
+  echo "herdr-agent-picker: ${message}" >&2
+  sleep 1
+  exit 1
+}
+
+show_empty_state_and_exit() {
+  message=$1
+
+  echo "$message"
+  sleep 1
+  exit 0
+}
+
+require_command() {
+  command_name=$1
+
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    die "missing required command: ${command_name}"
+  fi
+}
+
+for command_name in herdr jq fzf; do
+  require_command "$command_name"
+done
+
+jq_filter='
+  def dash:
+    if . == null or . == "" then "-" else tostring end;
+
+  def location:
+    [
+      (.workspace_id? | dash | select(. != "-")),
+      (.tab_id? | dash | select(. != "-")),
+      (.pane_id? | dash | select(. != "-"))
+    ]
+    | if length == 0 then "-" else join("/") end;
+
+  def short_cwd:
+    (.cwd? | dash) as $cwd
+    | (env.HOME // "") as $home
+    | if $cwd == "-" then "-"
+      elif $home != "" and $cwd == $home then "~"
+      elif $home != "" and ($cwd | startswith($home + "/")) then "~/" + ($cwd | ltrimstr($home + "/"))
+      else $cwd
+      end;
+
+  .result.agents // []
+  | .[]
+  | (.terminal_id // "") as $terminal_id
+  | (if $terminal_id != "" then $terminal_id else (.pane_id // "") end) as $target
+  | select($target != "")
+  | [
+      $target,
+      (.agent? | dash),
+      (.agent_status? | dash),
+      location,
+      short_cwd
+    ]
+  | @tsv
+'
+
+if ! agent_json=$(herdr agent list); then
+  die "failed to list Herdr agents"
+fi
+
+if ! agent_records=$(printf '%s\n' "$agent_json" | jq -r "$jq_filter"); then
+  die "failed to parse Herdr agent list"
+fi
+
+if [ -z "$agent_records" ]; then
+  show_empty_state_and_exit "No Herdr agent panes found"
+fi
+
+set +e
+selection=$(printf '%s\n' "$agent_records" | fzf \
+  --ansi \
+  --no-multi \
+  --select-1 \
+  --prompt="Agent: " \
+  --header="AGENT	STATUS	LOCATION	DIRECTORY" \
+  --delimiter='	' \
+  --with-nth='2..' \
+  --preview='preview_json=$(herdr agent read {1} --source visible --format ansi 2>/dev/null) && printf "%s\n" "$preview_json" | jq -er ".result.read.text // empty" || printf "Preview unavailable: %s\n" {1}' \
+  --preview-window="right:60%:wrap")
+fzf_status=$?
+set -e
+
+case "$fzf_status" in
+  0) ;;
+  1|130) exit 0 ;;
+  *) exit "$fzf_status" ;;
+esac
+
+[ -z "$selection" ] && exit 0
+
+terminal_id=$(printf '%s' "$selection" | cut -f1)
+
+[ -z "$terminal_id" ] && exit 0
+
+if ! herdr agent focus "$terminal_id"; then
+  die "failed to focus Herdr agent pane: ${terminal_id}"
+fi
