@@ -39,17 +39,27 @@ herdr pane run <new-pane-id> "<agent-command>"
 
 If a required role cannot be mapped to an existing pane and no command was provided, ask the user for the implementation and review agent commands.
 
+## Status Polling Cadence
+
+Do not assume event-driven status notifications. While an implementation or review agent is working, the coordinator must poll status on a fixed cadence:
+
+- Immediately after sending a prompt, confirm the target pane is mapped correctly with `herdr agent list`.
+- Poll `herdr agent list` every 30 seconds while waiting for the target pane.
+- If the target pane reaches `done`, `blocked`, or `idle`, immediately read recent output with `herdr pane read <pane-id> --source recent-unwrapped`.
+- If the target pane stays non-terminal for 10 minutes without visible progress, read recent output once to check for silent prompts, stalled commands, or missing user input, then continue polling.
+- Do not treat `idle` as success until the coordinator has read the pane output and confirmed the expected sentinel or a complete result.
+
 ## Coordination Workflow
 
 1. Capture the objective, acceptance criteria, max review cycles, and verification expectations from the user request. Default to 3 review cycles when unspecified.
 2. Send the implementation prompt to the implementation pane.
-3. Wait for the implementation agent:
+3. Wait for the implementation agent, monitoring for `done`, `blocked`, and `idle`:
 
 ```sh
 herdr wait agent-status <implementation-pane-id> --status done --timeout 1800000
 ```
 
-Also watch for `blocked` when useful. If blocked, read recent output and either route a clarifying instruction or ask the user.
+If the wait command can only target one status, use the Status Polling Cadence while waiting. Treat `idle` like `blocked` for coordination purposes: read recent output, determine whether the agent finished without the expected sentinel, stopped after a prompt, or needs more instruction, then route the next prompt or ask the user. Do not assume `idle` means success.
 
 4. Read recent implementation output:
 
@@ -59,10 +69,11 @@ herdr pane read <implementation-pane-id> --source recent-unwrapped
 
 5. Inspect repository state yourself with appropriate read-only commands such as `git status`, `git diff`, and test logs. Do not rely only on the implementation agent's summary.
 6. Send the review prompt to the review pane.
-7. Wait for the review agent to reach `done` or `blocked`, then read recent output.
-8. If review findings are actionable, summarize only the concrete required fixes and send them back to the implementation agent.
-9. Repeat implementation -> review until the review agent reports no findings, the max cycle count is reached, or a blocker needs user input.
-10. Finish with final status, files changed, verification run, review result, and remaining risks.
+7. Wait for the review agent to reach `done`, `blocked`, or `idle`, then read recent output. Treat `idle` as a required inspection point, not a clean review result; verify whether the review completed, stopped early, or needs a follow-up prompt.
+8. Evaluate the review result yourself before routing it. Compare findings against the diff, acceptance criteria, and verification output, then classify the result as `no findings`, `actionable fixes`, or `blocked/needs user input`.
+9. For actionable fixes, automatically send a Fix Prompt to the implementation agent without asking the user. Ask the user only when the fix would expand scope, require credentials or external approval, risk destructive changes, conflict with acceptance criteria, or require a product judgment the agents cannot make.
+10. Repeat implementation -> review until the review agent reports no findings, the max cycle count is reached, or a blocker needs user input. Prefer continuing the loop over stopping for routine review comments.
+11. Finish with final status, files changed, verification run, review result, and remaining risks.
 
 ## Implementation Prompt Template
 
@@ -105,6 +116,7 @@ Rules:
 - Do not edit files.
 - Prioritize bugs, regressions, missing tests, risky assumptions, and acceptance-criteria gaps.
 - Findings first, ordered by severity, with file/line references.
+- Separate concrete required fixes from optional suggestions or questions.
 - If there are no findings, say that clearly and mention residual test risk.
 
 End with:
@@ -121,6 +133,7 @@ The independent review found these issues. Please fix only these issues and keep
 <findings>
 
 After fixing, rerun the relevant verification and summarize the result.
+Do not wait for user confirmation unless you are blocked by scope, credentials, destructive changes, or conflicting requirements.
 
 End with:
 HERDR_IMPL_DONE
