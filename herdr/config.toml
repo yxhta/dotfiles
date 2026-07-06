@@ -66,7 +66,10 @@ prompt_new_tab_name = false
 
 show_agent_labels_on_pane_borders = true
 [ui.toast]
-delivery = "herdr"
+delivery = "terminal"
 
 [experimental]
 pane_history = false
+
+[ui.sound]
+enabled = false
