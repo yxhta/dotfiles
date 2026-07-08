@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration
 # Reference: tmux/tmux.conf + tmux/utility.conf (do not port settings back the
 # other way; the two multiplexers are configured independently).
