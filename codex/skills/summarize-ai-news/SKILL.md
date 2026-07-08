@@ -25,17 +25,18 @@ description: Extract and summarize AI-related topics from target news sites, RSS
 
 Use this workflow when the user explicitly asks to write to Notion or `config/notion.toml` has `enabled = true`.
 
-1. Read `config/notion.toml` from this skill directory. If `config/notion.local.toml` exists, merge it over the base config. Supported keys are `enabled`, `target_page`, `position`, `heading_template`, and `timezone`.
+1. Read `config/notion.toml` from this skill directory. If `config/notion.local.toml` exists, merge it over the base config. Supported keys are `enabled`, `target_page`, `target_mode`, `position`, `heading_template`, and `timezone`. `target_mode` defaults to `append`; use `daily_child_page` to treat `target_page` as a parent page and write into a `YYYY/MM/DD` child page.
 2. Resolve the destination from the user request first, then `target_page`. If no Notion page URL or ID is available, ask for the destination before writing. Do not invent a page.
 3. Use the Notion app/connector for access. If Notion tools are unavailable, tell the user to connect the Notion app and return the digest in chat without pretending it was written.
 4. Fetch the target page before updating it to verify access and resolve the page ID.
-5. Convert the final digest into Notion-flavored Markdown:
+5. If `target_mode = "daily_child_page"`, treat the resolved target as a parent page. Use the configured timezone to derive today's `YYYY/MM/DD` title, reuse an existing child page with that exact title when present, or create it under the parent page when absent. Write the digest to that child page instead of the parent page.
+6. Convert the final digest into Notion-flavored Markdown:
    - Use a level-2 heading built from `heading_template`.
    - Include the one-sentence takeaway.
    - Add one subsection per topic with "What happened", "Why it matters", "What to watch", and "Sources".
    - Keep source links inline and avoid long quotes.
-6. Append with the available Notion update-page tool using `command: "insert_content"`, the generated `content`, and `position` (`"end"` unless configured otherwise). If the environment only exposes search-and-replace content updates, fetch the page first and append by replacing a stable exact snippet. Do not use destructive whole-page replacement unless the user explicitly asks.
-7. After a successful update, mention the Notion page in the final response and keep the chat digest compact. If the update fails, explain the failure and provide the content that would have been appended.
+7. Append with the available Notion update-page tool using `command: "insert_content"`, the generated `content`, and `position` (`"end"` unless configured otherwise) on the resolved destination page. If the environment only exposes search-and-replace content updates, fetch the page first and append by replacing a stable exact snippet. Do not use destructive whole-page replacement unless the user explicitly asks.
+8. After a successful update, mention the Notion page in the final response and keep the chat digest compact. If the update fails, explain the failure and provide the content that would have been appended.
 
 ## AI Relevance Filter
 

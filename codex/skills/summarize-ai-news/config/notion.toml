@@ -6,6 +6,10 @@ enabled = true
 # Set this to a Notion page URL or page ID.
 target_page = ""
 
+# "append" writes directly to target_page. "daily_child_page" treats target_page
+# as a parent page and writes to a YYYY/MM/DD child page in the configured timezone.
+target_mode = "append"
+
 # "end" appends to the bottom. "start" prepends to the top.
 position = "end"
 

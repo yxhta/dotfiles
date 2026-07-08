@@ -1,0 +1,26 @@
+{
+  "skill_name": "consult-opus",
+  "evals": [
+    {
+      "id": 1,
+      "name": "design-decision-should-consult",
+      "prompt": "I'm adding a notifications feature to our app. Users can get notified about mentions, comments, and system alerts, and eventually we want email + push + in-app. Right now I just need in-app. I'm trying to decide how to model this in Postgres — one wide `notifications` table with a nullable-heavy schema and a `type` column, or a base table plus per-type tables, or a base table plus a JSONB `payload`. This will be load-bearing for a while and I don't want to repaint it in three months. Which way should I go? The schema lives in db/schema.sql and the existing event types are in src/events/types.ts.",
+      "expected_output": "Recognizes this as a lasting, hard-to-reverse design decision under genuine uncertainty and consults Opus (Agent tool, model:opus, non-fork) with a self-contained prompt that states the decision, the options weighed, and points Opus at db/schema.sql and src/events/types.ts to read. Does not blindly follow — evaluates the advice — and reports back what it asked and decided.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "routine-work-should-not-consult",
+      "prompt": "Add a `--json` flag to our `report` CLI command so it prints the same summary as machine-readable JSON instead of the formatted table. The command is in src/cli/report.ts and it already builds a `Summary` object before formatting — I just need the flag plumbed through and a JSON branch.",
+      "expected_output": "Treats this as routine work with a clear path and does NOT spawn an Opus consult — just implements the flag. A needless escalation here would be a false positive.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "stuck-bug-should-consult",
+      "prompt": "There's an intermittent test failure in tests/sync.test.ts — `syncQueue drains in order` fails maybe 1 in 5 runs with items processed out of order. I've already tried awaiting each enqueue and adding a small delay in the test, and I bumped the test timeout, but it still flakes. The queue implementation is in src/sync/queue.ts. Figure out what's actually going on and fix it.",
+      "expected_output": "Recognizes this as a genuinely stuck problem (a race that survived two real fix attempts, high correctness stakes) and consults Opus with the symptom, what was already tried, and pointers to src/sync/queue.ts and tests/sync.test.ts. Uses the advice to drive the fix rather than deferring blindly.",
+      "files": []
+    }
+  ]
+}

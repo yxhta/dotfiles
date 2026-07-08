@@ -77,7 +77,7 @@ show_agent_labels_on_pane_borders = true
 delivery = "terminal"
 
 [experimental]
-pane_history = false
+pane_history = true
 
 [ui.sound]
 enabled = false
