@@ -7,6 +7,20 @@ onboarding = false
 name = "kanagawa"
 auto_switch = false
 
+# kanagawa's default accent/yellow are too low-contrast for the active
+# workspace/pane/tab highlight and the "working" agent dot to read at a
+# glance; brighten them without changing the rest of the palette. Also widen
+# subtext0 vs text so the active-vs-inactive workspace name distinction isn't
+# carried by bold alone (they default to only ~20/channel apart).
+# surface_dim ships identical to panel_bg upstream, so the active-workspace
+# row background and unfocused-pane border (both drawn with surface_dim) are
+# invisible by construction; give it a value between panel_bg and surface0.
+[theme.custom]
+accent = "#6CB6FF"
+yellow = "#FFB454"
+subtext0 = "#8C8A72"
+surface_dim = "#2C2C3A"
+
 [keys]
 # Matches tmux/tmux.conf's prefix (ctrl+s) intentionally: tmux and herdr are
 # used exclusively, never nested inside one another, so only one of them ever
