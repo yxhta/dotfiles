@@ -20,3 +20,6 @@ bun = "latest"
 
 [settings]
 experimental = true
+# Auto-trust mise.toml files under ~/ghq so `cd` never prompts for trust
+# on our own repos. Narrower than trusting "/" wholesale.
+trusted_config_paths = ["~/ghq", "~/.herdr/worktrees"]
