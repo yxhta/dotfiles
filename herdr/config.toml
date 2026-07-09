@@ -82,6 +82,15 @@ type = "pane"
 command = "lazygit"
 floating = true
 
+[[keys.command]]
+# hunk (terminal diff viewer) for reviewing working-tree changes without
+# opening the full lazygit UI. prefix+h is taken by the default
+# focus_pane_left binding, so this uses prefix+v instead.
+key = "prefix+v"
+type = "pane"
+command = "hunk diff --watch"
+floating = true
+
 [ui]
 agent_panel_sort = "spaces"
 prompt_new_tab_name = false
