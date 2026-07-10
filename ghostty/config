@@ -43,7 +43,7 @@ theme = "Kanagawabones"
 # Primary font
 font-family = "Lilex"
 # Fallback font (Handles glyphs missing in Lilex, e.g., CJK characters)
-font-family = "HackGen"
+font-family = "HackGen Console NF"
 
 # Default font size (Adjust according to your environment)
 font-size = 14
