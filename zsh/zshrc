@@ -43,5 +43,3 @@ _load_settings() {
 
 # Load all zsh configurations
 _load_settings "$HOME/.zsh/configs"
-
-. "$HOME/.local/share/../bin/env"
