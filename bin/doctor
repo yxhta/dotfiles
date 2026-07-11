@@ -58,8 +58,9 @@ if command -v mise >/dev/null 2>&1; then
 fi
 
 if git_top=$(git rev-parse --show-toplevel 2>/dev/null); then
-  hook="$git_top/.git/hooks/pre-commit"
-  if [ -x "$hook" ]; then
+  # hk installs hooks as git config entries (git 2.51+), not .git/hooks files
+  if git -C "$git_top" config get hook.hk-pre-commit.command >/dev/null 2>&1 ||
+    [ -x "$git_top/.git/hooks/pre-commit" ]; then
     OK "hk pre-commit hook installed"
   else
     WARN "hk pre-commit hook missing — run: hk install --mise"
