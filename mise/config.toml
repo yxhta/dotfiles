@@ -8,18 +8,40 @@ bun = "latest"
 # java    = "openjdk-21"
 
 # Aqua-managed binaries
-# "aqua:golangci/golangci-lint" = "2.9.0"
+gh = "latest"
+ghq = "latest"
+jq = "latest"
+fzf = "latest"
+fd = "latest"
+ripgrep = "latest"
+zoxide = "latest"
+delta = "latest"
+lazygit = "latest"
+lazydocker = "latest"
+golangci-lint = "latest"
+buf = "latest"
+grpcurl = "latest"
+gitleaks = "latest"
+bottom = "latest"
+sheldon = "latest"
+"aqua:nushell/nushell" = "latest"
+tree-sitter = "latest"
+aws-cli = "latest"
+"npm:@fsouza/prettierd" = "latest"
+"github:k1LoW/git-wt" = "latest"
+
+# Go packages that replace the multi-command Nix go-tools/gotools derivations.
+"go:golang.org/x/tools/cmd/goimports" = "latest"
+"go:golang.org/x/tools/cmd/stringer" = "latest"
+"go:golang.org/x/tools/cmd/guru" = "latest"
+"go:honnef.co/go/tools/cmd/staticcheck" = "latest"
 
 # npm-managed CLIs
 "npm:@biomejs/biome" = "latest"
 "npm:@openai/codex" = "latest"
 "npm:ctx7" = "latest"
-# "npm:prettier"                  = "latest"
 # "npm:typescript"                = "latest"
 # "npm:typescript-language-server" = "latest"
 
 [settings]
 experimental = true
-# Auto-trust mise.toml files under ~/ghq so `cd` never prompts for trust
-# on our own repos. Narrower than trusting "/" wholesale.
-trusted_config_paths = ["~/ghq", "~/.herdr/worktrees"]

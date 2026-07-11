@@ -1,169 +1,86 @@
 # dotfiles
 
-Personal macOS (Apple Silicon) dotfiles.
+Apple Silicon Mac 用 dotfiles。OS パッケージ、CLI、dotfile symlink、macOS
+defaults、LaunchAgent、login shell を mise bootstrap で一元管理する。
 
-CLI tools and system settings are declaratively managed by **Nix** (flakes + nix-darwin + home-manager); GUI apps by **Homebrew Cask**. Per-tool config files live as plain files in this repo and are symlinked into `$HOME` by `bin/dotlink`, a POSIX-sh script with an embedded `src → dest` manifest (`dotlink plan` / `apply` / `status`).
-
-## Structure
-
-```
-.
-├── bin/        # Custom shell scripts (doctor, tat, ai-session-selector, ccd, cxd, ...)
-├── nix/        # nix-darwin + home-manager flake (modules under nix/modules/)
-├── nvim/       # Neovim (Lua)
-├── zsh/        # Zsh + sheldon plugins
-├── tmux/       # Tmux
-├── git/        # Git config (private identity is loaded from ~/.gitconfig_private)
-├── ghostty/, lazygit/, mise/, starship/, zed/, cursor/  # tool configs
-└── Brewfile    # GUI apps / casks
-```
-
-## Setup on a new machine
-
-The flake assumes `aarch64-darwin` and exposes two Darwin profiles from `nix/modules/flake-parts/identity.nix`:
-
-- `mac`: personal machine with macOS user `yxhta`
-- `work`: work machine with macOS user `yota.ito`
-
-### 1. Install Nix (Determinate Systems installer)
-
-The flake requires the **Determinate Systems** installer on an arm64 shell. The legacy `nixos.org` multi-user installer leaves an `x86_64-darwin` daemon that cannot build the `aarch64-darwin` system, and `nix.enable = false` in `nix/modules/darwin/system.nix` is set specifically to coexist with Determinate Nix — do not switch installers.
-
-```sh
-curl -fsSL https://install.determinate.systems/nix | sh -s -- install
-exec $SHELL -l
-```
-
-### 2. Clone the repo
+## Fresh setup
 
 ```sh
 mkdir -p ~/ghq/github.com/yxhta
 git clone git@github.com:yxhta/dotfiles.git ~/ghq/github.com/yxhta/dotfiles
 cd ~/ghq/github.com/yxhta/dotfiles
-```
 
-### 3. Bootstrap with nix-darwin
-
-`darwin-rebuild` is not yet on `PATH`, so run nix-darwin from the flake directly. After this first switch, subsequent rebuilds use `darwin-rebuild` (see [Updating](#updating)).
-
-```sh
-# Personal machine
-sudo nix run nix-darwin -- switch --flake ./nix#mac
-
-# Work machine
-sudo nix run nix-darwin -- switch --flake ./nix#work
-```
-
-This installs in one step:
-
-- **System settings** (`nix/modules/darwin/system.nix`): Touch ID for sudo, unfree allowlist, the user declaration.
-- **CLI tools + Neovim + home-manager state** (`nix/modules/home/packages.nix`): ripgrep, fd, fzf, lazygit, delta, mise, starship, sheldon, neovim, and ~40 more.
-
-### 4. Link the config files
-
-`bin/dotlink` symlinks each tracked config into `$HOME` from its embedded manifest (`~/.zshrc → zsh/zshrc`, `~/.config/nvim → nvim`, etc.), pointed at the live repo working tree.
-
-```sh
-./bin/dotlink plan            # preview
-./bin/dotlink apply --backup  # apply, moving any conflicting destination aside
-./bin/dotlink status          # confirm every entry is OK
-```
-
-`--backup` moves a conflicting destination to `<dest>.bak.<timestamp>`; use `--force` to remove it instead. `apply` is idempotent — correct links are left as-is.
-
-### 5. Install GUI apps
-
-```sh
-brew bundle --file=Brewfile
-```
-
-### 6. Private git identity
-
-`git/gitconfig` includes `~/.gitconfig_private` via `includeIf`. That file is intentionally not tracked — create it with your personal name/email:
-
-```sh
-cat > ~/.gitconfig_private <<'EOF'
-[user]
-  name = Your Name
-  email = you@example.com
-EOF
-```
-
-For Claude Code, local-only values go under `~/.claude/` (the entire directory is gitignored).
-
-### 7. Reload the shell
-
-```sh
-exec $SHELL -l   # or `rr` once the alias is loaded
-```
-
-### 8. Install the pre-commit hook
-
-The repo has a Nix-managed `pre-commit` hook (gitleaks + nixfmt) wired up via `git-hooks.nix`. Install it once:
-
-```sh
-nix run ./nix#install-hooks
-```
-
-Re-run after editing the hook list in `nix/flake.nix`.
-
-### 9. Verify the setup
-
-```sh
+# vendored installerで ~/.local/bin/mise に恒久インストール
+./bin/mise --version
+./bin/mise trust
+./bin/mise bootstrap --dry-run
+./bin/mise bootstrap
+hk install --mise
 bin/doctor
 ```
 
-Reports `[OK] / [WARN] / [FAIL]` for the assumptions documented in `CLAUDE.md` (Determinate Nix install, `darwin-rebuild` on PATH, sheldon plugins cloned, mise available, pre-commit hook installed, PATH order). Exit code `1` only on `[FAIL]`.
+`bin/mise` は `mise generate bootstrap -w ./bin/mise` の生成物を、インストール先が
+`~/.local/bin/mise` になるよう調整している。`zsh/zshenv` が `~/.local/bin` を PATH
+へ追加するので、初回適用後は shell を再起動して `mise` を直接使う。
 
-## Updating
+`mise.toml` は bootstrap entrypoint と repo 開発ツールを管理する。同じリポジトリの
+`mise/config.toml` は mise の標準探索で自動ロードされ、repo 外でも使う runtime と
+CLI を管理し、bootstrap で `~/.config/mise/config.toml` へリンクされる。
 
-After editing anything under `nix/`:
+dotfile の競合は自動バックアップされない。`--force-dotfiles` は既存対象を置換するため、
+必ず `mise bootstrap dotfiles status` で対象を確認してから使う。設定からエントリを消しても
+既存リンクは削除されない。
 
-```sh
-# Personal machine
-sudo darwin-rebuild switch --flake ./nix#mac
-
-# Work machine
-sudo darwin-rebuild switch --flake ./nix#work
-```
-
-After adding a new config symlink (edit the manifest embedded in `bin/dotlink`):
+## Daily commands
 
 ```sh
-./bin/dotlink apply
+mise bootstrap status
+mise bootstrap dotfiles status --missing
+mise bootstrap macos defaults status --missing
+mise bootstrap --dry-run
+mise bootstrap
+mise install
+
+treefmt
+hk validate
+hk check --all
+hk install --mise
 ```
 
-After editing `Brewfile`:
+特定の hook step は `HK_SKIP_STEPS=gitleaks git commit ...`、pre-commit 全体は
+`HK_SKIP_HOOK=pre-commit git commit ...` で一時的にスキップできる。
+
+## Manual macOS steps
+
+mise は Touch ID sudo を管理しない。`/etc/pam.d/sudo_local` に次を維持する。
+
+```text
+auth sufficient pam_tid.so
+```
+
+ホスト名は必要に応じて一度だけ手動設定する。
 
 ```sh
-brew bundle --file=Brewfile
+sudo scutil --set ComputerName <name>
+sudo scutil --set HostName <name>
+sudo scutil --set LocalHostName <name>
 ```
 
-After editing zsh plugins (`zsh/sheldon/plugins.toml`):
+Nix 撤去前の既存 Mac では、まず nix-darwin をアンインストールし、その後 Determinate
+Nix を削除する。実行前に Touch ID sudo と mise bootstrap の収束を確認すること。
 
 ```sh
-sheldon lock --update && exec $SHELL -l
+sudo nix --extra-experimental-features "nix-command flakes" \
+  run nix-darwin#darwin-uninstaller
+sudo /nix/nix-installer uninstall
 ```
 
-After editing Neovim plugins, run `:Lazy sync` inside nvim.
+## Verification and rollback
 
-## Provisioning model
+パッケージ移行表は [docs/nix-to-mise-map.md](docs/nix-to-mise-map.md) を参照する。
+Nix の profile path を除いた shell で全 `expected command(s)` を `command -v` する。
+macOS defaults は additive で、設定を削除しても OS の値は戻らない。
 
-Three layers, each authoritative for a different concern. Knowing which layer to edit prevents drift:
-
-| Layer    | Source of truth                                 | What it owns                              |
-| -------- | ----------------------------------------------- | ----------------------------------------- |
-| Nix      | `nix/flake.nix`, `nix/modules/{darwin,home}/**` | CLI tools, Neovim binary, system settings |
-| dotlink  | `bin/dotlink` (embedded manifest)               | Per-tool config symlinks into `$HOME`     |
-| Homebrew | `Brewfile`                                      | GUI apps and casks only                   |
-
-The Nix layer provides the _binaries_ (e.g. `nix/modules/home/packages.nix` declares neovim), while `bin/dotlink` symlinks the matching _config_ (e.g. `~/.config/nvim → nvim/`) from this repo's working tree. Symlinks point at the _live_ repo path, not a `/nix/store` snapshot, so editing a config file is reflected without re-running anything.
-
-## Requirements
-
-- macOS on Apple Silicon (`aarch64-darwin`)
-- Determinate Systems Nix installer (see step 1)
-- Git
-- Homebrew (for GUI apps only — installed automatically by the Determinate Nix flow if missing, otherwise install manually)
-
-See `CLAUDE.md` for the conventions used when editing this repo.
+Nix 削除後に旧構成へ戻す場合は、Determinate Nix を再インストールし、旧コミットへ戻して
+`nix run nix-darwin#darwin-rebuild -- switch --flake ./nix#mac`（work は `#work`）を
+実行する。

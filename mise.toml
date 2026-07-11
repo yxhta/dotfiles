@@ -1,0 +1,106 @@
+[settings]
+experimental = true
+lockfile = true
+lockfile_platforms = ["macos-arm64"]
+
+# mise automatically loads mise/config.toml alongside this root config. Keep
+# globally useful runtimes and CLIs there so they remain active outside repo.
+[tools]
+hk = "latest"
+"aqua:numtide/treefmt" = "latest"
+shfmt = "latest"
+stylua = "latest"
+taplo = "latest"
+"npm:prettier" = "latest"
+
+[env]
+HK_MISE = "1"
+
+[hooks]
+postinstall = "hk install --mise"
+
+[bootstrap.packages]
+"brew-cask:wezterm" = "latest"
+"brew:neovim" = "latest"
+"brew:tmux" = "latest"
+"brew:git" = "latest"
+"brew:wget" = "latest"
+"brew:tree" = "latest"
+"brew:cmake" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:postgresql@18" = "latest"
+"brew:sqlite" = "latest"
+"brew:openssl@3" = "latest"
+"brew:readline" = "latest"
+"brew:libyaml" = "latest"
+"brew:webp" = "latest"
+"brew:utf8proc" = "latest"
+"brew:zstd" = "latest"
+"brew:cocoapods" = "latest"
+"brew:cloudflared" = "latest"
+# ngrok is NOT managed here: mise's cask shim cannot evaluate its cask
+# (`version.csv.third` NoMethodError). Install manually: brew install --cask ngrok
+"brew:git-filter-repo" = "latest"
+"brew:git-flow" = "latest"
+"brew:git-lfs" = "latest"
+"brew:terminal-notifier" = "latest"
+"brew:btop" = "latest"
+# eza has no macOS binaries on GitHub releases and the cargo backend would
+# compile from source, so install it via Homebrew instead of mise [tools].
+"brew:eza" = "latest"
+
+[dotfiles]
+"~/.zsh" = { source = "zsh", mode = "symlink" }
+"~/.zshrc" = { source = "zsh/zshrc", mode = "symlink" }
+"~/.zshenv" = { source = "zsh/zshenv", mode = "symlink" }
+"~/.config/sheldon/plugins.toml" = { source = "zsh/sheldon/plugins.toml", mode = "symlink" }
+"~/.config/nvim" = { source = "nvim", mode = "symlink" }
+"~/.config/tmux" = { source = "tmux", mode = "symlink" }
+"~/.tmux.conf" = { source = "tmux/tmux.conf", mode = "symlink" }
+"~/.config/herdr/config.toml" = { source = "herdr/config.toml", mode = "symlink" }
+"~/.config/ghostty" = { source = "ghostty", mode = "symlink" }
+"~/.gitconfig" = { source = "git/gitconfig", mode = "symlink" }
+"~/.gitignore_global" = { source = "git/gitignore", mode = "symlink" }
+"~/.gitmessage" = { source = "git/gitmessage", mode = "symlink" }
+"~/.git_template" = { source = "git/git_template", mode = "symlink" }
+"~/.config/mise/config.toml" = { source = "mise/config.toml", mode = "symlink" }
+"~/.config/lazygit/config.yml" = { source = "lazygit/config.yml", mode = "symlink" }
+"~/.config/starship.toml" = { source = "starship/starship.toml", mode = "symlink" }
+"~/.config/zed/keymap.json" = { source = "zed/keymap.jsonc", mode = "symlink" }
+"~/.config/zed/settings.json" = { source = "zed/settings.jsonc", mode = "symlink" }
+"~/.agents/skills/summarize-ai-news" = { source = "codex/skills/summarize-ai-news", mode = "symlink" }
+"~/.codex/prompts/ai-news-topics.md" = { source = "codex/prompts/ai-news-topics.md", mode = "symlink" }
+"~/.agents/skills/herdr-agent-workflow" = { source = "skills/herdr-agent-workflow", mode = "symlink" }
+"~/.agents/skills/herdr-agent-status" = { source = "skills/herdr-agent-status", mode = "symlink" }
+"~/bin" = { source = "bin", mode = "symlink" }
+
+[bootstrap.macos.dock]
+autohide = true
+orientation = "bottom"
+tilesize = 64
+show_recents = false
+mru_spaces = false
+
+[bootstrap.macos.finder]
+show_all_files = true
+show_pathbar = true
+show_status_bar = true
+show_extensions_warning = false
+preferred_view_style = "list"
+
+[bootstrap.macos.keyboard]
+key_repeat = 2
+initial_key_repeat = 15
+press_and_hold = false
+
+[bootstrap.macos.defaults]
+"com.apple.dock" = { "autohide-delay" = 0.0, "autohide-time-modifier" = 0.5, "minimize-to-application" = true, "expose-animation-duration" = 0.1, launchanim = false }
+"com.apple.finder" = { AppleShowAllExtensions = true, _FXShowPosixPathInTitle = true, _FXSortFoldersFirst = true }
+NSGlobalDomain = { AppleKeyboardUIMode = 3, NSAutomaticCapitalizationEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticSpellingCorrectionEnabled = false, NSDocumentSaveNewDocumentsToCloud = false, NSNavPanelExpandedStateForSaveMode = true, NSWindowResizeTime = 0.001 }
+
+[bootstrap.macos.launchd.agents.internal-keyboard-remap]
+program = "~/bin/internal-keyboard-remap"
+run_at_load = true
+
+[bootstrap.user]
+login_shell = "/bin/zsh"

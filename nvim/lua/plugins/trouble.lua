@@ -1,5 +1,5 @@
 require("trouble").setup({
-	use_diagnostic_signs = true,
+  use_diagnostic_signs = true,
 })
 
 vim.cmd([[

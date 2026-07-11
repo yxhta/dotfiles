@@ -50,20 +50,16 @@ typeset -U path
 
 # Build PATH with development tools in priority order (user → language → tooling → system)
 path=(
-  # Nix profiles (home-manager + nix-darwin). Must come before Homebrew so
-  # Nix-managed CLIs win over any Homebrew leftovers — Brewfile is for Casks
-  # only; CLI tools belong in nix/home.nix.
-  $HOME/.nix-profile/bin
-  /etc/profiles/per-user/$USER/bin
-  /run/current-system/sw/bin
-  /nix/var/nix/profiles/default/bin
-
   # User scripts and shims
   $HOME/bin
+  $HOME/.local/bin
 
   # Package managers
   ${PNPM_HOME:-$HOME/Library/pnpm}
   $HOME/.local/share/mise/bin
+  # mise shims: keep mise-managed tools resolvable in non-interactive shells
+  # (scripts, GUI apps); interactive shells switch to `mise activate` PATHs.
+  $HOME/.local/share/mise/shims
 
   # Language-specific tools
   $GOPATH/bin                                    # Go binaries
@@ -81,6 +77,8 @@ path=(
   # Homebrew (prefer /opt on Apple Silicon; fall back to /usr/local)
   ${HOMEBREW_PREFIX:-/opt/homebrew}/bin
   ${HOMEBREW_PREFIX:-/opt/homebrew}/sbin
+  # keg-only formulas that still need their CLIs on PATH
+  ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/postgresql@18/bin
   /usr/local/bin
   /usr/local/sbin
 

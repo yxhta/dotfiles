@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+/usr/bin/hidutil property --set '{"UserKeyMapping":[]}' >/dev/null
+/usr/bin/hidutil property \
+  --matching '{"VendorID":0x05ac,"ProductID":0x0343}' \
+  --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0},{"HIDKeyboardModifierMappingSrc":0x7000000E0,"HIDKeyboardModifierMappingDst":0x700000039}]}' \
+  >/dev/null

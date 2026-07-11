@@ -1,0 +1,21 @@
+[global]
+excludes = ["nvim/lazy-lock.json", "mise.lock", "*.lock", "result"]
+
+[formatter.shfmt]
+command = "shfmt"
+includes = ["*.sh", "bin/*"]
+options = ["-w", "-i", "2", "-ci"]
+
+[formatter.stylua]
+command = "stylua"
+includes = ["*.lua"]
+
+[formatter.taplo]
+command = "taplo"
+includes = ["*.toml"]
+options = ["format"]
+
+[formatter.prettier]
+command = "prettier"
+includes = ["*.json", "*.jsonc", "*.yaml", "*.yml", "*.md"]
+options = ["--write"]

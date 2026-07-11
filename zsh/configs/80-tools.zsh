@@ -68,10 +68,6 @@ if command -v zoxide >/dev/null 2>&1; then
   (( ${+aliases[zi]} )) && unalias zi
 fi
 
-# direnv (with nix-direnv) — auto-loads .envrc on cd
-if command -v direnv >/dev/null 2>&1; then
-  _cache_init direnv "$(command -v direnv)" hook zsh
-fi
 
 # git-wt — `git wt` worktree subcommand: completion + auto-cd via git() wrapper
 if command -v git-wt >/dev/null 2>&1; then

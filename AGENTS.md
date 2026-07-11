@@ -1,72 +1,43 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+Always respond in Japanese.
 
-This is a macOS dotfiles repository organized by tool. Key locations:
+## Structure
 
-- `bin/`: executable shell scripts (`dotlink`, `tat`, `ai-session-selector`, `ccs`).
-- `git/`, `zsh/`, `tmux/`, `nvim/`, `herdr/`: tool-specific configs.
-- `ghostty/`, `cursor/`, `zed/`: app/editor configs.
-- `skills/`: agent-neutral skill packages installable with `npx skills` from a local path or private git source. Selected skills may also be symlinked by `bin/dotlink`.
-- `codex/`: user-scoped Codex assets managed by `bin/dotlink` (`codex/skills/` -> `~/.agents/skills/`, `codex/prompts/` -> `~/.codex/prompts/`).
-- `nix/`: nix-darwin + home-manager flake. `flake.nix` is intentionally thin — flake-parts modules live under `nix/modules/flake-parts/` (`identity`, `apps`, `devshell`, `pre-commit`, `treefmt`, `darwin-systems`); host/home modules under `nix/modules/{darwin,home}/`. `identity.nix` defines Darwin profiles (`mac` for `yxhta`, `work` for `yota.ito`). Nix owns packages and system state only — it no longer manages symlinks. The symlink manifest that wires repo configs into `$HOME` is embedded in `bin/dotlink` (a POSIX-sh script; links point at the live working tree so edits are reflected in `$HOME` immediately). macOS GUI defaults are declared in `nix/modules/darwin/system-defaults.nix`.
-- `.envrc` at the repo root activates `devShells.default` via direnv (`use flake ./nix`). Run `direnv allow` once after clone; afterwards `cd ~/ghq/github.com/yxhta/dotfiles` provisions `nixd` / `nixfmt` / `nix-output-monitor` / `gitleaks` / `treefmt` automatically.
-- `.github/workflows/nix.yml` runs `nix flake check` + `nix build` on `macos-14` for pushes/PRs (Markdown-only diffs are skipped).
-- Root manifests: `Brewfile`.
+- `mise.toml`: mise bootstrap entrypoint; packages, dotfiles, macOS defaults,
+  LaunchAgent, login shell, and repo development tools.
+- `mise/config.toml`: global runtimes and CLI tools, linked to
+  `~/.config/mise/config.toml` by bootstrap.
+- `bin/`: POSIX-sh user scripts and the vendored mise installer.
+- `zsh/`, `nvim/`, `tmux/`, `git/`, `herdr/`: tool configuration.
+- `treefmt.toml`: repository formatting.
+- `hk.pkl`: gitleaks + treefmt hooks.
+- `docs/nix-to-mise-map.md`: migration/verification inventory.
 
-### Neovim (`nvim/`)
+## Commands
 
-- Lua config lives under `nvim/lua/`; core mappings are in `nvim/lua/core/keymaps.lua`.
-- LSP servers are configured via mason handlers in `nvim/lua/lsp/lsp-config.lua`.
-- Plugin lockfile is `nvim/lazy-lock.json` (update only when plugins change).
+```sh
+./bin/mise trust
+./bin/mise bootstrap --dry-run
+./bin/mise bootstrap
+mise bootstrap status
+mise install
+treefmt
+hk validate
+hk check --all
+hk install --mise
+bin/doctor
+```
 
-### Zsh (`zsh/`)
+Never run full `mise bootstrap` in CI; use `--dry-run`. Dotfile conflicts have no
+automatic backup, and `--force-dotfiles` replaces existing destinations.
 
-- Core shell config is organized by file (e.g., `zsh/aliases.zsh`, `zsh/functions/`).
-- Keep functions as standalone files in `zsh/functions/` and source them from the main zsh config.
+## Style and validation
 
-## Build, Test, and Development Commands
+Scripts in `bin/` use `#!/bin/sh`, `set -eu`, two-space indentation, and POSIX sh.
+Formatting is enforced by treefmt (shfmt, stylua, taplo, prettier). Run
+`hk validate && hk check --all` before committing. Commit prefixes are short and
+tool-scoped, such as `mise: ...` or `zsh: ...`.
 
-There is no build step. Common workflows:
-
-- `sudo darwin-rebuild switch --flake ./nix#mac`: apply Nix config for the personal `yxhta` profile.
-- `sudo darwin-rebuild switch --flake ./nix#work`: apply Nix config for the work `yota.ito` profile.
-- `./bin/dotlink plan`: preview symlink changes from the embedded manifest.
-- `./bin/dotlink apply --backup`: create/update the config symlinks (move conflicting destinations aside).
-- `./bin/dotlink status`: show the state (`OK` / `MISSING` / `DIFF` / `CONFLICT`) of every link.
-- `npx skills add ./skills --skill <name> -g`: install an agent-neutral local skill without publishing it.
-- `npx skills add ./skills --list`: list locally packaged skills.
-- `nix flake check ./nix --no-build`: validate flake outputs without building.
-- `(cd nix && nix fmt)` (or `treefmt` from inside the dev shell): run treefmt across the whole repo (nixfmt + shfmt + stylua + taplo + prettier). Same wrapper is invoked by the pre-commit hook.
-- `nix develop ./nix`: enter the dev shell (auto-loaded by direnv at repo root).
-- `brew bundle --file=Brewfile`: install GUI apps / casks.
-- `bin/doctor`: sanity-check the bootstrap state (Determinate Nix / darwin-rebuild / sheldon / mise / pre-commit hook / PATH order). Exits non-zero only on `[FAIL]`.
-
-## Coding Style & Naming Conventions
-
-- Formatting is enforced by treefmt (`(cd nix && nix fmt)` or via the pre-commit hook). nixfmt for `*.nix`, shfmt for shell, stylua for Lua, taplo for TOML, prettier for JSON / YAML / Markdown.
-- Shell scripts in `bin/` use `#!/bin/sh`, `set -eu`, and 2-space indentation, and must be POSIX-sh compatible.
-- Keep filenames descriptive and aligned with their tool directory (e.g., `zsh/aliases.zsh`).
-
-## Testing Guidelines
-
-No automated test suite is present. Validate changes by:
-
-- Running `sudo darwin-rebuild switch --flake ./nix#mac` or `sudo darwin-rebuild switch --flake ./nix#work` for the current machine and confirming activation succeeds.
-- Running `./bin/dotlink plan` / `./bin/dotlink apply --backup` when touching config symlinks.
-- Opening a new shell (`rr`) or restarting the relevant tool (tmux, nvim).
-
-## Commit & Pull Request Guidelines
-
-Commit messages follow short prefixes like `zsh: ...`, `ghostty: ...`, or `feat: ...`.
-Prefer the tool name as the prefix when changes are scoped to a single area.
-
-For pull requests:
-
-- Summarize the affected tools and files.
-- Call out any changes to the `bin/dotlink` manifest or package manifests.
-- Include verification notes (e.g., "ran `darwin-rebuild switch`", "ran `dotlink plan`/`apply`").
-
-## Agent-Specific Notes
-
-If you are working via an automation agent, review `CLAUDE.md` for repo-specific commands and operational tips before making edits.
+Touch ID sudo and hostnames are manual machine setup; see README. Keep private git
+identity in untracked `~/.gitconfig_private`.
