@@ -1,0 +1,11 @@
+# ============================================================================
+# ZSH Login Profile
+# ============================================================================
+# /etc/zprofile runs path_helper AFTER ~/.zshenv and reshuffles PATH, demoting
+# our entries below the system directories (/usr/bin wins for git, jq, ...).
+# Re-source zshenv so its path ordering is asserted again; typeset -U keeps
+# the first occurrence, so re-prepended entries return to the front.
+source "$HOME/.zshenv"
+
+# OrbStack command-line tools and integration (no-op where not installed)
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :

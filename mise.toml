@@ -53,6 +53,7 @@ postinstall = "hk install --mise"
 "~/.zsh" = { source = "zsh", mode = "symlink" }
 "~/.zshrc" = { source = "zsh/zshrc", mode = "symlink" }
 "~/.zshenv" = { source = "zsh/zshenv", mode = "symlink" }
+"~/.zprofile" = { source = "zsh/zprofile", mode = "symlink" }
 "~/.config/sheldon/plugins.toml" = { source = "zsh/sheldon/plugins.toml", mode = "symlink" }
 "~/.config/nvim" = { source = "nvim", mode = "symlink" }
 "~/.config/tmux" = { source = "tmux", mode = "symlink" }
