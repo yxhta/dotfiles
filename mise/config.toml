@@ -37,6 +37,7 @@ aws-cli = "latest"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
 
 # npm-managed CLIs
+"npm:hunkdiff" = "latest"       # provides `hunk` (was nix profile install of modem-dev/hunk)
 "npm:@biomejs/biome" = "latest"
 "npm:@openai/codex" = "latest"
 "npm:ctx7" = "latest"
