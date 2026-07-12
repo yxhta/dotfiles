@@ -69,10 +69,7 @@ postinstall = "hk install --mise"
 "~/.config/starship.toml" = { source = "starship/starship.toml", mode = "symlink" }
 "~/.config/zed/keymap.json" = { source = "zed/keymap.jsonc", mode = "symlink" }
 "~/.config/zed/settings.json" = { source = "zed/settings.jsonc", mode = "symlink" }
-"~/.agents/skills/summarize-ai-news" = { source = "codex/skills/summarize-ai-news", mode = "symlink" }
 "~/.codex/prompts/ai-news-topics.md" = { source = "codex/prompts/ai-news-topics.md", mode = "symlink" }
-"~/.agents/skills/herdr-agent-workflow" = { source = "skills/herdr-agent-workflow", mode = "symlink" }
-"~/.agents/skills/herdr-agent-status" = { source = "skills/herdr-agent-status", mode = "symlink" }
 "~/bin" = { source = "bin", mode = "symlink" }
 
 [bootstrap.macos.dock]

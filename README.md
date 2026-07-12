@@ -50,6 +50,15 @@ hk install --mise
 特定の hook step は `HK_SKIP_STEPS=gitleaks git commit ...`、pre-commit 全体は
 `HK_SKIP_HOOK=pre-commit git commit ...` で一時的にスキップできる。
 
+## AI agent skills
+
+AI agent skills（Claude Code / Codex 等向け）は [yxhta/skills](https://github.com/yxhta/skills)
+で管理する。dotfiles には含めない。
+
+```sh
+npx skills add yxhta/skills
+```
+
 ## Manual macOS steps
 
 mise は Touch ID sudo を管理しない。`/etc/pam.d/sudo_local` に次を維持する。
