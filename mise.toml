@@ -20,7 +20,7 @@ HK_MISE = "1"
 postinstall = "hk install --mise"
 
 [bootstrap.packages]
-"brew-cask:wezterm" = "latest"
+# "brew-cask:wezterm" = "latest"
 "brew:neovim" = "latest"
 "brew:tmux" = "latest"
 "brew:git" = "latest"
@@ -36,8 +36,8 @@ postinstall = "hk install --mise"
 "brew:webp" = "latest"
 "brew:utf8proc" = "latest"
 "brew:zstd" = "latest"
-"brew:cocoapods" = "latest"
-"brew:cloudflared" = "latest"
+# "brew:cocoapods" = "latest"
+# "brew:cloudflared" = "latest"
 # ngrok is NOT managed here: mise's cask shim cannot evaluate its cask
 # (`version.csv.third` NoMethodError). Install manually: brew install --cask ngrok
 "brew:git-filter-repo" = "latest"
