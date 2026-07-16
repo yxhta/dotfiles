@@ -47,6 +47,9 @@ symbol = " "
 style = "bold yellow"
 # Can control display based on env vars
 
+[gcloud]
+disabled = true
+
 [buf]
 disabled = true
 
