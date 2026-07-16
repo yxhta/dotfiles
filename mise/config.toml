@@ -39,8 +39,9 @@ aws-cli = "latest"
 # npm-managed CLIs
 "npm:hunkdiff" = "latest"       # provides `hunk` (was nix profile install of modem-dev/hunk)
 "npm:@biomejs/biome" = "latest"
-"npm:@openai/codex" = "latest"
+# "npm:@openai/codex" = "latest"
 "npm:ctx7" = "latest"
+"npm:@openai/codex" = "latest"
 # "npm:typescript"                = "latest"
 # "npm:typescript-language-server" = "latest"
 
