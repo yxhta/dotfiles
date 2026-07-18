@@ -2,12 +2,13 @@
 
 ## Plugins
 
-Local plugins live under `plugins/` and are registered with
-`herdr plugin link <path>` (a one-time operation, like `mise trust`; the link
-records the absolute path, so no symlinking is involved).
+Plugins are registered with `herdr plugin link <path>` (a one-time operation,
+like `mise trust`; the link records the absolute path, so no symlinking is
+involved).
 
-- [`plugins/agents-picker`](plugins/agents-picker/README.md): fuzzy picker for
-  agent panes with preview, bound to `prefix+f`. Build with
+- [yxhta/herdr-agents-picker](https://github.com/yxhta/herdr-agents-picker):
+  fuzzy picker for agent panes with preview, bound to `prefix+f`. Lives in its
+  own repo (checked out separately, e.g. under `~/ghq`); build with
   `mise x rust@stable -- cargo build --release` before first use.
 
 ## Remote access over Tailscale

@@ -70,9 +70,9 @@ goto = "prefix+w"
 
 [[keys.command]]
 # Agents-only goto with preview; built-in goto on prefix+w lists all panes/windows.
-# Runs the agents-picker plugin (herdr/plugins/agents-picker, linked via
-# `herdr plugin link`). The previous fzf implementation remains available as
-# bin/herdr-agent-picker.
+# Runs the agents-picker plugin (yxhta/herdr-agents-picker, a separate repo
+# linked via `herdr plugin link`). The previous fzf implementation remains
+# available as bin/herdr-agent-picker.
 key = "prefix+f"
 type = "plugin_action"
 command = "yxhta.agents-picker.open"
