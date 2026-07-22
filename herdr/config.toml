@@ -81,18 +81,22 @@ description = "agents picker"
 [[keys.command]]
 # Mirrors tmux/utility.conf's lazygit popup (`bind -r g display-popup ... lazygit`).
 key = "prefix+g"
-type = "pane"
+type = "popup"
 command = "lazygit"
-floating = true
+description = "lazygit"
+width = "100%"
+height = "100%"
 
 [[keys.command]]
 # hunk (terminal diff viewer) for reviewing working-tree changes without
 # opening the full lazygit UI. prefix+h is taken by the default
 # focus_pane_left binding, so this uses prefix+v instead.
 key = "prefix+v"
-type = "pane"
+type = "popup"
 command = "hunk diff --watch"
-floating = true
+description = "hunk diff"
+width = "80%"
+height = "80%"
 
 [ui]
 agent_panel_sort = "spaces"
