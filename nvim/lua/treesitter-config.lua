@@ -44,7 +44,9 @@ local function setup_context()
 
   context.setup({
     enable = true,
-    max_lines = 0,
+    -- 0 (無制限) だとネストの深い巨大ファイルでカーソル移動のたびに
+    -- 大量の context 行を描き直すことになるため上限を設ける。
+    max_lines = 3,
     min_window_height = 0,
     line_numbers = true,
     multiline_threshold = 20,
@@ -67,6 +69,9 @@ if ok and type(treesitter.install) == "function" then
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true }),
     callback = function(args)
+      if require("core.bigfile").is_big(args.buf) then
+        return
+      end
       pcall(vim.treesitter.start, args.buf)
     end,
   })
@@ -84,7 +89,9 @@ require("nvim-treesitter.configs").setup({
   ignore_install = {},
   highlight = {
     enable = true,
-    disable = { "vim" },
+    disable = function(lang, buf)
+      return lang == "vim" or require("core.bigfile").is_big(buf)
+    end,
     additional_vim_regex_highlighting = false,
   },
   incremental_selection = {

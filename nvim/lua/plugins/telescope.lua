@@ -12,11 +12,48 @@ local function send_to_loclist(prompt_bufnr)
   require("trouble").open("loclist")
 end
 
+-- 除外は fd / rg 側で行う。file_ignore_patterns は Telescope が全エントリに対して
+-- Lua パターンマッチを回すため、ファイル数の多いリポジトリでは絞り込みのたびに重くなる。
+local ignore_globs = { ".git", "node_modules", "vendor", "dist", "build", "target", ".next", ".venv" }
+
+local function fd_command()
+  local cmd = { "fd", "--type", "f", "--hidden", "--follow", "--strip-cwd-prefix" }
+  for _, glob in ipairs(ignore_globs) do
+    table.insert(cmd, "--exclude")
+    table.insert(cmd, glob)
+  end
+  return cmd
+end
+
+local function rg_arguments()
+  local args = {
+    "rg",
+    "--color=never",
+    "--no-heading",
+    "--with-filename",
+    "--line-number",
+    "--column",
+    "--smart-case",
+    "--hidden",
+  }
+  for _, glob in ipairs(ignore_globs) do
+    table.insert(args, "--glob")
+    table.insert(args, "!" .. glob .. "/")
+  end
+  return args
+end
+
 require("telescope").setup({
   defaults = {
     dynamic_preview_title = true,
     layout_strategy = "flex",
-    file_ignore_patterns = { "node_modules", ".git" },
+    vimgrep_arguments = rg_arguments(),
+    -- 生成物や巨大ファイルを選択しただけでプレビューが固まらないようにする。
+    preview = {
+      filesize_limit = 1, -- MB
+      timeout = 250, -- ms
+      treesitter = true,
+    },
     path_display = {
       truncate = 1,
     },
@@ -58,6 +95,7 @@ require("telescope").setup({
   },
   pickers = {
     find_files = {
+      find_command = fd_command(),
       follow = true,
       theme = "dropdown",
     },

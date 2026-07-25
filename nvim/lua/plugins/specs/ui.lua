@@ -41,7 +41,8 @@ return {
   {
     "norcalli/nvim-colorizer.lua",
     config = function()
-      require("colorizer").setup()
+      -- 全 filetype に attach するが、巨大ファイルは全行を走査されると固まるため除外する。
+      require("colorizer").setup({ "*", "!bigfile" })
     end,
     event = { "BufReadPost", "BufNewFile" },
   },

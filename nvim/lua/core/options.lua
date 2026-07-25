@@ -65,6 +65,10 @@ vim.o.inccommand = "nosplit" -- real time preview of substitution commands
 vim.o.showmode = false -- Do not show -- MODE -- in cmdline--
 vim.o.cmdheight = 1 -- Height of the command line
 vim.o.updatetime = 250 -- time required to update CursorHold hook
+-- treesitter が使えない filetype では正規表現 syntax にフォールバックする。
+-- 生成コードのような極端に長い行で描画が止まらないよう上限を設ける。
+vim.o.synmaxcol = 300
+vim.o.redrawtime = 1500 -- ハイライトに費やす時間の上限 (ms)
 vim.opt.shortmess:append({ c = true })
 -- -- vim.o.printdevice       = "OLIVETTI_d_COPIA4500MF_plus__2_"
 vim.o.showbreak = "↪ "

@@ -48,6 +48,37 @@ vim.lsp.util.close_preview_autocmd = function(events, winnr)
   )
 end
 
+-----------------------------------
+-- File watching (workspace/didChangeWatchedFiles) --
+-----------------------------------
+-- LSP サーバーが要求するファイル監視はワークスペース全体を再帰監視する。Neovim の
+-- 既定の除外は .git/objects と node_modules/*/ だけなので、巨大リポジトリではビルド
+-- 生成物や git 操作のイベントが大量にメインループへ流れ込み、体感が悪化する。
+-- 監視しても意味のないディレクトリを除外する。private API なので pcall で保護する。
+pcall(function()
+  local watchfiles = require("vim.lsp._watchfiles")
+  local glob = require("vim.glob")
+
+  local excluded = {
+    ".git",
+    ".mypy_cache",
+    ".next",
+    ".pytest_cache",
+    ".venv",
+    "build",
+    "dist",
+    "node_modules",
+    "target",
+    "vendor",
+  }
+
+  local pattern = watchfiles._poll_exclude_pattern
+  for _, dir in ipairs(excluded) do
+    pattern = pattern + glob.to_lpeg("**/" .. dir .. "/**")
+  end
+  watchfiles._poll_exclude_pattern = pattern
+end)
+
 --------------
 -- Mason --
 --------------

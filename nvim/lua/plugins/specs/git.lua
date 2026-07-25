@@ -3,7 +3,13 @@ return {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",
     config = function()
-      require("gitsigns").setup()
+      require("gitsigns").setup({
+        -- 巨大リポジトリでは 1 バッファごとに git diff を回すコストが効いてくる。
+        -- 行数上限を明示し、編集中の差分再計算は少し間引く。
+        max_file_length = 20000,
+        update_debounce = 200,
+        attach_to_untracked = false,
+      })
     end,
   },
 
