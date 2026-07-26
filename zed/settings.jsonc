@@ -20,6 +20,7 @@
     "dock": "right",
   },
   "agent": {
+    "sidebar_side": "left",
     "dock": "left",
     "play_sound_when_agent_done": false,
     "always_allow_tool_actions": true,
