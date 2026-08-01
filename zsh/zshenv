@@ -41,6 +41,10 @@ export CARGO_HOME="$HOME/.cargo"
 # Android development
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
 
+# Bun global installs (`bun install -g`). Pin the prefix explicitly: without it
+# bun falls back to $XDG_CACHE_HOME/.bun, which is easy to lose track of.
+export BUN_INSTALL="$XDG_CACHE_HOME/.bun"
+
 # ============================================================================
 # PATH Configuration
 # ============================================================================
@@ -56,6 +60,7 @@ path=(
 
   # Package managers
   ${PNPM_HOME:-$HOME/Library/pnpm}
+  $BUN_INSTALL/bin
   $HOME/.local/share/mise/bin
   # mise shims: keep mise-managed tools resolvable in non-interactive shells
   # (scripts, GUI apps); interactive shells switch to `mise activate` PATHs.
