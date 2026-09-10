@@ -68,6 +68,12 @@ previous_agent = "prefix+p"
 # prefix+w so prefix+g is free for the lazygit popup below.
 goto = "prefix+w"
 
+# Worktree workspace picker (herdr leaves open_worktree unbound by default;
+# new_worktree keeps its default prefix+shift+g). prefix+o is
+# open_notification_target and prefix+g is the lazygit popup below, so this
+# uses prefix+shift+o.
+open_worktree = "prefix+shift+o"
+
 [[keys.command]]
 # Agents-only goto with preview; built-in goto on prefix+w lists all panes/windows.
 # Runs the agents-picker plugin (yxhta/herdr-agents-picker, a separate repo
