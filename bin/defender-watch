@@ -1,0 +1,159 @@
+#!/bin/sh
+set -eu
+
+exec python3 - "$@" <<'PY'
+import argparse
+import collections
+import datetime
+import json
+import math
+import subprocess
+import sys
+import time
+
+
+def run(*args):
+  return subprocess.check_output(args, text=True, stderr=subprocess.PIPE, timeout=30)
+
+
+def scans(data):
+  rows = data["counters"]
+  if not isinstance(rows, list) or not rows:
+    raise ValueError("スキャン統計が空です。統計収集設定・管理ポリシーを確認してください。")
+  result = {}
+  for row in rows:
+    key = (row["id"], row["name"], row["path"])
+    paths = {p["key"]: int(p["value"]["key"]) for p in row["scannedFilePaths"]}
+    result[key] = (int(row["totalFilesScanned"]), int(row["totalScanTime"]), paths)
+  return result
+
+
+def scan_delta(before, after):
+  paths = collections.Counter()
+  processes = []
+  skipped = 0
+  for key, (count, ns, files) in after.items():
+    # ponytail: baseline new/reset counters; next interval measures them safely.
+    # PID reuse with identical name/path and higher counters cannot be detected.
+    old = before.get(key)
+    if old is None or count < old[0] or ns < old[1]:
+      skipped += 1
+      continue
+    if count > old[0] or ns > old[1]:
+      processes.append(((ns - old[1]) / 1e9, count - old[0], key))
+    for path, n in files.items():
+      paths[path] += max(0, n - old[2].get(path, 0))
+  return +paths, sorted(processes, key=lambda item: item[:2], reverse=True), skipped
+
+
+def cpu_seconds(value):
+  days, sep, clock = value.partition("-")
+  total = int(days) * 86400 if sep else 0
+  parts = (clock if sep else value).split(":")
+  return total + sum(float(n) * 60 ** i for i, n in enumerate(reversed(parts)))
+
+
+def resources():
+  result = {}
+  for line in run("ps", "-axo", "pid=,time=,rss=,comm=").splitlines():
+    pid, cpu, rss, command = line.split(None, 3)
+    if "/Microsoft Defender.app/" in command or command.endswith("/epsext"):
+      result[(pid, command)] = (cpu_seconds(cpu), int(rss) / 1024)
+  if not result:
+    raise ValueError("Defenderプロセスが見つかりません。")
+  return result
+
+
+def resource_delta(before, after, seconds):
+  cpu = sum(max(0, v[0] - before[k][0]) for k, v in after.items() if k in before)
+  return cpu / seconds * 100, sum(v[1] for v in after.values())
+
+
+def positive(value):
+  number = float(value)
+  if not math.isfinite(number) or number <= 0:
+    raise argparse.ArgumentTypeError("正の有限数を指定してください")
+  return number
+
+
+def self_test():
+  row = {"id": 1, "name": "node", "path": "/node", "totalFilesScanned": "10",
+         "totalScanTime": "1000000000", "scannedFilePaths": [
+           {"key": "/tmp/a b", "value": {"key": 10, "value": "999"}}]}
+  before = scans({"counters": [row]})
+  row.update(totalFilesScanned="13", totalScanTime="3000000000")
+  row["scannedFilePaths"][0]["value"]["key"] = 13
+  after = scans({"counters": [row]})
+  paths, processes, skipped = scan_delta(before, after)
+  assert paths == {"/tmp/a b": 3} and processes[0][:2] == (2.0, 3) and skipped == 0
+  assert scan_delta(after, before) == ({}, [], 1)
+  assert scan_delta({}, after) == ({}, [], 1)
+  assert scan_delta(after, {}) == ({}, [], 0)
+  assert scan_delta(after, after) == ({}, [], 0)
+  assert cpu_seconds("1-02:03:04.50") == 93784.5
+  assert cpu_seconds("03:04.50") == 184.5
+  assert resource_delta({"a": (10, 1)}, {"a": (12, 2), "b": (100, 3)}, 2) == (100, 5)
+  try:
+    scans({"counters": None})
+  except ValueError:
+    pass
+  else:
+    raise AssertionError("null statistics accepted")
+  print("self-test: OK")
+
+
+def main():
+  parser = argparse.ArgumentParser(prog="defender-watch", description="Defenderの負荷とスキャン増分を表示（設定変更なし）")
+  parser.add_argument("--interval", type=positive, default=15, help="測定間隔の秒数（既定15）")
+  parser.add_argument("--watch", action="store_true", help="Ctrl+Cまで継続")
+  parser.add_argument("--cpu", type=positive, default=100, help="CPU警告値%%、1コア=100（既定100）")
+  parser.add_argument("--rss-mb", type=positive, default=2048, help="合計RSSの警告値MiB（既定2048）")
+  parser.add_argument("--self-test", action="store_true")
+  args = parser.parse_args()
+  if args.self_test:
+    self_test()
+    return
+  if run("mdatp", "health", "--field", "real_time_protection_enabled").strip() != "true":
+    raise ValueError("リアルタイム保護が有効ではありません。統計を評価できません。")
+  previous = scans(json.loads(run("mdatp", "diagnostic", "real-time-protection-statistics", "--output", "json")))
+  previous_resources = resources()
+  started = time.monotonic()
+  print(f"測定中… {args.interval:g}秒間隔 / CPU警告 {args.cpu:g}% / RSS警告 {args.rss_mb:g} MiB", flush=True)
+  while True:
+    time.sleep(args.interval)
+    current = scans(json.loads(run("mdatp", "diagnostic", "real-time-protection-statistics", "--output", "json")))
+    current_resources = resources()
+    now = time.monotonic()
+    elapsed = now - started
+    cpu, rss = resource_delta(previous_resources, current_resources, elapsed)
+    paths, processes, skipped = scan_delta(previous, current)
+    status = "WARN: 指定値超過" if cpu >= args.cpu or rss >= args.rss_mb else "INFO: 指定値未満"
+    print(f"\n{datetime.datetime.now():%Y-%m-%d %H:%M:%S} [{status}] {elapsed:.1f}秒")
+    print(f"Defender合計 CPU {cpu:.1f}% / RSS {rss:.0f} MiB（圧縮メモリを含まない）")
+    print("スキャン増分上位（回数 / パス。全スキャンの網羅は保証されません）:")
+    for path, count in paths.most_common(10):
+      print(f"  {count:8d}  {path}")
+    if not paths:
+      print("  記録されたパスの増分なし（未収集・保護設定による制限の可能性あり）")
+    print("スキャン時間増分上位（秒 / 回数 / PID / 発生元プロセス）:")
+    names = dict(line.strip().split(None, 1) for line in run("ps", "-axo", "pid=,comm=").splitlines())
+    for seconds, count, (pid, name, path) in processes[:5]:
+      label = path or name or names.get(str(pid), "不明・終了済み")
+      print(f"  {seconds:8.3f}  {count:8d}  {pid} {label}")
+    if skipped:
+      print(f"新規・リセットされた{skipped}件は今回の差分から除外しました。")
+    print("スキャン時間はCPU時間ではありません。回数や同時発生だけでは原因を断定できません。", flush=True)
+    if not args.watch:
+      break
+    previous, previous_resources, started = current, current_resources, now
+
+
+try:
+  main()
+except KeyboardInterrupt:
+  sys.exit(130)
+except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+  detail = error.stderr.strip() if isinstance(error, subprocess.CalledProcessError) else str(error)
+  print(f"defender-watch: {detail}", file=sys.stderr)
+  sys.exit(1)
+PY

@@ -50,6 +50,26 @@ hk install --mise
 特定の hook step は `HK_SKIP_STEPS=gitleaks git commit ...`、pre-commit 全体は
 `HK_SKIP_HOOK=pre-commit git commit ...` で一時的にスキップできる。
 
+## Defender の負荷診断
+
+```sh
+bin/defender-watch                         # 15秒間のCPU・RSSとスキャン増分
+bin/defender-watch --watch --interval 30    # Ctrl+Cまで継続
+bin/defender-watch --watch --cpu 50 --rss-mb 1024
+bin/defender-watch --self-test
+```
+
+macOS の `mdatp` と Python 3 を使用する。Defender の合計CPU・RSSが指定値以上なら
+`WARN` を表示し、同じ区間のスキャン回数が多いパスとスキャン時間が長い発生元を表示する。
+既定のCPU 100%（1コア分）・RSS 2048 MiBは診断用の目安で、リソース枯渇の判定ではない。
+RSSは圧縮メモリを含まず、Activity Monitorのメモリ値とは異なる。終了したプロセスの
+CPU使用量や採取間のピークは捉えられず、新規・リセットされたスキャンカウンターは次回から測定する。
+
+[Microsoft公式のリアルタイム保護統計](https://learn.microsoft.com/en-us/defender-endpoint/mac-support-perf)
+を読み取る。統計が取得できない場合は収集設定・管理ポリシーを確認する。
+この統計はAntivirusの診断用で、EDR全体の監視を網羅しない。フォルダ別メモリ使用量や
+因果関係は判定できない。除外設定・保護設定の変更や常駐登録は行わない。
+
 ## AI agent skills
 
 AI agent skills（Claude Code / Codex 等向け）は [yxhta/skills](https://github.com/yxhta/skills)
