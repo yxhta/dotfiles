@@ -21,30 +21,19 @@ postinstall = "hk install --mise"
 
 [bootstrap.packages]
 # "brew-cask:wezterm" = "latest"
-"brew:neovim" = "latest"
-"brew:tmux" = "latest"
 "brew:git" = "latest"
-"brew:helm" = "latest"
 "brew:wget" = "latest"
 "brew:tree" = "latest"
-"brew:cmake" = "latest"
-"brew:ffmpeg" = "latest"
 "brew:postgresql@18" = "latest"
-"brew:sqlite" = "latest"
-"brew:openssl@3" = "latest"
-"brew:readline" = "latest"
-"brew:libyaml" = "latest"
 "brew:webp" = "latest"
-"brew:utf8proc" = "latest"
 "brew:zstd" = "latest"
 # "brew:cocoapods" = "latest"
 # "brew:cloudflared" = "latest"
 # ngrok is NOT managed here: mise's cask shim cannot evaluate its cask
 # (`version.csv.third` NoMethodError). Install manually: brew install --cask ngrok
-"brew:git-filter-repo" = "latest"
 "brew:git-flow" = "latest"
-"brew:git-lfs" = "latest"
 "brew:terminal-notifier" = "latest"
+# aqua btop ships Linux binaries only, so macOS stays on Homebrew.
 "brew:btop" = "latest"
 # eza has no macOS binaries on GitHub releases and the cargo backend would
 # compile from source, so install it via Homebrew instead of mise [tools].

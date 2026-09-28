@@ -27,8 +27,19 @@ sheldon = "latest"
 # "aqua:nushell/nushell" = "latest"
 tree-sitter = "latest"
 aws-cli = "latest"
+neovim = "latest"
+tmux = "latest"
+helm = "latest"
+cmake = "latest"
+git-lfs = "latest"
 "npm:@fsouza/prettierd" = "latest"
 # "github:k1LoW/git-wt" = "latest"
+
+# conda-forge builds (ffmpeg includes libx264/x265/vpx/opus).
+ffmpeg = "latest"
+sqlite = "latest"
+
+"pipx:git-filter-repo" = "latest"
 
 # Go packages that replace the multi-command Nix go-tools/gotools derivations.
 "go:golang.org/x/tools/cmd/goimports" = "latest"
