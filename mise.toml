@@ -93,3 +93,23 @@ run_at_load = true
 
 [bootstrap.user]
 login_shell = "/bin/zsh"
+
+[tasks."demo:hello"]
+description = "挨拶を表示する / Print a greeting"
+run = "printf 'Hello from dotfiles!\\n'"
+
+[tasks."demo:cwd"]
+description = "現在のディレクトリを表示する"
+run = "pwd"
+
+[tasks."demo:multiline"]
+description = "複数のコマンドと出力をプレビューする"
+run = ["printf 'Step 1: hello\\n'", "printf 'Step 2: done\\n'"]
+
+[tasks."demo:check-a-long-task-name-for-preview"]
+description = "長いタスク名と説明の表示を確認する。ファイルは変更せず、メッセージだけを出力します。"
+run = "printf 'Long task name selected successfully.\\n'"
+
+[tasks."demo:fail"]
+description = "失敗時の表示を確認する / 意図的に終了コード1を返す"
+run = "printf 'Expected demo failure.\\n' >&2; exit 1"

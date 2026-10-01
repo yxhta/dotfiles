@@ -42,7 +42,6 @@ alias cc='claude'
 alias cx='codex'
 
 alias mi='mise install'
-alias mr='mise run'
 
 # ==========================================================================
 # System Utilities

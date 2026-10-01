@@ -1,0 +1,45 @@
+#!/usr/bin/env zsh
+
+unalias mr 2>/dev/null || true
+
+mr() {
+  if (( $# )); then
+    mise run "$@"
+    return $?
+  fi
+
+  local dependency tasks rows selected result name_width
+  for dependency in mise jq fzf; do
+    if ! command -v "$dependency" >/dev/null 2>&1; then
+      print -u2 -- "mr: required command not found: $dependency"
+      return 127
+    fi
+  done
+
+  tasks=$(mise tasks ls --json) || return
+  rows=$(jq -r '.[] | [.name, (.description // "")] | @tsv' <<< "$tasks") || return
+  if [[ -z "$rows" ]]; then
+    print -u2 -- 'mr: no mise tasks found'
+    return 0
+  fi
+
+  # ponytail: UTF-8 byte width leaves extra space for non-ASCII names; use wcwidth if compactness matters.
+  name_width=$(jq '[.[] | [.name] | @tsv | utf8bytelength] | max + 2' <<< "$tasks") || return
+
+  if selected=$(printf '%s\n' "$rows" | fzf \
+    --no-multi --height=80% --reverse --border \
+    --border-label=' mise tasks ' --prompt='Task> ' \
+    --header='Enter: run  Esc: cancel' \
+    --delimiter=$'\t' --tabstop="$name_width"); then
+    [[ -n "$selected" ]] || return 0
+    selected=${selected%%$'\t'*}
+    print -rS -- "mise run ${(q)selected}"
+    mise run "$selected"
+  else
+    result=$?
+    case "$result" in
+      1|130) return 0 ;;
+      *) return "$result" ;;
+    esac
+  fi
+}
