@@ -100,6 +100,7 @@ show_agent_labels_on_pane_borders = true
 delivery = "terminal"
 
 [experimental]
+kitty_graphics = true
 pane_history = true
 
 [ui.sound]
