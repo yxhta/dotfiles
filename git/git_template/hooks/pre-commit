@@ -1,5 +1,4 @@
 #!/bin/sh
-# Scan staged changes for secrets with gitleaks before allowing the commit.
 # Bypass: GITLEAKS_SKIP=1 git commit ...   (or)   git commit --no-verify
 set -eu
 
