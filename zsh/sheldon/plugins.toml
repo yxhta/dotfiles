@@ -5,16 +5,27 @@ shell = "zsh"
 [plugins.fzf-history]
 github = "joshskidmore/zsh-fzf-history-search"
 
-# zsh-completions ships extra completion files via fpath. The fpath itself
-# is added in zsh/configs/65-completion.zsh (compinit needs it before
-# 70-plugins.zsh runs sheldon source); this entry just ensures the repo
-# stays cloned at the path that file expects.
 [plugins.zsh-completions]
 github = "zchee/zsh-completions"
+dir = "src"
+apply = ["fpath"]
 
-# fzf-tab — replaces the default tab completion UI with fzf. Must source
-# AFTER compinit (65-completion.zsh runs before 70-plugins.zsh sources
-# sheldon) and BEFORE plugins that wrap ZLE widgets (autosuggestions and
+[plugins.compinit]
+inline = '''
+autoload -Uz compinit
+zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+mkdir -p "${zcompdump:h}"
+if [[ -n "$zcompdump"(#qN.mh-24) ]]; then
+  compinit -C -d "$zcompdump"
+else
+  compinit -d "$zcompdump"
+fi
+if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+  zcompile "$zcompdump"
+fi
+'''
+
+# fzf-tab must load before plugins that wrap ZLE widgets (autosuggestions and
 # syntax-highlighting below). Reordering breaks the widget chain.
 [plugins.fzf-tab]
 github = "Aloxaf/fzf-tab"
