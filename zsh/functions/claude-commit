@@ -1,4 +1,3 @@
-# Interactive commit with confirmation
 function claude_commit_interactive() {
   local stage_all=0
   local amend=0
@@ -139,5 +138,4 @@ IMPORTANT: Your entire response must be the commit message only. Any extra text 
   done
 }
 
-# Aliases
 alias ccmi='claude_commit_interactive'

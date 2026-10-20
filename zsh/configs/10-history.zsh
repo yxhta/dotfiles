@@ -1,23 +1,16 @@
-# ==========================================================================
-# History Configuration
-# ==========================================================================
-
-# History file location and size (XDG State)
 hist_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
 mkdir -p "$hist_dir"
 export HISTFILE="$hist_dir/history"
 export HISTSIZE=50000
 export SAVEHIST=50000
 
-# History options
-setopt hist_ignore_all_dups    # Remove older duplicate entries from history
-setopt hist_reduce_blanks      # Remove superfluous blanks from history items
-setopt inc_append_history      # Save history entries as soon as they are entered
-setopt share_history           # Share history between all sessions
-setopt extended_history        # Save timestamp and duration
-setopt hist_expire_dups_first  # Expire duplicates first when trimming history
-setopt hist_ignore_space       # Don't save commands that start with space
-setopt hist_verify             # Show command with history expansion before running
+setopt hist_ignore_all_dups
+setopt hist_reduce_blanks
+setopt inc_append_history
+setopt share_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_space
+setopt hist_verify
 
-# Enable Erlang shell history
 export ERL_AFLAGS="-kernel shell_history enabled"

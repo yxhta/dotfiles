@@ -1,12 +1,3 @@
-# ============================================================================
-# ZSH Environment Configuration
-# ============================================================================
-# This file is sourced for all shell instances (login, non-login, interactive, non-interactive)
-
-# ============================================================================
-# XDG Base Directory Specification
-# ============================================================================
-
 : "${XDG_CONFIG_HOME:=$HOME/.config}"
 : "${XDG_DATA_HOME:=$HOME/.local/share}"
 : "${XDG_CACHE_HOME:=$HOME/.cache}"
@@ -14,51 +5,25 @@
 
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME XDG_STATE_HOME
 
-# ============================================================================
-# Locale
-# ============================================================================
-
 : "${LANG:=en_US.UTF-8}"
 : "${LC_CTYPE:=$LANG}"
 
 export LANG LC_CTYPE
 
-# Suppress zoxide's "init at end of shell" doctor warning. Our post/99-profile.zsh
-# (zprof) intentionally runs after the zoxide hook, which is fine — zoxide just
-# wants to be sure no later init re-overrides its prompt hook.
-export _ZO_DOCTOR=0
-
-# ============================================================================
-# Development Environment
-# ============================================================================
-
-# Go development
 export GOPATH="$HOME/go"
 
-# Rust development
 export CARGO_HOME="$HOME/.cargo"
 
-# Android development
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
 
-# Bun global installs (`bun install -g`). Pin the prefix explicitly: without it
-# bun falls back to $XDG_CACHE_HOME/.bun, which is easy to lose track of.
 export BUN_INSTALL="$XDG_CACHE_HOME/.bun"
 
-# ============================================================================
-# PATH Configuration
-# ============================================================================
-
-# Ensure unique PATH entries
 typeset -U path
 
-# Build PATH with development tools in priority order (user → language → tooling → system)
 path=(
-  # User scripts and shims
   $HOME/bin
   $HOME/.local/bin
 
-  # Package managers
   ${PNPM_HOME:-$HOME/Library/pnpm}
   $BUN_INSTALL/bin
   $HOME/.local/share/mise/bin
@@ -66,20 +31,15 @@ path=(
   # (scripts, GUI apps); interactive shells switch to `mise activate` PATHs.
   $HOME/.local/share/mise/shims
 
-  # Language-specific tools
-  $GOPATH/bin                                    # Go binaries
-  $CARGO_HOME/bin                               # Rust/Cargo binaries
+  $GOPATH/bin
+  $CARGO_HOME/bin
 
-  # Android SDK
   $ANDROID_SDK_ROOT/platform-tools
 
-  # Applications
-  /Applications/WezTerm.app/Contents/MacOS      # WezTerm terminal
+  /Applications/WezTerm.app/Contents/MacOS
 
-  # Google Cloud SDK
   $HOME/google-cloud-sdk/bin
 
-  # Homebrew (prefer /opt on Apple Silicon; fall back to /usr/local)
   ${HOMEBREW_PREFIX:-/opt/homebrew}/bin
   ${HOMEBREW_PREFIX:-/opt/homebrew}/sbin
   # keg-only formulas that still need their CLIs on PATH
@@ -87,14 +47,9 @@ path=(
   /usr/local/bin
   /usr/local/sbin
 
-  # Existing PATH
   $path
 )
 
 export PATH
 
-# ============================================================================
-# Local overrides (not tracked in git)
-# ============================================================================
-# Put machine-specific env vars and secrets in ~/.zshenv.local
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

@@ -1,8 +1,3 @@
-# ==========================================================================
-# Core Shell Options
-# ==========================================================================
-
-# Prevent accidental logout with Ctrl+D
 setopt ignoreeof
 
 setopt no_beep

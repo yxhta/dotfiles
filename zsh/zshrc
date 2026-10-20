@@ -1,27 +1,19 @@
-# ============================================================================
-# ZSH Configuration
-# ============================================================================
-
-# Load custom executable functions
 for fn in "$HOME/.zsh/functions/"*(N-.); do
   [[ "$fn" == *.md ]] && continue
   source "$fn"
 done
 
-# Load configuration files in order: pre, main, post
 _load_settings() {
   local dir="$1"
   local config
 
   if [ -d "$dir" ]; then
-    # Load pre configuration files
     if [ -d "$dir/pre" ]; then
       for config in "$dir"/pre/**/*(N-.); do
         source "$config"
       done
     fi
 
-    # Load main configuration files
     for config in "$dir"/**/*(N-.); do
       case "$config" in
         "$dir"/(pre|post)/*|*.zwc|*.md)
@@ -32,7 +24,6 @@ _load_settings() {
       esac
     done
 
-    # Load post configuration files
     if [ -d "$dir/post" ]; then
       for config in "$dir"/post/**/*(N-.); do
         source "$config"
@@ -41,6 +32,5 @@ _load_settings() {
   fi
 }
 
-# Load all zsh configurations
 _load_settings "$HOME/.zsh/configs"
 export PATH=$PATH:$HOME/.maestro/bin

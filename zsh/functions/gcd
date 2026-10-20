@@ -1,10 +1,4 @@
 #!/usr/bin/env zsh
-# ============================================================================
-# Repository Navigation Function
-# ============================================================================
-# Change directory to a repository managed by ghq using fzf for selection
-# Dependencies: ghq, fzf
-# Usage: gcd
 
 gcd() {
   local repo_path
