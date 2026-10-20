@@ -38,6 +38,7 @@ alias dk='docker'
 alias dkc='docker compose'
 alias kb='kubectl'
 
+alias claude='caffeinate -i claude'
 alias cc='claude'
 alias cx='codex'
 
