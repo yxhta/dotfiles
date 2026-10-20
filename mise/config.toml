@@ -1,13 +1,10 @@
 [tools]
-# Language runtimes
 go = "1.26"
 node = "24"
 python = "3.12"
 ruby = "4"
 bun = "latest"
-# java    = "openjdk-21"
 
-# Aqua-managed binaries
 gh = "latest"
 ghq = "latest"
 jq = "latest"
@@ -25,7 +22,6 @@ grpcurl = "latest"
 gitleaks = "latest"
 bottom = "latest"
 sheldon = "latest"
-# "aqua:nushell/nushell" = "latest"
 tree-sitter = "latest"
 aws-cli = "latest"
 neovim = "latest"
@@ -34,32 +30,24 @@ helm = "latest"
 cmake = "latest"
 git-lfs = "latest"
 "npm:@fsouza/prettierd" = "latest"
-# "github:k1LoW/git-wt" = "latest"
 
-# conda-forge builds (ffmpeg includes libx264/x265/vpx/opus).
 ffmpeg = "latest"
 sqlite = "latest"
 
 "pipx:git-filter-repo" = "latest"
 
-# Go packages that replace the multi-command Nix go-tools/gotools derivations.
 "go:golang.org/x/tools/cmd/goimports" = "latest"
 "go:golang.org/x/tools/cmd/stringer" = "latest"
 "go:golang.org/x/tools/cmd/guru" = "latest"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
 
-# npm-managed CLIs
-"npm:hunkdiff" = "latest"       # provides `hunk` (was nix profile install of modem-dev/hunk)
+"npm:hunkdiff" = "latest"
 "npm:@biomejs/biome" = "latest"
-# "npm:@openai/codex" = "latest"
 "npm:ctx7" = "latest"
 "npm:@openai/codex" = "latest"
-# "npm:typescript"                = "latest"
-# "npm:typescript-language-server" = "latest"
 
 [settings]
 experimental = true
 
 [settings.github]
-# gh stores the token in the macOS keychain; fetch it without persisting it in mise config.
 credential_command = "gh auth token"

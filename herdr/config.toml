@@ -1,77 +1,41 @@
 onboarding = false
-# herdr configuration
-# Reference: tmux/tmux.conf + tmux/utility.conf (do not port settings back the
-# other way; the two multiplexers are configured independently).
 
 [theme]
 name = "kanagawa"
 auto_switch = false
 
 [keys]
-# Matches tmux/tmux.conf's prefix (ctrl+s) intentionally: tmux and herdr are
-# used exclusively, never nested inside one another, so only one of them ever
-# owns the raw terminal input at a time and there's no runtime key conflict.
 prefix = "ctrl+s"
 
-# Mirrors tmux/tmux.conf's `bind \ split-window -h` (side-by-side split).
-# split_horizontal already defaults to "prefix+minus", which matches
-# tmux/tmux.conf's `bind - split-window -v` (top/bottom split) as-is.
 split_vertical = "prefix+backslash"
 
-# Mirrors tmux/tmux.conf's window navigation (`bind -r C-k select-window -t :-`
-# and `bind -r C-j select-window -t :+`).
 previous_tab = "prefix+ctrl+k"
 next_tab = "prefix+ctrl+j"
 
-# Mirrors tmux/tmux.conf's `bind q kill-pane`. Herdr's default detach was
-# prefix+q, so detach moves to prefix+d (tmux's default detach key).
 close_pane = "prefix+q"
 detach = "prefix+d"
 
-# Mirrors tmux's default `prefix+s` (choose-tree session picker). herdr's
-# workspace is the tmux-session equivalent, so the picker moves here from its
-# default prefix+w.
 workspace_picker = "prefix+s"
-# Herdr's built-in settings screen defaults to prefix+s, which the tmux-style
-# workspace picker binding above takes over; settings moves to shift+s.
 settings = "prefix+shift+s"
 
-# Vim-style up/down in the workspace picker / navigate mode (defaults were
-# arrow keys). Note the defaults for navigate_pane_down/up are also j/k —
-# herdr scopes these per context, but if pane navigation misbehaves in
-# navigate mode, fall back to the arrow keys (left/right stay pane aliases).
 navigate_workspace_down = "j"
 navigate_workspace_up = "k"
 
-# Agent navigation. prefix+n/p (herdr's default tab keys) are free because
-# tab navigation moved to the tmux-style ctrl+j/k above; alt is kept only for
-# the indexed jump since prefix+1..9 is taken by tabs.
 focus_agent = "prefix+alt+1..9"
 next_agent = "prefix+n"
 previous_agent = "prefix+p"
 
-# Herdr's built-in `goto` (pane/window jump) defaults to prefix+g; moved to
-# prefix+w so prefix+g is free for the lazygit popup below.
 goto = "prefix+w"
 
-# Worktree workspace picker (herdr leaves open_worktree unbound by default;
-# new_worktree keeps its default prefix+shift+g). prefix+o is
-# open_notification_target and prefix+g is the lazygit popup below, so this
-# uses prefix+shift+o.
 open_worktree = "prefix+shift+o"
 
 [[keys.command]]
-# Agents-only goto with preview; built-in goto on prefix+w lists all panes/windows.
-# Runs the agents-picker plugin (yxhta/herdr-agents-picker, a separate repo
-# linked via `herdr plugin link`). The previous fzf implementation remains
-# available as bin/herdr-agent-picker.
 key = "prefix+f"
 type = "plugin_action"
 command = "yxhta.agents-picker.open"
 description = "agents picker"
 
 [[keys.command]]
-# Mirrors tmux/utility.conf's lazygit popup (`bind -r g display-popup ... lazygit`).
 key = "prefix+g"
 type = "popup"
 command = "lazygit"
@@ -80,9 +44,6 @@ width = "100%"
 height = "100%"
 
 [[keys.command]]
-# hunk (terminal diff viewer) for reviewing working-tree changes without
-# opening the full lazygit UI. prefix+h is taken by the default
-# focus_pane_left binding, so this uses prefix+v instead.
 key = "prefix+v"
 type = "popup"
 command = "hunk diff --watch"

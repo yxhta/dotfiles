@@ -3,8 +3,6 @@ experimental = true
 lockfile = true
 lockfile_platforms = ["macos-arm64"]
 
-# mise automatically loads mise/config.toml alongside this root config. Keep
-# globally useful runtimes and CLIs there so they remain active outside repo.
 [tools]
 hk = "latest"
 "aqua:numtide/treefmt" = "latest"
@@ -20,7 +18,6 @@ HK_MISE = "1"
 postinstall = "hk install --mise"
 
 [bootstrap.packages]
-# "brew-cask:wezterm" = "latest"
 "brew:git" = "latest"
 "brew:wget" = "latest"
 "brew:tree" = "latest"
@@ -28,8 +25,6 @@ postinstall = "hk install --mise"
 "brew:postgresql@18" = "latest"
 "brew:webp" = "latest"
 "brew:zstd" = "latest"
-# "brew:cocoapods" = "latest"
-# "brew:cloudflared" = "latest"
 # ngrok is NOT managed here: mise's cask shim cannot evaluate its cask
 # (`version.csv.third` NoMethodError). Install manually: brew install --cask ngrok
 "brew:git-flow" = "latest"
