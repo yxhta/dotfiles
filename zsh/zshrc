@@ -34,3 +34,6 @@ _load_settings() {
 
 _load_settings "$HOME/.zsh/configs"
 export PATH=$PATH:$HOME/.maestro/bin
+
+# herdr-projects
+export PATH="$HOME/.herdr-projects/data/bin:$PATH"
