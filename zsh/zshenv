@@ -53,3 +53,7 @@ path=(
 export PATH
 
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
+
+# Not set in each repo's vitest.config because CI wants full parallelism;
+# locally, Defender's per-open endpoint-security hook makes 11 workers stall the Mac.
+export VITEST_MAX_WORKERS=4
