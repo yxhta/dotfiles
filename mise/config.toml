@@ -45,6 +45,7 @@ sqlite = "latest"
 "npm:@biomejs/biome" = "latest"
 "npm:ctx7" = "latest"
 "npm:@openai/codex" = "latest"
+"npm:@fission-ai/openspec" = "latest"
 
 [settings]
 experimental = true
