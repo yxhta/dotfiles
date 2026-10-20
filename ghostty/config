@@ -1,76 +1,42 @@
-# --- Core Behavior ---
-# Disable native fullscreen to use the current screen space (faster transition)
-# macos-non-native-fullscreen = true
-
-# Treat the Option key as Alt (Useful for Vim/Emacs users)
 macos-option-as-alt = true
 
-# Hide the mouse cursor while typing (Must be boolean)
 mouse-hide-while-typing = true
 
-# Clipboard control (Sync with OS clipboard)
 clipboard-read = allow
 clipboard-write = allow
 
-# Let terminal apps trigger native desktop notifications via OSC 9/777.
 desktop-notifications = true
 
-# --- Visuals & Theme ---
-# Background opacity (Replaces alpha-blending)
-# 0.9 to 0.95 provides a good balance of readability and aesthetics.
-# background-opacity = 0.95
-
-# Blur effect (Recommended for a native macOS feel)
 background-blur-radius = 20
 
-# Window padding (Improves readability near edges)
 window-padding-x = 10
 window-padding-y = 10
 window-padding-balance = true
 
-# Cursor appearance
 cursor-color = "#c0c0c0"
 cursor-style = block
 cursor-style-blink = true
 shell-integration-features = no-cursor
 
-# Color theme
-# theme = "Kanagawa Wave"
-# theme = "Kanagawa Dragon"
 theme = "Kanagawabones"
 
-# --- Font Configuration ---
-# Primary font
 font-family = "Lilex"
 # Fallback font (Handles glyphs missing in Lilex, e.g., CJK characters)
 font-family = "HackGen Console NF"
 
-# Default font size (Adjust according to your environment)
 font-size = 14
 
-# Ligature control
-# -dlig: Disable Discretionary Ligatures
 font-feature = "-dlig"
 
-# --- Keybindings (Splits) ---
-# Ghostty native screen splitting.
-# Since chorded keys (like Tmux's 'Ctrl+s -> ...') are not natively supported,
-# using the Cmd (Super) key is the recommended best practice.
-
-# Cmd + D to split right
 keybind = super+d=new_split:right
 
-# Cmd + Shift + D to split down
 keybind = super+shift+d=new_split:down
 
-# Navigate between splits (Cmd + Arrow keys)
 keybind = super+left=goto_split:left
 keybind = super+right=goto_split:right
 keybind = super+up=goto_split:top
 keybind = super+down=goto_split:bottom
 
-# Toggle split zoom (Maximize current pane)
 keybind = super+z=toggle_split_zoom
 
-# Toggle quick terminal (Cmd + `)
 keybind = global:cmd+backquote=toggle_quick_terminal

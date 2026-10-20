@@ -1,24 +1,17 @@
 {
-  // Editor core settings
   "editor.inlineSuggest.enabled": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit"
   },
-  // Window settings
   "window.zoomLevel": 1,
-  // Workbench settings
   "workbench.colorTheme": "Kanagawa",
-  // Git settings
   "git.openRepositoryInParentFolders": "never",
-  // Go settings
   "go.toolsManagement.autoUpdate": true,
-  // TypeScript settings
   "typescript.updateImportsOnFileMove.enabled": "always",
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  // Dart settings
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
@@ -29,7 +22,6 @@
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
   },
-  // Vim settings
   "vim.enableNeovim": true,
   "vim.neovimPath": "nvim",
   "vim.neovimUseConfigFile": true,
