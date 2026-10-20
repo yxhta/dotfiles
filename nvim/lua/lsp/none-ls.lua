@@ -11,9 +11,6 @@ local function add_if(cond, src)
   end
 end
 
--- Biome を使うプロジェクト（biome.json / biome.jsonc がある）かどうかを
--- 対象ファイルのディレクトリから上方向に探索して判定する。
--- 保存のたび（フォーマッタごと）に呼ばれるため、ディレクトリ単位で結果をキャッシュする。
 local biome_config_cache = {}
 local function has_biome_config(bufname)
   if not bufname or bufname == "" then
@@ -31,9 +28,6 @@ local function has_biome_config(bufname)
   return cached
 end
 
--- Biome プロジェクトでは Biome、それ以外では prettier を使う。
--- runtime_condition はフォーマット実行時にバッファごとに評価されるため、
--- プロジェクトを跨いでも正しく切り替わる。
 add_if(
   exe("biome"),
   null_ls.builtins.formatting.biome.with({
@@ -68,9 +62,6 @@ add_if(exe("gofmt"), null_ls.builtins.formatting.gofmt)
 add_if(exe("golangci-lint"), null_ls.builtins.diagnostics.golangci_lint)
 add_if(exe("staticcheck"), null_ls.builtins.diagnostics.staticcheck)
 
--- 保存時フォーマット。ts_ls(tsserver) はプロジェクト設定（Biome 等）を無視して
--- 独自スタイルで書き換えてしまうため除外し、none-ls 側のフォーマッタ
--- （Biome / prettier / gofmt 等）のみで整形する。
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 local lsp_formatting = function(bufnr)

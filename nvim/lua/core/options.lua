@@ -1,76 +1,68 @@
--- Settings {{{
--- Python remote-plugin provider は未使用。起動のたびに exepath() で
--- PATH を探索しないよう provider ごと無効化する。
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_python_provider = 0
 
-vim.o.termguicolors = true -- enable gui colors for terminal
+vim.o.termguicolors = true
 vim.g.vimsyn_embed = "lPr"
 vim.g.tex_flavor = "latex"
 vim.o.encoding = "utf-8"
 vim.o.modeline = true
-vim.o.mouse = "a" -- enable mouse for all modes
-vim.o.errorbells = false -- remove all errors
+vim.o.mouse = "a"
+vim.o.errorbells = false
 vim.o.visualbell = false
-vim.o.history = 1000 -- remember more commands and search history
-vim.o.undolevels = 1000 -- use many muchos levels of undo
-vim.o.title = true -- change the terminal's title
-vim.o.backup = false -- no backup file
-vim.o.swapfile = false -- don't write .swp files
-vim.o.undofile = true -- default `undodir = ~/.local/share/nvim/undo/`
-vim.o.wrap = true -- wrap long lines
-vim.o.tabstop = 4 -- a tab is four spaces
-vim.o.shiftwidth = vim.o.tabstop -- number of spaces to use for autoindenting
-vim.o.shiftround = true -- use multiple of shiftwidth when indenting with '<' and '>'
-vim.o.expandtab = true -- expand tab to count tabstop n° of spaces
-vim.o.backspace = "indent,eol,start" -- allow backspacing over everything in insert mode
+vim.o.history = 1000
+vim.o.undolevels = 1000
+vim.o.title = true
+vim.o.backup = false
+vim.o.swapfile = false
+vim.o.undofile = true
+vim.o.wrap = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = vim.o.tabstop
+vim.o.shiftround = true
+vim.o.expandtab = true
+vim.o.backspace = "indent,eol,start"
 vim.o.autoindent = true
 vim.o.smartindent = true
-vim.o.copyindent = true -- copy the previous indentation on autoindenting
-vim.o.number = true -- always show line numbers
-vim.o.showmatch = true -- show matching parenthesis with a quick jump
-vim.o.ignorecase = true -- ignore case when searching with / or ?
-vim.o.smartcase = true -- ignore case if search pattern is all lowercase, case-sensitive otherwise
-vim.o.smarttab = true -- insert tabs on the start of a line according to shiftwidth, not tabstop
-vim.o.hlsearch = true -- highlight search terms
-vim.o.incsearch = true -- show search matches as you type
-vim.o.hidden = true -- allow modified buffers to be hidden
+vim.o.copyindent = true
+vim.o.number = true
+vim.o.showmatch = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.smarttab = true
+vim.o.hlsearch = true
+vim.o.incsearch = true
+vim.o.hidden = true
 vim.o.wildignore = "*.swp,*.bak,*.pyc,*.class"
-vim.o.wildmode = "longest,full" -- set the behavior of the completion menu
-vim.o.wildmenu = true -- diplay command completion listing and choice menu
+vim.o.wildmode = "longest,full"
+vim.o.wildmenu = true
 vim.opt.wildoptions:append({ "pum" })
-vim.o.wildcharm = 26 -- trigger completion in macros
-vim.o.wildignorecase = true -- ignore case command completion menu
--- vim.o.clipboard            = "unnamed"       -- send yanks to system clipboard (buggy with v-block)
-vim.o.showcmd = true -- show key spressed in lower-right corner
-vim.o.sidescroll = 1 -- smooth side scrolling
-vim.o.conceallevel = 2 -- conceal marked text
--- completeopt は nvim-cmp が所有する（plugins/cmp.lua で設定）
-vim.o.pumheight = 15 -- set menu max height
+vim.o.wildcharm = 26
+vim.o.wildignorecase = true
+vim.o.showcmd = true
+vim.o.sidescroll = 1
+vim.o.conceallevel = 2
+vim.o.pumheight = 15
 
 vim.opt.fillchars:append({
   fold = " ",
-  horiz = "━", -- '▃',--'═', --'─',
-  horizup = "┻", --'╩',-- '┴',
-  horizdown = "┳", --'╦', --'┬',
-  vert = "┃", --'▐', --'║', --'┃',
-  vertleft = "┨", --'╣', --'┤',
-  vertright = "┣", --'╠', --'├',
-  verthoriz = "╋", --'╬',--'┼','
+  horiz = "━",
+  horizup = "┻",
+  horizdown = "┳",
+  vert = "┃",
+  vertleft = "┨",
+  vertright = "┣",
+  verthoriz = "╋",
 })
 
 vim.opt.fillchars:append({ foldopen = "▾", foldsep = "│", foldclose = "▸" })
 
-vim.o.inccommand = "nosplit" -- real time preview of substitution commands
-vim.o.showmode = false -- Do not show -- MODE -- in cmdline--
-vim.o.cmdheight = 1 -- Height of the command line
-vim.o.updatetime = 250 -- time required to update CursorHold hook
--- treesitter が使えない filetype では正規表現 syntax にフォールバックする。
--- 生成コードのような極端に長い行で描画が止まらないよう上限を設ける。
+vim.o.inccommand = "nosplit"
+vim.o.showmode = false
+vim.o.cmdheight = 1
+vim.o.updatetime = 250
 vim.o.synmaxcol = 300
-vim.o.redrawtime = 1500 -- ハイライトに費やす時間の上限 (ms)
+vim.o.redrawtime = 1500
 vim.opt.shortmess:append({ c = true })
--- -- vim.o.printdevice       = "OLIVETTI_d_COPIA4500MF_plus__2_"
 vim.o.showbreak = "↪ "
 vim.o.listchars = "tab:|.,trail:_,extends:>,precedes:<,nbsp:~,eol:¬"
 vim.o.signcolumn = "yes"
@@ -85,9 +77,7 @@ end
 
 vim.opt.foldtext = "v:lua.CustomFoldText()"
 
--- Accept suggested completion with <C-j> from GitHub Copilot
 vim.g.copilot_no_tab_map = true
 vim.cmd([[imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")]])
 
--- Clipboard integration
 vim.opt.clipboard:append("unnamedplus")

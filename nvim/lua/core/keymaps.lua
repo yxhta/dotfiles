@@ -22,7 +22,6 @@ local function lsp_buf_call(fn, ...)
   end
 end
 
--- LSP
 keymap("n", "gD", lsp_buf_call("declaration"), opts)
 keymap("n", "gd", lsp_buf_call("definition"), opts)
 keymap("n", "K", function()
@@ -57,11 +56,9 @@ keymap("n", "<space>f", function()
   })
 end, opts)
 
--- Neo-tree
 keymap("n", "<leader>n", "<cmd>Neotree toggle<CR>", copts)
 keymap("n", "<leader>nf", "<cmd>Neotree reveal<CR>", copts)
 
--- Telescope
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Telescope: Find files" })
 keymap("n", "<leader>f.", function()
   telescope_ext_call("file_browser", "file_browser")
@@ -82,7 +79,6 @@ keymap("n", "<leader>z", "<cmd>Telescope spell_suggest<CR>", copts)
 keymap("n", "<leader>fm", "<cmd>Telescope marks<CR>", copts)
 keymap("n", '<leader>t"', "<cmd>Telescope registers<CR>", copts)
 
--- Trouble
 keymap("n", "<leader>xt", "<cmd>Trouble<CR>", copts)
 keymap("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>")
 keymap("n", "<leader>xD", "<cmd>Trouble workspace_diagnostics<CR>", copts)
@@ -93,7 +89,6 @@ keymap("n", "<leader>xr", "<cmd>Trouble lsp_references<CR>", copts)
 keymap("n", "<leader>xn", '<cmd>lua pcall(require("trouble").next, {skip_groups = true, jump = true})<CR>', copts)
 keymap("n", "<leader>xp", '<cmd>lua pcall(require("trouble").previous, {skip_groups = true, jump = true})<CR>', copts)
 
--- DAP
 keymap("n", "<F5>", ":lua require'dap'.continue()<CR>", { silent = true })
 keymap("n", "<F10>", ":lua require'dap'.step_over()<CR>", { silent = true })
 keymap("n", "<F11>", ":lua require'dap'.step_into()<CR>", { silent = true })
@@ -112,9 +107,7 @@ keymap(
   { silent = true }
 )
 
--- dap-ui key map
 keymap("n", "<leader>d", ":lua require'dapui'.toggle()<CR>", { silent = true })
 keymap("n", "<leader><leader>df", ":lua require'dapui'.eval()<CR>", { silent = true })
 
--- dap-go key map
 keymap("n", "<leader>td", ":lua require'dap-go'.debug_test()<CR>", { silent = true })

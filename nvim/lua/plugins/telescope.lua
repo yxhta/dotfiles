@@ -1,8 +1,6 @@
 local actions = require("telescope.actions")
 local themes = require("telescope.themes")
 
--- trouble は cmd/keys で遅延ロードされるため、Telescope ロード時に
--- 引き込まず、マッピング実行時に初めて require する。
 local function open_with_trouble(prompt_bufnr)
   require("trouble.sources.telescope").open(prompt_bufnr)
 end
@@ -48,10 +46,9 @@ require("telescope").setup({
     dynamic_preview_title = true,
     layout_strategy = "flex",
     vimgrep_arguments = rg_arguments(),
-    -- 生成物や巨大ファイルを選択しただけでプレビューが固まらないようにする。
     preview = {
-      filesize_limit = 1, -- MB
-      timeout = 250, -- ms
+      filesize_limit = 1,
+      timeout = 250,
       treesitter = true,
     },
     path_display = {
@@ -59,7 +56,7 @@ require("telescope").setup({
     },
     set_env = {
       ["COLORTERM"] = "truecolor",
-    }, -- default = nil,
+    },
     history = {
       mappings = {
         i = {

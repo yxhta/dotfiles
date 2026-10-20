@@ -2,9 +2,6 @@ local lspconfig = require("lspconfig")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 
------------------------
--- Handlers --
------------------------
 local handlers = {
   function(server_name) -- default handler
     require("lspconfig")[server_name].setup({})
@@ -48,9 +45,6 @@ vim.lsp.util.close_preview_autocmd = function(events, winnr)
   )
 end
 
------------------------------------
--- File watching (workspace/didChangeWatchedFiles) --
------------------------------------
 -- LSP サーバーが要求するファイル監視はワークスペース全体を再帰監視する。Neovim の
 -- 既定の除外は .git/objects と node_modules/*/ だけなので、巨大リポジトリではビルド
 -- 生成物や git 操作のイベントが大量にメインループへ流れ込み、体感が悪化する。
@@ -79,9 +73,6 @@ pcall(function()
   watchfiles._poll_exclude_pattern = pattern
 end)
 
---------------
--- Mason --
---------------
 mason.setup()
 mason_lspconfig.setup({
   ensure_installed = { "lua_ls", "ts_ls" },

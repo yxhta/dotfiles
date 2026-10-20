@@ -4,7 +4,7 @@ return {
     branch = "v3.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- optional, for file icons
+      "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
     },
     cmd = "Neotree",
@@ -27,7 +27,6 @@ return {
         window = {
           mappings = {
             ["o"] = "open",
-            -- Move the default "Order by" submenu (was on `o`) to `0`.
             ["0"] = { "show_help", nowait = false, config = { title = "Order by", prefix_key = "0" } },
             ["0c"] = { "order_by_created", nowait = false },
             ["0d"] = { "order_by_diagnostics", nowait = false },

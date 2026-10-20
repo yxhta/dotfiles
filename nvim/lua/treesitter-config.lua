@@ -44,8 +44,6 @@ local function setup_context()
 
   context.setup({
     enable = true,
-    -- 0 (無制限) だとネストの深い巨大ファイルでカーソル移動のたびに
-    -- 大量の context 行を描き直すことになるため上限を設ける。
     max_lines = 3,
     min_window_height = 0,
     line_numbers = true,
