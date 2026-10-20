@@ -1,8 +1,4 @@
 #!/bin/sh
-#
-# AI Code Session Selector
-# List Claude Code / Codex sessions running in tmux and jump to one.
-# Dependencies: tmux, fzf
 
 show_empty_state_and_exit() {
   message=$1
@@ -108,28 +104,26 @@ detect_agent_status() {
   '
 }
 
-# --- Process detection ---
-_claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
-_codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
+pid_in_list() {
+  case "
+$2
+" in
+    *"
+$1
+"*) return 0 ;;
+  esac
+  return 1
+}
 
-_raw_ppids=$(printf '%s\n%s\n' "$_claude_ppids" "$_codex_ppids" | awk 'NF' | sort -u)
+claude_ppids=$(ps -eo ppid,comm | awk '$2 == "claude" { print $1 }')
+codex_ppids=$(ps -eo ppid,args | awk '/\/bin\/codex/ { print $1 }')
 
-if [ -z "$_raw_ppids" ]; then
+all_ppids=$(printf '%s\n%s\n' "$claude_ppids" "$codex_ppids" | awk 'NF' | sort -u)
+
+if [ -z "$all_ppids" ]; then
   show_empty_state_and_exit "No AI code sessions found in tmux"
 fi
 
-# Build newline-wrapped PID lists for exact matching
-claude_ppids="
-${_claude_ppids}
-"
-codex_ppids="
-${_codex_ppids}
-"
-all_ppids="
-${_raw_ppids}
-"
-
-# --- Pane scanning ---
 pane_data=$(tmux list-panes -a \
   -F '#{session_name}:#{window_index}.#{pane_index}	#{pane_pid}	#{pane_current_path}	#{window_name}')
 
@@ -144,20 +138,12 @@ for line in $pane_data; do
   cwd=$(printf '%s' "$line" | cut -f3)
   wname=$(printf '%s' "$line" | cut -f4)
 
-  case "$all_ppids" in
-    *"
-${pid}
-"*) ;;
-    *) continue ;;
-  esac
+  pid_in_list "$pid" "$all_ppids" || continue
 
-  # Determine session type
   type="claude"
-  case "$codex_ppids" in
-    *"
-${pid}
-"*) type="codex" ;;
-  esac
+  if pid_in_list "$pid" "$codex_ppids"; then
+    type="codex"
+  fi
 
   status=$(detect_agent_status "$target")
   short_cwd=$(printf '%s' "$cwd" | sed "s|^$HOME|~|")
@@ -209,7 +195,6 @@ display_list=$(printf '%s' "$pane_records" | awk -F '	' '
   }
 ')
 
-# --- fzf selection ---
 fzf_header=$(printf 'NUM  TYPE      STATUS   DIRECTORY  WINDOW\nType a number and press Enter, or use arrow keys to pick a session.')
 fzf_expect_args=""
 

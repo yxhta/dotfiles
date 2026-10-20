@@ -1,7 +1,4 @@
 #!/bin/sh
-#
-# bin/ccd — pick a ghq repository and launch `claude` in a tmux window.
-# Companion to bin/ai-session-selector (which jumps to existing sessions).
 
 set -eu
 

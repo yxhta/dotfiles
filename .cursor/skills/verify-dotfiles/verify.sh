@@ -1,6 +1,4 @@
 #!/bin/sh
-# Sandbox harness for verifying this dotfiles checkout without touching the
-# real $HOME. Usage: verify.sh up|doctor|shell|send|capture|down <run-id> ...
 set -eu
 
 repo=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -29,6 +27,12 @@ in_sandbox() {
   env HOME="$sbhome" MISE_TRUSTED_CONFIG_PATHS="$repo" "$@"
 }
 
+share_real_home_tool_dirs() {
+  for dir in .local/bin .local/share/mise .local/share/sheldon/repos; do
+    ln -s "$HOME/$dir" "$sbhome/$dir"
+  done
+}
+
 case "$cmd" in
   up)
     if [ -e "$sandbox" ]; then
@@ -36,11 +40,7 @@ case "$cmd" in
       exit 1
     fi
     mkdir -p "$sbhome/.local/share/sheldon" "$artifacts"
-    # Borrow installed tools and plugin checkouts from the real HOME so the
-    # shell starts without network. These two dirs are shared, not isolated.
-    ln -s "$HOME/.local/bin" "$sbhome/.local/bin"
-    ln -s "$HOME/.local/share/mise" "$sbhome/.local/share/mise"
-    ln -s "$HOME/.local/share/sheldon/repos" "$sbhome/.local/share/sheldon/repos"
+    share_real_home_tool_dirs
     cd "$repo"
     in_sandbox "$mise_bin" bootstrap dotfiles apply --yes
     echo "sandbox HOME: $sbhome"
