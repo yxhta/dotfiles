@@ -1,7 +1,7 @@
 [tools]
-go = "1.26"
-node = "24"
-python = "3.12"
+go = "1.26.10"
+node = "24.22.1"
+python = "3.15"
 ruby = "4"
 bun = "latest"
 
