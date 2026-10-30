@@ -45,6 +45,10 @@ postinstall = "hk install --mise"
 "~/.config/tmux" = { source = "tmux", mode = "symlink" }
 "~/.tmux.conf" = { source = "tmux/tmux.conf", mode = "symlink" }
 "~/.config/herdr/config.toml" = { source = "herdr/config.toml", mode = "symlink" }
+"~/.config/herdr-app/keys.json" = { source = "herdr-app/keys.json", mode = "symlink" }
+"~/.config/herdr-app/mods/yx-lazygit" = { source = "herdr-app/mods/yx-lazygit", mode = "symlink" }
+"~/.config/herdr-app/mods/yx-hunk" = { source = "herdr-app/mods/yx-hunk", mode = "symlink" }
+"~/.config/herdr-app/mods/yx-worktree-open" = { source = "herdr-app/mods/yx-worktree-open", mode = "symlink" }
 "~/.config/ghostty" = { source = "ghostty", mode = "symlink" }
 "~/.gitconfig" = { source = "git/gitconfig", mode = "symlink" }
 "~/.gitignore_global" = { source = "git/gitignore", mode = "symlink" }
