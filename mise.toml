@@ -51,6 +51,7 @@ postinstall = "hk install --mise"
 "~/.config/herdr-app/mods/yx-worktree-new" = { source = "herdr-app/mods/yx-worktree-new", mode = "symlink" }
 "~/.config/herdr-app/mods/yx-picker" = { source = "herdr-app/mods/yx-picker", mode = "symlink" }
 "~/.config/herdr-app/mods/yx-worktree" = { source = "herdr-app/mods/yx-worktree", mode = "symlink" }
+"~/.config/rex/init.lua" = { source = "rex/init.lua", mode = "symlink" }
 "~/.config/ghostty" = { source = "ghostty", mode = "symlink" }
 "~/.gitconfig" = { source = "git/gitconfig", mode = "symlink" }
 "~/.gitignore_global" = { source = "git/gitignore", mode = "symlink" }

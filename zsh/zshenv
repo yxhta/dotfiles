@@ -36,6 +36,7 @@ path=(
 
   $ANDROID_SDK_ROOT/platform-tools
 
+  "/Applications/Rex Beta.app/Contents/Helpers/Rex Server.rex/Contents/MacOS"
   /Applications/WezTerm.app/Contents/MacOS
 
   $HOME/google-cloud-sdk/bin
