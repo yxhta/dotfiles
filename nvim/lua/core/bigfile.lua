@@ -45,8 +45,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.bo[buf].swapfile = false
     vim.bo[buf].undofile = false
-    -- syntax は filetype に追随するが "bigfile" 用の syntax ファイルは存在しないため、
-    -- 結果として正規表現ハイライトは走らない。
+    vim.bo[buf].syntax = ""
 
     vim.opt_local.wrap = false
     vim.opt_local.list = false
@@ -64,7 +63,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
---- バッファが巨大ファイルとして扱われているか。プラグイン側のガードから使う。
 ---@param buf integer?
 ---@return boolean
 function M.is_big(buf)

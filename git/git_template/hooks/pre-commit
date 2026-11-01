@@ -1,5 +1,4 @@
 #!/bin/sh
-# Bypass: GITLEAKS_SKIP=1 git commit ...   (or)   git commit --no-verify
 set -eu
 
 if [ "${GITLEAKS_SKIP:-0}" = "1" ]; then

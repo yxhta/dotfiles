@@ -3,7 +3,7 @@ local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 
 local handlers = {
-  function(server_name) -- default handler
+  function(server_name)
     require("lspconfig")[server_name].setup({})
   end,
 

@@ -16,7 +16,6 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     config = function()
       require("ibl").setup({
-        -- 既定の除外リストに bigfile を足す（exclude はマージではなく置き換えのため再掲）。
         exclude = {
           filetypes = {
             "bigfile",

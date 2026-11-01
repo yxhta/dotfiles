@@ -9,8 +9,6 @@ return {
     },
     cmd = "Neotree",
     keys = { "<leader>n", "<leader>nf" },
-    -- Load neo-tree eagerly when nvim is started on a directory (e.g. `nvim .`),
-    -- so it can hijack netrw before the directory buffer is created.
     init = function()
       if vim.fn.argc(-1) == 1 then
         local stat = vim.uv.fs_stat(vim.fn.argv(0))

@@ -23,7 +23,6 @@ mr() {
     return 0
   fi
 
-  # ponytail: UTF-8 byte width leaves extra space for non-ASCII names; use wcwidth if compactness matters.
   name_width=$(jq '[.[] | [.name] | @tsv | utf8bytelength] | max + 2' <<< "$tasks") || return
 
   if selected=$(printf '%s\n' "$rows" | fzf \

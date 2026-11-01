@@ -5,14 +5,12 @@ import { View, div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, Scrollbar } from "gpui-base";
 import { run, props, closeOverlay, theme, spaces, panes, exec, home } from "herdr";
 
-// Where a space is now: its first terminal's live folder, else where it was made.
 function place(s) {
   if (!s) return null;
   const tabs = new Set((s.tabs ?? []).map((c) => c.id));
   return panes().find((p) => tabs.has(p.tab) && p.cwd)?.cwd || s.folder || null;
 }
 
-// Checkouts go to <ROOT>/<repo>/<branch, slashes as dashes>.
 const ROOT = (home) => `${home}/.herdr/worktrees`;
 // Home as ~ (git says C:/Users/x where Windows says C:\Users\x).
 const tilde = (path, userHome) => {
@@ -25,8 +23,6 @@ const ago = (s) => {
   return d < 3600 ? `${Math.max(1, Math.round(d / 60))}m` : d < 86400 ? `${Math.round(d / 3600)}h` : d < 86400 * 60 ? `${Math.round(d / 86400)}d` : `${Math.round(d / 86400 / 30)}mo`;
 };
 
-// Every checkout of a repo (`git worktree list`), the main one first, then
-// the most recently committed: { path, branch, main, at }.
 async function checkouts(repo, on) {
   const list = await git(repo.main, ["worktree", "list", "--porcelain"], on);
   if (!list.ok) return [];
@@ -43,9 +39,6 @@ async function checkouts(repo, on) {
   return out.sort((a, b) => b.main - a.main || b.at - a.at);
 }
 
-// The space showing a checkout: its first terminal is in it (the deepest checkout wins).
-// `placed` ([space, place] pairs) lets a list render look up every space's place once, not once
-// per row: with ~100 checkouts the per-row panes() calls overran the render and it was interrupted.
 function spaceOf(path, all, on, placed = spaces().map((s) => [s, place(s)])) {
   const inside = (p, dir) => p === dir || p.startsWith(dir + "/");
   return placed.find(([s, where]) => (s.machine ?? null) === (on ?? null) && (() => {
@@ -60,9 +53,6 @@ async function git(cwd, args, on) {
   return { ok: r.code === 0, out: (r.stdout ?? "").trim(), err: (r.stderr ?? r.stdout ?? "").trim() };
 }
 
-// The submodule repos git keeps for a checkout (nested ones too, checked out
-// or not): { name, dir, pinned }. `config` is the args that read its
-// .gitmodules; `pinned` is the commit its parent records ("" if none).
 async function modules(gitDir, config, on, out = [], parent = "") {
   const keys = await git(gitDir, ["--git-dir", gitDir, "config", ...config, "-z", "--get-regexp", "^submodule\\..*\\.path$"], on);
   if (!keys.ok) return out; // no .gitmodules, or no submodules in it
@@ -71,7 +61,7 @@ async function modules(gitDir, config, on, out = [], parent = "") {
     const at = record.indexOf("\n");
     const name = record.slice("submodule.".length, at - ".path".length);
     const dir = `${gitDir}/modules/${name}`;
-    if (!(await git(gitDir, ["--git-dir", dir, "rev-parse", "--git-dir"], on)).ok) continue; // never checked out
+    if (!(await git(gitDir, ["--git-dir", dir, "rev-parse", "--git-dir"], on)).ok) continue;
     const pinned = await git(gitDir, ["--git-dir", gitDir, "rev-parse", `HEAD:${record.slice(at + 1)}`], on);
     // Names are only unique within their parent: nested ones carry its name.
     out.push({ name: parent + name, dir, pinned: pinned.ok ? pinned.out : "" });
@@ -96,8 +86,6 @@ async function submodules(top, on) {
   return { mods, unpushed };
 }
 
-// The repo a folder belongs to: its main checkout and name, and whether
-// the folder is itself a linked worktree. null outside git.
 async function repoOf(folder, on) {
   const top = await git(folder, ["rev-parse", "--show-toplevel"], on);
   const common = await git(folder, ["rev-parse", "--path-format=absolute", "--git-common-dir"], on);
@@ -112,7 +100,7 @@ export default class Worktree extends View {
     this.userHome = this.on ? null : home();
     this.opening = props()?.action === "open";
     this.text = props()?.branch ?? "";
-    this.list = undefined; // open: the checkouts, once read
+    this.list = undefined;
     this.at = 0;
     this.input = InputState.new({ value: this.text, placeholder: this.opening ? "filter worktrees" : "branch name" });
     this.input.on("change", (_e, cx) => { this.text = this.input.value(); this.error = ""; this.at = 0; cx.notify(); });
@@ -126,7 +114,7 @@ export default class Worktree extends View {
     }
     this.busy = false;
     this.error = "";
-    this.repo = undefined; // undefined: looking, null: not in git
+    this.repo = undefined;
     this.dirty = false;
     this.unpushed = [];
     this.handle = cx.focus_handle();
@@ -141,7 +129,6 @@ export default class Worktree extends View {
           this.userHome = result.stdout.trim().replace(/\\/g, "/");
         }
         this.folder = props()?.folder || place(this.space()) || this.userHome;
-        // The repo is set last: Enter does nothing until the warnings it consents to are known.
         const repo = await repoOf(this.folder, this.on);
         if (repo && props().action === "remove") {
           this.dirty = (await git(repo.top, ["--no-optional-locks", "-c", "core.fsmonitor=false", "status", "--porcelain"], this.on)).out !== "";
@@ -190,7 +177,6 @@ export default class Worktree extends View {
     const r = await git(this.repo.top, add, this.on);
     if (!r.ok) return r.err || "git worktree add failed.";
     const p = props();
-    // Leave spaces unnamed so they follow the checkout folder and nest under the repo.
     run("space.new", { folder: path, machine: this.on, tab: p.tab, argv: p.argv });
     return "";
   }

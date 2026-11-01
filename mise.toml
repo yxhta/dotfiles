@@ -25,8 +25,6 @@ postinstall = "hk install --mise"
 "brew:postgresql@18" = "latest"
 "brew:webp" = "latest"
 "brew:zstd" = "latest"
-# ngrok is NOT managed here: mise's cask shim cannot evaluate its cask
-# (`version.csv.third` NoMethodError). Install manually: brew install --cask ngrok
 "brew:git-flow" = "latest"
 "brew:terminal-notifier" = "latest"
 # aqua btop ships Linux binaries only, so macOS stays on Homebrew.

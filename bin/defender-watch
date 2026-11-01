@@ -33,8 +33,6 @@ def scan_delta(before, after):
   processes = []
   skipped = 0
   for key, (count, ns, files) in after.items():
-    # ponytail: baseline new/reset counters; next interval measures them safely.
-    # PID reuse with identical name/path and higher counters cannot be detected.
     old = before.get(key)
     if old is None or count < old[0] or ns < old[1]:
       skipped += 1

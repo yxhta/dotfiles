@@ -1,6 +1,3 @@
-// herdr (CLI) open_worktree: the worktree mod's "Open worktree…" dialog, opened as the + menu does.
-// Bound in keys.json as mod.open:yx-worktree-open; this invisible popup opens it and closes itself.
-
 import { View, div } from "gpui-kit";
 import { focused, openOverlay, props, closeOverlay } from "herdr";
 
