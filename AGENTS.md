@@ -9,7 +9,7 @@ Always respond in Japanese.
 - `mise/config.toml`: global runtimes and CLI tools, linked to
   `~/.config/mise/config.toml` by bootstrap.
 - `bin/`: POSIX-sh user scripts and the vendored mise installer.
-- `zsh/`, `nvim/`, `tmux/`, `git/`, `herdr/`: tool configuration.
+- `zsh/`, `nvim/`, `tmux/`, `git/`, `herdr-app/`: tool configuration.
 - `treefmt.toml`: repository formatting.
 - `hk.pkl`: gitleaks + treefmt hooks.
 - `docs/nix-to-mise-map.md`: migration/verification inventory.
