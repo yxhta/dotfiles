@@ -130,7 +130,7 @@ description = "Check the description search"
 run = "echo MR_SECOND_OK"
 ```
 
-そのディレクトリをmiseでtrustし、`source /Users/yota.ito/ghq/github.com/yxhta/dotfiles/zsh/functions/mr`して`mr`を開く。
+そのディレクトリをmiseでtrustし、`source ~/ghq/github.com/yxhta/dotfiles/zsh/functions/mr`して`mr`を開く。
 
 - 140列の端末で一覧が左、詳細が右に並ぶ。80列では詳細が下に切り替わる。
 - 名前・説明の強弱と選択行を確認する。暗いテーマと明るいテーマの双方で説明が読めること。dimが読みにくい端末では説明のdimだけを外し、名前の太字を維持する。
