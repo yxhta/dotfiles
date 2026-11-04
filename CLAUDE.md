@@ -3,7 +3,7 @@
 ## Repository overview
 
 Apple Silicon macOS dotfiles. `mise.toml` is the bootstrap entrypoint and owns
-system packages, dotfile symlinks, macOS defaults, the keyboard-remap LaunchAgent,
+system packages, dotfile symlinks, macOS defaults, LaunchAgents (keyboard remap, hc-caffeinate),
 the login shell, and repo development tools. `mise/config.toml` remains the global
 runtime/CLI config and is symlinked to `~/.config/mise/config.toml`.
 

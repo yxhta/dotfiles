@@ -1,0 +1,30 @@
+#!/bin/sh
+set -eu
+
+PATH="$HOME/.local/bin:/usr/bin:/bin"
+
+# caffeinate -w $$ ends with this script, so the assertion never outlives the watcher.
+hc events --json | {
+  pid=
+  while IFS= read -r line; do
+    case $line in
+      *'"type":"title"'* | *'"type":"output"'*) continue ;;
+    esac
+    ls_json=$(hc ls --json) || continue
+    working=$(printf '%s' "$ls_json" | jq 'any(.terminals[]; .state == "live" and .status == "working")') || continue
+    if [ "$working" = true ]; then
+      # kill -0 succeeds on an unreaped zombie, so check the process state instead.
+      case $(ps -o stat= -p "${pid:-0}" 2>/dev/null) in
+        '' | Z*) pid= ;;
+      esac
+      if [ -z "$pid" ]; then
+        caffeinate -i -w $$ &
+        pid=$!
+      fi
+    elif [ -n "$pid" ]; then
+      kill "$pid" 2>/dev/null || :
+      wait "$pid" 2>/dev/null || :
+      pid=
+    fi
+  done
+}

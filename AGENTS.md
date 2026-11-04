@@ -5,7 +5,7 @@ Always respond in Japanese.
 ## Structure
 
 - `mise.toml`: mise bootstrap entrypoint; packages, dotfiles, macOS defaults,
-  LaunchAgent, login shell, and repo development tools.
+  LaunchAgents, login shell, and repo development tools.
 - `mise/config.toml`: global runtimes and CLI tools, linked to
   `~/.config/mise/config.toml` by bootstrap.
 - `bin/`: POSIX-sh user scripts and the vendored mise installer.
