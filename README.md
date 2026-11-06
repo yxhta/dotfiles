@@ -73,7 +73,7 @@ CPU使用量や採取間のピークは捉えられず、新規・リセット�
 ## Terminal (Rex)
 
 端末の操作は Rex に寄せる。`rex/init.lua` が tmux と同じ `ctrl+s` prefix のキー、
-floating の shell・lazygit・worktree picker（`bin/rex-worktree`）・AI session picker（`bin/rex-ai-sessions`）を定義する。
+floating の shell・lazygit・worktree picker（`bin/rex-worktree`）を定義する。
 LaunchAgent の `bin/rex-caffeinate` は、Rex のペインが program status で `working` を
 報告している間だけ Mac のスリープを止める。`herdr-app/` と `bin/hc-caffeinate` は
 移行期間のため残しているが、今後は使わない想定。

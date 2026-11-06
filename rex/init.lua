@@ -30,7 +30,6 @@ end
 
 float("float_shell", "Open Floating Shell")
 float("float_lazygit", "Open Lazygit", { "lazygit" })
-float("float_ai_sessions", "Open AI Session Selector", { "rex-ai-sessions" })
 float("float_worktree", "Open or Create Worktree", { "rex-worktree" })
 
 rex.bind("cmd+d", "pane.split", { direction = "right" })
@@ -59,7 +58,6 @@ rex.bind("ctrl+s>q", "pane.close")
 rex.bind("ctrl+s>z", "pane.zoom")
 rex.bind("ctrl+s>t", "float_shell")
 rex.bind("ctrl+s>g", "float_lazygit")
-rex.bind("ctrl+s>f", "float_ai_sessions")
 rex.bind("ctrl+s>shift+o", "float_worktree")
 rex.bind("ctrl+s>shift+g", "float_worktree")
 rex.bind("ctrl+s>b", "pane.move_to_new_tab")
