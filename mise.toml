@@ -96,6 +96,11 @@ program = "~/bin/hc-caffeinate"
 run_at_load = true
 keep_alive = true
 
+[bootstrap.macos.launchd.agents.rex-caffeinate]
+program = "~/bin/rex-caffeinate"
+run_at_load = true
+keep_alive = true
+
 [bootstrap.user]
 login_shell = "/bin/zsh"
 

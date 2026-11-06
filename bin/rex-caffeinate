@@ -1,0 +1,62 @@
+#!/bin/sh
+set -eu
+
+PATH="$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS:/usr/bin:/bin"
+
+# exec keeps $$ as the rex pid, so caffeinate -w never outlives the watcher.
+# --autostart=false: launchd retries until the app has started the server.
+exec rex do --autostart=false --all - pid=$$ <<'EOF'
+local terminal = "com.superlogical.terminal"
+local working = {}
+local caffeinate
+
+local function key(block_id, id)
+  return block_id .. "\n" .. (id or "")
+end
+
+local function sync()
+  local on = next(working) ~= nil
+  if on and not (caffeinate and caffeinate:running()) then
+    caffeinate = rex.exec.start({ "caffeinate", "-i", "-w", rex.args.pid }, { detach = true })
+  elseif not on and caffeinate then
+    caffeinate:kill()
+    caffeinate = nil
+  end
+end
+
+local sessions = rex.call("session.list") or { sessions = {} }
+for _, s in ipairs(sessions.sessions) do
+  local blocks = rex.session.list_blocks({ session_id = s.session_id }) or { blocks = {} }
+  for _, b in ipairs(blocks.blocks) do
+    local status = rex.call("block.method", { session_id = s.session_id, block_id = b.block_id, method = "program_status" })
+    for _, r in ipairs(status and status.records or {}) do
+      if r.state == "working" then
+        working[key(b.block_id, r.id)] = true
+      end
+    end
+  end
+end
+sync()
+
+rex.on(terminal .. ".program_status_changed", function(ctx, ev)
+  working[key(ctx.block_id, ev.id)] = (ev.record and ev.record.state == "working") or nil
+  sync()
+end)
+
+rex.on(terminal .. ".program_status_removed", function(ctx, ev)
+  for _, id in ipairs(ev.ids or {}) do
+    working[key(ctx.block_id, id)] = nil
+  end
+  sync()
+end)
+
+rex.on("block_closed", function(ctx, ev)
+  local prefix = ev.block_id .. "\n"
+  for k in pairs(working) do
+    if k:sub(1, #prefix) == prefix then
+      working[k] = nil
+    end
+  end
+  sync()
+end)
+EOF
