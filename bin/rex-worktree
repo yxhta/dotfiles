@@ -1,0 +1,46 @@
+#!/bin/sh
+set -eu
+
+# Pick a worktree of this repository, or type a branch name that matches none
+# to create one, then open it as a Rex tab in the current session.
+top=$(git rev-parse --show-toplevel)
+common=$(git rev-parse --path-format=absolute --git-common-dir)
+main=${common%/.git}
+repo=$(basename "$main")
+tab=$(printf '\t')
+
+list=$(git -C "$main" worktree list --porcelain | awk '
+  /^worktree / { path = substr($0, 10) }
+  /^branch / { branch = substr($0, 19) }
+  /^$/ { print (branch == "" ? "(detached)" : branch) "\t" path; branch = "" }
+')
+
+# fzf exits 1 when nothing matches; --print-query still prints the typed text.
+out=$(printf '%s\n' "$list" | fzf --print-query --delimiter="$tab" --prompt="$repo> " \
+  --header="enter: open, or type a new branch name to create it") || [ $? -eq 1 ]
+query=$(printf '%s\n' "$out" | sed -n 1p)
+pick=$(printf '%s\n' "$out" | sed -n 2p)
+
+if [ -n "$pick" ]; then
+  path=${pick#*"$tab"}
+elif [ -n "$query" ]; then
+  slug=$(printf '%s' "$query" | sed -e 's/[^A-Za-z0-9._-][^A-Za-z0-9._-]*/-/g' -e 's/^-*//' -e 's/-*$//')
+  path=$HOME/.worktrees/$repo/$slug
+  if git -C "$main" show-ref --verify --quiet "refs/heads/$query"; then
+    git -C "$top" worktree add "$path" "$query"
+  else
+    git -C "$top" worktree add -b "$query" "$path" HEAD
+  fi
+else
+  exit 0
+fi
+
+# shortcut: tabs are matched by label (the worktree's directory name), so two
+# repositories with same-named worktrees in one session share a tab.
+name=$(basename "$path")
+id=$(rex window ls --json | jq -r --arg n "$name" '[.windows[] | select(.label == $n)][0].window_id // empty')
+if [ -n "$id" ]; then
+  rex focus "$id"
+else
+  rex window new "$name" -c "$path" >/dev/null
+fi
