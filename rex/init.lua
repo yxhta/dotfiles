@@ -6,6 +6,27 @@ local dirs = {
   { "l", "right" },
 }
 
+rex.action({
+  name = "float_shell",
+  title = "Open Floating Shell",
+  run = function(ctx)
+    -- process, not pwd: pwd is empty unless the program reports it (OSC 7).
+    local ok, p = pcall(rex.call, "block.method", {
+      session_id = ctx.session_id,
+      block_id = ctx.block_id,
+      method = "process",
+    })
+    local cwd = ok and p.foreground and p.foreground.cwd or nil
+    local layer = rex.call("session.new_layer", {
+      session_id = ctx.session_id,
+      bounds = { 0.1, 0.1, 0.8, 0.8 },
+      layout = { block = { flavor = "com.superlogical.terminal.shell", label = "float", options = { cwd = cwd } } },
+    })
+    rex.call("session.focus_block", { session_id = ctx.session_id, block_id = layer.block_ids[1] })
+    return layer
+  end,
+})
+
 rex.bind("cmd+d", "pane.split", { direction = "right" })
 rex.bind("cmd+shift+d", "pane.split", { direction = "down" })
 rex.bind("cmd+shift+w", "pane.close")
@@ -30,6 +51,7 @@ for _, d in ipairs(dirs) do
 end
 rex.bind("ctrl+s>q", "pane.close")
 rex.bind("ctrl+s>z", "pane.zoom")
+rex.bind("ctrl+s>t", "float_shell")
 rex.bind("ctrl+s>b", "pane.move_to_new_tab")
 rex.bind("ctrl+s>c", "client.tab.new")
 rex.bind("ctrl+s>,", "client.tab.rename")
