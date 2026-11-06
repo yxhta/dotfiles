@@ -18,7 +18,8 @@ local function float(name, title, command, refocus)
       local argv = command
       if refocus then
         -- trap: closing the pane (cmd+w) sends HUP; || true: a failing command keeps the float open.
-        local script = 'back() { rex focus "$0" || true; }; trap "back; exit" HUP TERM; "$@"; back'
+        local script =
+          'export REX_CALLER_BLOCK="$0"; back() { rex focus "$0" || true; }; trap "back; exit" HUP TERM; "$@"; back'
         argv = { "sh", "-c", script, ctx.block_id, unpack(command) }
       end
       local options = { cwd = p and p.foreground and p.foreground.cwd, command = argv }
@@ -38,6 +39,12 @@ end
 float("float_shell", "Open Floating Shell", { os.getenv("SHELL") or "/bin/zsh", "-l" }, true)
 float("float_lazygit", "Open Lazygit", { "lazygit" }, true)
 float("float_worktree", "Open or Create Worktree", { "rex-worktree" })
+-- Like tmux copy mode: the calling pane's scrollback in nvim, read-only, cursor at the bottom.
+float("float_copy", "Copy from Scrollback", {
+  "sh",
+  "-c",
+  'rex capture -b "$REX_CALLER_BLOCK" --trim --unwrap | nvim -R -c "setlocal buftype=nofile" -c "normal! G" -',
+}, true)
 
 rex.bind("cmd+d", "pane.split", { direction = "right" })
 rex.bind("cmd+shift+d", "pane.split", { direction = "down" })
@@ -65,6 +72,7 @@ rex.bind("ctrl+s>q", "pane.close")
 rex.bind("ctrl+s>z", "pane.zoom")
 rex.bind("ctrl+s>t", "float_shell")
 rex.bind("ctrl+s>g", "float_lazygit")
+rex.bind("ctrl+s>[", "float_copy")
 rex.bind("ctrl+s>shift+o", "float_worktree")
 rex.bind("ctrl+s>shift+g", "float_worktree")
 rex.bind("ctrl+s>b", "pane.move_to_new_tab")
