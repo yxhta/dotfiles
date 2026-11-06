@@ -1,15 +1,49 @@
+-- Mirrors herdr-app/keys.json and tmux/tmux.conf (prefix ctrl+s).
+local dirs = {
+  { "h", "left" },
+  { "j", "down" },
+  { "k", "up" },
+  { "l", "right" },
+}
+
 rex.bind("cmd+d", "pane.split", { direction = "right" })
 rex.bind("cmd+shift+d", "pane.split", { direction = "down" })
-rex.bind("cmd+alt+left", "pane.focus", { direction = "left" })
-rex.bind("cmd+alt+right", "pane.focus", { direction = "right" })
-rex.bind("cmd+alt+up", "pane.focus", { direction = "up" })
-rex.bind("cmd+alt+down", "pane.focus", { direction = "down" })
+rex.bind("cmd+shift+w", "pane.close")
 rex.bind("cmd+shift+enter", "pane.zoom")
-rex.bind("ctrl+s>h", "pane.focus", { direction = "left" })
-rex.bind("ctrl+s>j", "pane.focus", { direction = "down" })
-rex.bind("ctrl+s>k", "pane.focus", { direction = "up" })
-rex.bind("ctrl+s>l", "pane.focus", { direction = "right" })
+for _, d in ipairs(dirs) do
+  rex.bind("cmd+alt+" .. d[2], "pane.focus", { direction = d[2] })
+  rex.bind("cmd+alt+shift+" .. d[2], "pane.move", { direction = d[2] })
+end
+rex.bind("cmd+shift+]", "client.tab.next")
+rex.bind("cmd+shift+[", "client.tab.previous")
+rex.bind("cmd+alt+]", "session.next")
+rex.bind("cmd+alt+[", "session.previous")
+rex.bind("cmd+p", "session.switch")
+rex.bind("cmd+b", "client.sidebar.toggle")
+
+rex.bind("ctrl+s>ctrl+s", "pane.send_key", { key = "ctrl+s" })
 rex.bind("ctrl+s>\\", "pane.split", { direction = "right" })
 rex.bind("ctrl+s>-", "pane.split", { direction = "down" })
+for _, d in ipairs(dirs) do
+  rex.bind("ctrl+s>" .. d[1], "pane.focus", { direction = d[2] })
+  rex.bind("ctrl+s>shift+" .. d[1], "pane.move", { direction = d[2] })
+end
+rex.bind("ctrl+s>q", "pane.close")
+rex.bind("ctrl+s>z", "pane.zoom")
+rex.bind("ctrl+s>b", "pane.move_to_new_tab")
+rex.bind("ctrl+s>c", "client.tab.new")
+rex.bind("ctrl+s>,", "client.tab.rename")
 rex.bind("ctrl+s>ctrl+j", "client.tab.next")
 rex.bind("ctrl+s>ctrl+k", "client.tab.previous")
+rex.bind("ctrl+s>n", "client.tab.next")
+rex.bind("ctrl+s>p", "client.tab.previous")
+for i = 1, 9 do
+  rex.bind("ctrl+s>" .. i, "client.tab.goto", { index = i })
+end
+rex.bind("ctrl+s>s", "session.switch")
+rex.bind("ctrl+s>w", "session.switch")
+rex.bind("ctrl+s>shift+n", "session.new")
+rex.bind("ctrl+s>shift+w", "session.rename")
+rex.bind("ctrl+s>shift+d", "session.close")
+rex.bind("ctrl+s>d", "client.visibility.toggle")
+rex.bind("ctrl+s>r", "client.config.reload")
