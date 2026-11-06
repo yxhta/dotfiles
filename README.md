@@ -70,6 +70,17 @@ CPU使用量や採取間のピークは捉えられず、新規・リセット�
 この統計はAntivirusの診断用で、EDR全体の監視を網羅しない。フォルダ別メモリ使用量や
 因果関係は判定できない。除外設定・保護設定の変更や常駐登録は行わない。
 
+## Terminal (Rex)
+
+端末の操作は Rex に寄せる。`rex/init.lua` が tmux と同じ `ctrl+s` prefix のキー、
+floating の shell・lazygit・worktree picker（`bin/rex-worktree`）・AI session picker（`bin/rex-ai-sessions`）を定義する。
+LaunchAgent の `bin/rex-caffeinate` は、Rex のペインが program status で `working` を
+報告している間だけ Mac のスリープを止める。`herdr-app/` と `bin/hc-caffeinate` は
+移行期間のため残しているが、今後は使わない想定。
+
+Rex Beta の macOS アプリは mise で導入しない。HackGen Console NF の fallback font は
+mise の defaults が配列を書けないため、Settings の Typography から手動で設定する。
+
 ## AI agent skills
 
 AI agent skills（Claude Code / Codex 等向け）は [yxhta/skills](https://github.com/yxhta/skills)
