@@ -77,4 +77,12 @@ rex.bind("ctrl+s>shift+w", "session.rename")
 rex.bind("ctrl+s>shift+r", "session.rename")
 rex.bind("ctrl+s>shift+d", "session.close")
 rex.bind("ctrl+s>d", "client.visibility.toggle")
-rex.bind("ctrl+s>r", "client.config.reload")
+
+rex.mode("resize", { exclusive = true })
+rex.bind("ctrl+s>r", "client.mode.enter", { name = "resize" })
+for _, d in ipairs(dirs) do
+  rex.bind("resize/" .. d[1], "pane.resize", { direction = d[2] })
+  rex.bind("resize/shift+" .. d[1], "pane.resize", { direction = d[2], amount = 15 })
+end
+rex.bind("resize/=", "pane.balance")
+rex.bind("resize/enter", "client.mode.exit")
