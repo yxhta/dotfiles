@@ -7,14 +7,20 @@ local dirs = {
 }
 
 -- Opens a focused floating terminal in the calling pane's directory, like tmux display-popup.
-local function float(name, title, command)
+-- refocus: return to the calling pane when command exits; Rex otherwise focuses a neighbor.
+local function float(name, title, command, refocus)
   rex.action({
     name = name,
     title = title,
     run = function(ctx)
       -- process, not pwd: pwd is empty unless the program reports it (OSC 7).
       local p = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
-      local options = { cwd = p and p.foreground and p.foreground.cwd, command = command }
+      local argv = command
+      if refocus then
+        -- || true: a failing command keeps the float open.
+        argv = { "sh", "-c", '"$@"; rex focus "$0" || true', ctx.block_id, unpack(command) }
+      end
+      local options = { cwd = p and p.foreground and p.foreground.cwd, command = argv }
       local layer, err = rex.session.new_layer({
         bounds = { 0.1, 0.1, 0.8, 0.8 },
         layout = rex.layout.block({ flavor = "com.superlogical.terminal.shell", label = name, options = options }),
@@ -28,8 +34,8 @@ local function float(name, title, command)
   })
 end
 
-float("float_shell", "Open Floating Shell")
-float("float_lazygit", "Open Lazygit", { "lazygit" })
+float("float_shell", "Open Floating Shell", { os.getenv("SHELL") or "/bin/zsh", "-l" }, true)
+float("float_lazygit", "Open Lazygit", { "lazygit" }, true)
 float("float_worktree", "Open or Create Worktree", { "rex-worktree" })
 
 rex.bind("cmd+d", "pane.split", { direction = "right" })
