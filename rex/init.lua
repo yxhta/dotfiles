@@ -17,8 +17,9 @@ local function float(name, title, command, refocus)
       local p = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
       local argv = command
       if refocus then
-        -- || true: a failing command keeps the float open.
-        argv = { "sh", "-c", '"$@"; rex focus "$0" || true', ctx.block_id, unpack(command) }
+        -- trap: closing the pane (cmd+w) sends HUP; || true: a failing command keeps the float open.
+        local script = 'back() { rex focus "$0" || true; }; trap "back; exit" HUP TERM; "$@"; back'
+        argv = { "sh", "-c", script, ctx.block_id, unpack(command) }
       end
       local options = { cwd = p and p.foreground and p.foreground.cwd, command = argv }
       local layer, err = rex.session.new_layer({
