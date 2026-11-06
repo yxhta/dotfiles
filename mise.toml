@@ -84,6 +84,7 @@ press_and_hold = false
 [bootstrap.macos.defaults]
 "com.apple.dock" = { "autohide-delay" = 0.0, "autohide-time-modifier" = 0.5, "minimize-to-application" = true, "expose-animation-duration" = 0.1, launchanim = false }
 "com.apple.finder" = { AppleShowAllExtensions = true, _FXShowPosixPathInTitle = true, _FXSortFoldersFirst = true }
+"com.superlogical.rex" = { "Workspace.terminalFontName" = "Lilex", "Workspace.terminalFontPointSize" = 13.0 }
 NSGlobalDomain = { AppleKeyboardUIMode = 3, NSAutomaticCapitalizationEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticSpellingCorrectionEnabled = false, NSDocumentSaveNewDocumentsToCloud = false, NSNavPanelExpandedStateForSaveMode = true, NSWindowResizeTime = 0.001 }
 
 [bootstrap.macos.launchd.agents.internal-keyboard-remap]
