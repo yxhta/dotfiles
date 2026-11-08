@@ -1,5 +1,11 @@
 [global]
-excludes = ["nvim/lazy-lock.json", "mise.lock", "*.lock", "result"]
+excludes = [
+  "nvim/lazy-lock.json",
+  "mise.lock",
+  ".mise/locks/**",
+  "*.lock",
+  "result",
+]
 
 [formatter.shfmt]
 command = "shfmt"
