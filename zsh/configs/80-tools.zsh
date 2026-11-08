@@ -53,7 +53,3 @@ if command -v zoxide >/dev/null 2>&1; then
   _cache_init zoxide "$(command -v zoxide)" init zsh --cmd cd
   (( ${+aliases[zi]} )) && unalias zi
 fi
-
-if command -v git-wt >/dev/null 2>&1; then
-  _cache_init git-wt "$(command -v git-wt)" --init zsh
-fi

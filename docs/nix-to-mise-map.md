@@ -22,7 +22,6 @@
 | git-filter-repo      | mise `pipx:git-filter-repo`             | `git-filter-repo`   | `command -v git-filter-repo`              |
 | git-flow-avh         | `brew:git-flow`                         | `git-flow`          | `command -v git-flow`                     |
 | git-lfs              | mise `git-lfs`                          | `git-lfs`           | `command -v git-lfs`                      |
-| git-wt               | mise `git-wt`                           | `git-wt`            | `command -v git-wt`                       |
 | gitleaks             | mise `gitleaks`                         | `gitleaks`          | `command -v gitleaks`                     |
 | go-tools: goimports  | `go:golang.org/x/tools/cmd/goimports`   | `goimports`         | `command -v goimports`                    |
 | gotools: stringer    | `go:golang.org/x/tools/cmd/stringer`    | `stringer`          | `command -v stringer`                     |
