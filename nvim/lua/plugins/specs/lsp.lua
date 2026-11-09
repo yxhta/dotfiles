@@ -59,22 +59,4 @@ return {
       require("plugins.cmp")
     end,
   },
-
-  {
-    "folke/trouble.nvim",
-    cmd = { "Trouble", "TroubleToggle" },
-    keys = "<leader>x",
-    config = function()
-      require("plugins.trouble")
-    end,
-  },
-
-  {
-    "liuchengxu/vista.vim",
-    cmd = "Vista",
-    keys = { { "<leader>vv", "<cmd>Vista!!<CR>" } },
-    config = function()
-      require("plugins.vista")
-    end,
-  },
 }

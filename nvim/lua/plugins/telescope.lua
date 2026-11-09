@@ -1,15 +1,6 @@
 local actions = require("telescope.actions")
 local themes = require("telescope.themes")
 
-local function open_with_trouble(prompt_bufnr)
-  require("trouble.sources.telescope").open(prompt_bufnr)
-end
-
-local function send_to_loclist(prompt_bufnr)
-  actions.smart_send_to_loclist(prompt_bufnr)
-  require("trouble").open("loclist")
-end
-
 -- 除外は fd / rg 側で行う。file_ignore_patterns は Telescope が全エントリに対して
 -- Lua パターンマッチを回すため、ファイル数の多いリポジトリでは絞り込みのたびに重くなる。
 local ignore_globs = { ".git", "node_modules", "vendor", "dist", "build", "target", ".next", ".venv" }
@@ -73,8 +64,7 @@ require("telescope").setup({
         ["<S-Tab>"] = actions.move_selection_next,
         ["<C-z>"] = actions.toggle_selection,
         ["<C-s>"] = actions.select_horizontal,
-        ["<C-x>"] = open_with_trouble,
-        ["<M-l>"] = send_to_loclist,
+        ["<M-l>"] = actions.smart_send_to_loclist + actions.open_loclist,
         ["<M-a>"] = actions.toggle_all,
         ["<C-Down>"] = actions.cycle_history_next,
         ["<C-Up>"] = actions.cycle_history_prev,
@@ -82,9 +72,8 @@ require("telescope").setup({
       n = {
         ["<C-z>"] = actions.toggle_selection,
         ["<C-s>"] = actions.select_horizontal,
-        ["<C-x>"] = open_with_trouble,
         ["<M-a>"] = actions.toggle_all,
-        ["<M-l>"] = send_to_loclist,
+        ["<M-l>"] = actions.smart_send_to_loclist + actions.open_loclist,
         ["<C-Down>"] = actions.cycle_history_next,
         ["<C-Up>"] = actions.cycle_history_prev,
       },

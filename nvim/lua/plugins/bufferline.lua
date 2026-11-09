@@ -14,7 +14,6 @@ require("bufferline").setup({
     separator_style = "slant",
     offsets = {
       { filetype = "neo-tree", text = "File Explorer", separator = true },
-      { filetype = "Vista" },
     },
     diagnostics_indicator = function(_, _, diagnostics_dict)
       local s = " "
