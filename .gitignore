@@ -1,11 +1,4 @@
-gitconfig.local
-vim/.netrwhist
-vim/autoload/
-vim/bundle/
-vim/undo/
-nvim/plugin/packer_compiled.lua
 nvim/lazy-lock.json
-git/gitconfig_private
 
 .claude/
 .agents/
@@ -14,11 +7,7 @@ git/gitconfig_private
 skills-lock.json
 codex/skills/*/config/*.local.toml
 
-ai-rules/mcp.json
-
 .fvm/
-
-result
 
 .pre-commit-config.yaml
 
