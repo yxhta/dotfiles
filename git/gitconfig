@@ -6,7 +6,6 @@
 
 [color]
   ui = auto
-  editor = vim
 
 [alias]
   l = log --pretty=colored
@@ -27,12 +26,12 @@
   untrackedCache = true
 
 [interactive]
-    diffFilter = delta --color-only
+  diffFilter = delta --color-only
 
 [delta]
-    navigate = true
-    light = false
-    side-by-side = false
+  navigate = true
+  light = false
+  side-by-side = false
 
 [merge]
   ff = only
@@ -62,4 +61,4 @@
   insteadOf = https://github.com/
 
 [includeIf "gitdir:~/ghq/github.com/"]
-	path = .gitconfig_private
+  path = .gitconfig_private
