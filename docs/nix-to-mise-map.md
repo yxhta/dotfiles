@@ -8,9 +8,9 @@
 | bottom               | mise `bottom`                           | `btm`               | `command -v btm`                          |
 | btop                 | `brew:btop`                             | `btop`              | `command -v btop`                         |
 | buf                  | mise `buf`                              | `buf`               | `command -v buf`                          |
-| cloudflared          | `brew:cloudflared`                      | `cloudflared`       | `command -v cloudflared`                  |
+| cloudflared          | 手動 `brew install cloudflared`         | `cloudflared`       | `command -v cloudflared`                  |
 | cmake                | mise `cmake`                            | `cmake`             | `command -v cmake`                        |
-| cocoapods            | `brew:cocoapods`                        | `pod`               | `command -v pod`                          |
+| cocoapods            | 手動 `brew install cocoapods`           | `pod`               | `command -v pod`                          |
 | delta                | mise `delta`                            | `delta`             | `command -v delta`                        |
 | eza                  | `brew:eza`                              | `eza`               | `command -v eza`                          |
 | fd                   | mise `fd`                               | `fd`                | `command -v fd`                           |
@@ -35,7 +35,7 @@
 | libwebp              | `brew:webp`                             | `cwebp`, `dwebp`    | `command -v cwebp && command -v dwebp`    |
 | neovim               | mise `neovim`                           | `nvim`              | `command -v nvim`                         |
 | ngrok                | 手動 `brew install --cask ngrok`        | `ngrok`             | `command -v ngrok`                        |
-| nushell              | mise `nushell`                          | `nu`                | `command -v nu`                           |
+| nushell              | 未移行（どの設定にも未登録）            | `nu`                | `command -v nu`                           |
 | postgresql           | `brew:postgresql@18`                    | `psql`, `postgres`  | `command -v psql && command -v postgres`  |
 | prettierd            | mise `npm:@fsouza/prettierd`            | `prettierd`         | `command -v prettierd`                    |
 | ripgrep              | mise `ripgrep`                          | `rg`                | `command -v rg`                           |
