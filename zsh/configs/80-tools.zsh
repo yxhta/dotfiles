@@ -49,6 +49,10 @@ if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
 fi
 export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-/usr/local/bin/python3}"
 
+if command -v rex >/dev/null 2>&1; then
+  _cache_init rex-completion "$(command -v rex)" completion zsh
+fi
+
 if command -v zoxide >/dev/null 2>&1; then
   _cache_init zoxide "$(command -v zoxide)" init zsh --cmd cd
   (( ${+aliases[zi]} )) && unalias zi
