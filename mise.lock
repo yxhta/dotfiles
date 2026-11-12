@@ -24,8 +24,8 @@ signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [[tools."npm:prettier"]]
-version = "3.9.10"
-aube = { path = ".mise/locks/npm-prettier/3.9.10", digest = "sha256:0a52cf3e98ebe971f9f0c338c08e668756d290a8d14fe3fd308251084fba1522" }
+version = "3.10.0"
+aube = { path = ".mise/locks/npm-prettier/3.10.0", digest = "sha256:4a8ffcbe0fa762d5b63896a68f95d220ee86f3fcfad3ff60e902752c99ef8677" }
 backend = "npm:prettier"
 specifiers = ["latest"]
 
