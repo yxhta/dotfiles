@@ -75,7 +75,9 @@ CPU使用量や採取間のピークは捉えられず、新規・リセット�
 端末の操作は Rex に寄せる。`rex/init.lua` が tmux と同じ `ctrl+s` prefix のキー、
 floating の shell・lazygit・worktree picker（`bin/rex-worktree`）を定義する。
 LaunchAgent の `bin/rex-caffeinate` は、Rex のペインが program status で `working` を
-報告している間だけ Mac のスリープを止める。`herdr-app/` と `bin/hc-caffeinate` は
+報告している間だけ Mac のスリープを止める。LaunchAgent の `bin/agent-timeline-serve` は、
+`~/ghq/github.com/yxhta/agent-timeline` の監視画面を http://127.0.0.1:7700/ で常駐させる。
+チェックアウトがない場合は起動に失敗し、launchd が再試行を続ける。`herdr-app/` と `bin/hc-caffeinate` は
 移行期間のため残しているが、今後は使わない想定。
 
 Rex Beta の macOS アプリは mise で導入しない。HackGen Console NF の fallback font は

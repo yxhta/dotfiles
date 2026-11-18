@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+# launchd starts with a bare PATH: rex, node (mise shim), and claude (timed reports) must be reachable.
+PATH="$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS:$HOME/.local/share/mise/shims:$HOME/.local/bin:/usr/bin:/bin"
+export PATH
+
+exec "$HOME/ghq/github.com/yxhta/agent-timeline/bin/agent-timeline" serve --port 7700 "$@"

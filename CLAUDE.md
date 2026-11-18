@@ -4,7 +4,7 @@
 
 Apple Silicon macOS dotfiles. `mise.toml` is the bootstrap entrypoint and owns
 system packages, dotfile symlinks, macOS defaults, LaunchAgents (keyboard remap, rex-caffeinate,
-hc-caffeinate), the login shell, and repo development tools.
+hc-caffeinate, agent-timeline), the login shell, and repo development tools.
 
 Rex (`rex/init.lua`) is the primary terminal multiplexer. `herdr-app/` and
 `bin/hc-caffeinate` are kept for the transition but no longer extended. `mise/config.toml` remains the global

@@ -101,6 +101,11 @@ program = "~/bin/rex-caffeinate"
 run_at_load = true
 keep_alive = true
 
+[bootstrap.macos.launchd.agents.agent-timeline]
+program = "~/bin/agent-timeline-serve"
+run_at_load = true
+keep_alive = true
+
 [bootstrap.user]
 login_shell = "/bin/zsh"
 
