@@ -10,8 +10,8 @@ Always respond in Japanese.
   `~/.config/mise/config.toml` by bootstrap.
 - `bin/`: POSIX-sh user scripts and the vendored mise installer.
 - `zsh/`, `nvim/`, `tmux/`, `git/`, `rex/`: tool configuration. Rex is the
-  primary terminal multiplexer; `herdr-app/` and `bin/hc-caffeinate` are kept
-  for the transition but no longer extended.
+  primary terminal multiplexer; `herdr-app/` is kept for the transition but
+  no longer extended.
 - `treefmt.toml`: repository formatting.
 - `hk.pkl`: gitleaks + treefmt hooks.
 - `docs/nix-to-mise-map.md`: migration/verification inventory.

@@ -77,8 +77,8 @@ floating の shell・lazygit・worktree picker（`bin/rex-worktree`）を定義�
 LaunchAgent の `bin/rex-caffeinate` は、Rex のペインが program status で `working` を
 報告している間だけ Mac のスリープを止める。LaunchAgent の `bin/agent-timeline-serve` は、
 `~/ghq/github.com/yxhta/agent-timeline` の監視画面を http://127.0.0.1:7700/ で常駐させる。
-チェックアウトがない場合は起動に失敗し、launchd が再試行を続ける。`herdr-app/` と `bin/hc-caffeinate` は
-移行期間のため残しているが、今後は使わない想定。
+チェックアウトがない場合は起動に失敗し、launchd が再試行を続ける。`herdr-app/` は
+移行期間のため残しているが、今後は使わない想定。`hc` と `hc-caffeinate` は削除済み。
 
 Rex Beta の macOS アプリは mise で導入しない。HackGen Console NF の fallback font は
 mise の defaults が配列を書けないため、Settings の Typography から手動で設定する。

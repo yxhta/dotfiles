@@ -1,6 +1,6 @@
 [tools]
-go = "1.26"
-node = "24"
+go = "1.27"
+node = "26"
 python = "3.15"
 ruby = "4"
 bun = "latest"
